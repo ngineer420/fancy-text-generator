@@ -1,4 +1,4 @@
-/* Fancy Text Generator — textglyph.com
+/* Fancy Text Generator — fontstylizer.com
    All transform logic lives in the FancyText namespace below (pure, no DOM
    dependency), so it can be unit-tested from Node with `require()`. The DOM
    wiring at the bottom only runs in a browser. */

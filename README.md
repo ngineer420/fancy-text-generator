@@ -1,4 +1,4 @@
-# textglyph.com
+# fontstylizer.com
 
 A free, ad-supported fancy text generator: type plain text and instantly get 29 stylized Unicode versions of it — bold, italic, script, gothic/fraktur, double-struck, bubble/circled, squared, small caps, superscript/subscript, strikethrough, upside-down, mirrored, and three intensities of zalgo/glitch text — each with a one-click Copy button.
 
@@ -32,26 +32,26 @@ terms.html                Terms of use
 assets/favicon.svg          Site icon
 assets/css/styles.css        Design system
 assets/js/app.js               Unicode transform engine + DOM wiring
-CNAME                            GitHub Pages custom domain (textglyph.com)
+CNAME                            GitHub Pages custom domain (fontstylizer.com)
 ```
 
 ## Enabling ads (Google AdSense)
 
-1. Deploy the site and get it live at textglyph.com (or the github.io URL, until the domain is purchased — see below).
+1. Deploy the site and get it live at fontstylizer.com (or the github.io URL, until the domain is purchased — see below).
 2. Apply at https://adsense.google.com with the live URL. Approval requires a working privacy policy (already included) and some real content/traffic — it isn't instant.
 3. Once approved, uncomment the AdSense `<script>` tag in `index.html`'s `<head>` and replace `ca-pub-XXXXXXXXXXXXXXXX` with your publisher ID.
 4. Fill in real ad units in place of the `.ad-slot` placeholder `<div>`s (`#ad-top`, `#ad-inline`, `#ad-footer`) with your AdSense ad unit code.
 
-## Custom domain (textglyph.com)
+## Custom domain (fontstylizer.com)
 
-The `CNAME` file tells GitHub Pages to serve this repo at `textglyph.com`. **Important: this domain has not actually been purchased yet.** It was only checked for apparent availability via DNS lookup — until it's bought and DNS is configured, the site will only be reachable at its `github.io` URL (e.g. `https://ngineer420.github.io/fancy-text-generator/`), and the `CNAME` file will have no effect.
+The `CNAME` file tells GitHub Pages to serve this repo at `fontstylizer.com`. **Important: this domain has not actually been purchased yet.** It was only checked for apparent availability via DNS lookup — until it's bought and DNS is configured, the site will only be reachable at its `github.io` URL (e.g. `https://ngineer420.github.io/fancy-text-generator/`), and the `CNAME` file will have no effect.
 
 Once the domain is purchased, point DNS at GitHub Pages:
 
-- Apex domain (`textglyph.com`): four `A` records to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`.
+- Apex domain (`fontstylizer.com`): four `A` records to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`.
 - `www` subdomain (optional): `CNAME` record to `<username>.github.io`.
 
-Then enable Pages in the repo's Settings → Pages, and enter `textglyph.com` as the custom domain (GitHub will offer to enforce HTTPS once DNS propagates).
+Then enable Pages in the repo's Settings → Pages, and enter `fontstylizer.com` as the custom domain (GitHub will offer to enforce HTTPS once DNS propagates).
 
 ## License
 
