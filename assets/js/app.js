@@ -364,39 +364,114 @@ if (typeof document !== "undefined") {
       };
     }
 
-    async function copyText(text, flashEl) {
+    // The handful of styles people actually search for by name — pinned as
+    // larger "Popular" cards up top so first-time visitors see recognizable
+    // options before the long tail of niche styles. Each still also appears
+    // in its normal category section below.
+    const FEATURED_IDS = ["bold", "italic", "script", "circled", "strikethrough", "upside-down"];
+
+    // Groups every style into a labelled section for the gallery. Every id
+    // in FancyText.STYLES must appear in exactly one group here (checked at
+    // startup below) so nothing is silently dropped from the gallery.
+    const CATEGORIES = [
+      {
+        id: "bold-italic",
+        title: "Bold & Italic",
+        icon: "𝐀",
+        ids: [
+          "bold", "italic", "bold-italic", "sans-serif", "sans-bold",
+          "sans-italic", "sans-bold-italic", "monospace", "double-struck",
+        ],
+      },
+      {
+        id: "cursive-gothic",
+        title: "Cursive & Gothic",
+        icon: "𝓐",
+        ids: ["script", "bold-script", "fraktur", "bold-fraktur"],
+      },
+      {
+        id: "circled-boxed",
+        title: "Circled & Boxed",
+        icon: "Ⓐ",
+        ids: ["circled", "negative-circled", "squared", "negative-squared"],
+      },
+      {
+        id: "small-wide",
+        title: "Small & Wide",
+        icon: "ᴬ",
+        ids: ["small-caps", "superscript", "subscript", "fullwidth", "spaced"],
+      },
+      {
+        id: "effects-glitch",
+        title: "Effects & Glitch",
+        icon: "Z̷",
+        ids: [
+          "strikethrough", "underline", "upside-down", "mirror",
+          "zalgo-light", "zalgo-medium", "zalgo-heavy",
+        ],
+      },
+    ];
+
+    const COPY_ICON_SVG =
+      '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">' +
+      '<path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>';
+    const CHECK_ICON_SVG =
+      '<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">' +
+      '<path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 20.6 7.4l-1.4-1.4z"/></svg>';
+
+    async function copyText(text) {
       try {
         await navigator.clipboard.writeText(text);
+        return true;
       } catch {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        ta.remove();
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+          return true;
+        } catch {
+          return false;
+        }
       }
-      flashEl.classList.add("show");
-      clearTimeout(flashEl._t);
-      flashEl._t = setTimeout(() => flashEl.classList.remove("show"), 1100);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       const input = document.getElementById("text-input");
       const filterInput = document.getElementById("style-filter");
-      const list = document.getElementById("style-list");
+      const gallery = document.getElementById("gallery");
       const emptyState = document.getElementById("empty-state");
       const styleCountEl = document.getElementById("style-count");
       const emptyStyleCountEl = document.getElementById("empty-style-count");
       const visibleHintEl = document.getElementById("visible-hint");
+      const pillsEl = document.getElementById("category-pills");
+      const liveRegion = document.getElementById("copy-live-region");
+      const header = document.querySelector(".site-header");
       const yearEl = document.getElementById("year");
       if (yearEl) yearEl.textContent = new Date().getFullYear();
 
       const SAMPLE_TEXT = "Fancy Text";
       const STYLES = FancyText.STYLES;
+      const STYLE_BY_ID = {};
+      STYLES.forEach((s) => {
+        STYLE_BY_ID[s.id] = s;
+      });
       styleCountEl.textContent = STYLES.length;
       if (emptyStyleCountEl) emptyStyleCountEl.textContent = STYLES.length;
+
+      // Keep the sticky control bar positioned right below the real
+      // (variable-height) sticky header instead of a hardcoded guess.
+      function syncHeaderHeight() {
+        if (header) {
+          document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+        }
+      }
+      syncHeaderHeight();
+      window.addEventListener("resize", debounce(syncHeaderHeight, 150));
 
       // Theme toggle, matching the portfolio's other tools.
       (function initTheme() {
@@ -413,65 +488,173 @@ if (typeof document !== "undefined") {
         });
       })();
 
-      // Build one row per style, up front. Rows are re-labelled/hidden on
-      // input rather than rebuilt, so typing stays cheap.
-      const rows = STYLES.map((style) => {
-        const row = document.createElement("div");
-        row.className = "style-row";
-        row.dataset.name = style.name.toLowerCase();
+      // ---------------------------------------------------------------
+      // Build the gallery: a "Popular" section of featured cards, then
+      // every style grouped into category sections. Cards are built once
+      // up front and only re-labelled/hidden afterwards, so typing and
+      // filtering stay cheap.
+      // ---------------------------------------------------------------
 
-        const label = document.createElement("div");
-        label.className = "style-label";
-        label.textContent = style.name;
+      const cards = []; // { style, cardEl, outputEl }
 
-        const output = document.createElement("div");
-        output.className = "style-output";
-        output.tabIndex = 0;
+      function buildCard(style, featured) {
+        const card = document.createElement("div");
+        card.className = "style-card" + (featured ? " style-card--featured" : "");
+        card.dataset.name = style.name.toLowerCase();
+        card.tabIndex = 0;
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-label", "Copy " + style.name + " text");
 
-        const copyWrap = document.createElement("div");
-        copyWrap.className = "style-copy-wrap";
+        const head = document.createElement("div");
+        head.className = "style-card-head";
+
+        const nameEl = document.createElement("span");
+        nameEl.className = "style-card-name";
+        nameEl.textContent = style.name;
 
         const copyBtn = document.createElement("button");
         copyBtn.type = "button";
-        copyBtn.className = "copy-btn";
-        copyBtn.textContent = "Copy";
+        copyBtn.className = "copy-icon-btn";
+        copyBtn.setAttribute("aria-label", "Copy " + style.name + " text");
+        copyBtn.innerHTML = COPY_ICON_SVG;
 
-        const flash = document.createElement("span");
-        flash.className = "copy-flash";
-        flash.textContent = "Copied!";
+        head.append(nameEl, copyBtn);
 
-        copyWrap.append(copyBtn, flash);
-        row.append(label, output, copyWrap);
-        list.appendChild(row);
+        const output = document.createElement("div");
+        output.className = "style-card-output";
 
-        copyBtn.addEventListener("click", () => copyText(output.textContent, flash));
+        const badge = document.createElement("div");
+        badge.className = "copied-badge";
+        badge.setAttribute("aria-hidden", "true");
+        badge.innerHTML = CHECK_ICON_SVG + "<span>Copied</span>";
 
-        return { style, row, output };
+        card.append(head, output, badge);
+
+        async function doCopy(evt) {
+          if (evt) evt.stopPropagation();
+          const ok = await copyText(output.textContent);
+          if (!ok) return;
+          card.classList.remove("is-copied");
+          void card.offsetWidth; // restart the flash animation on rapid re-clicks
+          card.classList.add("is-copied");
+          clearTimeout(card._copyTimer);
+          card._copyTimer = setTimeout(() => card.classList.remove("is-copied"), 1200);
+          if (liveRegion) liveRegion.textContent = style.name + " copied to clipboard";
+        }
+
+        card.addEventListener("click", doCopy);
+        card.addEventListener("keydown", (evt) => {
+          // Only handle Enter/Space when the card itself is focused — if the
+          // nested copy button has focus, let its own click handler (below)
+          // own the interaction instead of double-firing.
+          if (evt.target !== card) return;
+          if (evt.key === "Enter" || evt.key === " ") {
+            evt.preventDefault();
+            doCopy(evt);
+          }
+        });
+        copyBtn.addEventListener("click", doCopy);
+
+        cards.push({ style, cardEl: card, outputEl: output });
+        return card;
+      }
+
+      function buildSection(sectionId, title, icon, styleIds, featured) {
+        const section = document.createElement("section");
+        section.className = "style-category";
+        section.id = "cat-" + sectionId;
+        section.dataset.category = sectionId;
+
+        const heading = document.createElement("h2");
+        heading.className = "category-title";
+        const iconEl = document.createElement("span");
+        iconEl.className = "category-icon";
+        iconEl.setAttribute("aria-hidden", "true");
+        iconEl.textContent = icon;
+        heading.append(iconEl, document.createTextNode(title));
+        section.appendChild(heading);
+
+        const grid = document.createElement("div");
+        grid.className = "style-grid" + (featured ? " style-grid--featured" : "");
+        styleIds.forEach((id) => {
+          const style = STYLE_BY_ID[id];
+          if (!style) return;
+          grid.appendChild(buildCard(style, featured));
+        });
+        section.appendChild(grid);
+        gallery.appendChild(section);
+        return { id: "cat-" + sectionId, title };
+      }
+
+      const sectionList = [];
+      sectionList.push(buildSection("popular", "Popular", "🔥", FEATURED_IDS, true));
+
+      const usedIds = new Set();
+      CATEGORIES.forEach((cat) => {
+        cat.ids.forEach((id) => usedIds.add(id));
+        sectionList.push(buildSection(cat.id, cat.title, cat.icon, cat.ids, false));
       });
+
+      // Dev-time sanity check: every style must belong to a category, or it
+      // would silently vanish from the gallery.
+      const missing = STYLES.filter((s) => !usedIds.has(s.id)).map((s) => s.id);
+      if (missing.length) {
+        console.warn("fontloom: styles missing from category groups:", missing);
+      }
+
+      // Quick-jump pills, one per section (including Popular).
+      if (pillsEl) {
+        sectionList.forEach(({ id, title }) => {
+          const pill = document.createElement("a");
+          pill.href = "#" + id;
+          pill.className = "category-pill";
+          pill.textContent = title;
+          pill.addEventListener("click", (evt) => {
+            evt.preventDefault();
+            const target = document.getElementById(id);
+            if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+          pillsEl.appendChild(pill);
+        });
+      }
+
+      // ---------------------------------------------------------------
+      // Render (re-run transforms) + filter (show/hide cards & sections)
+      // ---------------------------------------------------------------
 
       function render() {
         const raw = input.value;
         const hasInput = raw.trim().length > 0;
         const text = hasInput ? raw : SAMPLE_TEXT;
         emptyState.hidden = hasInput;
-        list.hidden = false;
 
-        for (const r of rows) {
-          r.output.textContent = r.style.transform(text);
+        for (const c of cards) {
+          c.outputEl.textContent = c.style.transform(text);
         }
       }
 
       function applyFilter() {
         const q = filterInput.value.trim().toLowerCase();
-        let visible = 0;
-        for (const r of rows) {
-          const match = !q || r.row.dataset.name.includes(q);
-          r.row.hidden = !match;
-          if (match) visible++;
+        let visibleCount = 0;
+        const matchedStyleIds = new Set();
+        for (const c of cards) {
+          const match = !q || c.cardEl.dataset.name.includes(q);
+          c.cardEl.hidden = !match;
+          if (match) {
+            visibleCount++;
+            matchedStyleIds.add(c.style.id);
+          }
         }
-        list.classList.toggle("no-results", visible === 0);
+        // Hide category headers (Popular included) that have zero matches,
+        // so the search results read as a clean, gap-free list.
+        gallery.querySelectorAll(".style-category").forEach((section) => {
+          section.hidden = !section.querySelector(".style-card:not([hidden])");
+        });
+        gallery.classList.toggle("no-results", visibleCount === 0);
         if (visibleHintEl) {
-          visibleHintEl.textContent = q ? `${visible} of ${STYLES.length} styles` : "All styles shown";
+          visibleHintEl.textContent = q
+            ? `${matchedStyleIds.size} of ${STYLES.length} styles match`
+            : "All styles shown";
         }
       }
 
