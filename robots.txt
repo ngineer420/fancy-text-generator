@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://fontstylizer.com/sitemap.xml
+Sitemap: https://fontloom.com/sitemap.xml
