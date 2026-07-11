@@ -35,13 +35,12 @@
 </script>
 
 <!--
-  Ad monetization (Google AdSense placeholder)
+  Ad monetization (Google AdSense — Auto ads)
   ---------------------------------------------
   1. Get approved at https://adsense.google.com using this site's live URL.
   2. Replace ca-pub-XXXXXXXXXXXXXXXX below with your publisher ID.
-  3. Uncomment the <script> tag.
-  4. In assets/js/app.js (or a dedicated ads.js), wire up your real ad unit slot IDs.
-  Until then, .ad-slot elements render as empty placeholders and do nothing.
+  3. Uncomment the <script> tag. Auto ads scans the live page and places
+     ad units automatically — no manual placement needed.
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 -->
@@ -60,8 +59,6 @@
     </div>
   </div>
 </header>
-
-<div class="ad-slot ad-slot--leaderboard" id="ad-top" aria-hidden="true"></div>
 
 <main id="main">
   <div class="hero">
@@ -92,8 +89,6 @@
   <div class="gallery" id="gallery"></div>
   <p class="no-results-msg">No styles match your search.</p>
 
-  <div class="ad-slot ad-slot--inline" id="ad-inline" aria-hidden="true"></div>
-
   <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
 
   <section class="container-narrow explainer" style="padding-top:0;">
@@ -111,8 +106,6 @@
     </ul>
   </section>
 </main>
-
-<div class="ad-slot ad-slot--footer" id="ad-footer" aria-hidden="true"></div>
 
 <footer class="site-footer">
   <div class="footer-inner">
