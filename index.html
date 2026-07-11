@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fancy Text Generator - Cool Unicode Fonts, Copy &amp; Paste</title>
+<meta name="description" content="Turn plain text into 25+ fancy Unicode fonts — bold, italic, script, gothic, bubble, glitch/zalgo and more. Instant, free, copy-paste ready for Instagram, Discord, TikTok and X.">
+<link rel="canonical" href="https://textglyph.com/">
+<meta name="theme-color" content="#0c0a12">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fancy Text Generator - Cool Unicode Fonts, Copy &amp; Paste">
+<meta property="og:description" content="Turn plain text into 25+ fancy Unicode fonts — bold, italic, script, gothic, bubble, glitch/zalgo and more. Instant, free, copy-paste ready.">
+<meta property="og:url" content="https://textglyph.com/">
+<meta property="og:image" content="https://textglyph.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fancy Text Generator - Cool Unicode Fonts, Copy &amp; Paste">
+<meta name="twitter:description" content="Turn plain text into 25+ fancy Unicode fonts — bold, italic, script, gothic, bubble, glitch/zalgo and more. Instant, free, copy-paste ready.">
+<meta name="twitter:image" content="https://textglyph.com/assets/og-image.png">
+
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/styles.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Fancy Text Generator",
+  "url": "https://textglyph.com/",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free browser-based fancy text generator: convert plain text into 25+ Unicode font styles for bios, chats and posts."
+}
+</script>
+
+<!--
+  Ad monetization (Google AdSense placeholder)
+  ---------------------------------------------
+  1. Get approved at https://adsense.google.com using this site's live URL.
+  2. Replace ca-pub-XXXXXXXXXXXXXXXX below with your publisher ID.
+  3. Uncomment the <script> tag.
+  4. In assets/js/app.js (or a dedicated ads.js), wire up your real ad unit slot IDs.
+  Until then, .ad-slot elements render as empty placeholders and do nothing.
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="textglyph.com home">
+      <span class="brand-mark">textglyph</span>
+      <span class="brand-tag">fancy text generator</span>
+    </a>
+    <div class="header-actions">
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<div class="ad-slot ad-slot--leaderboard" id="ad-top" aria-hidden="true"></div>
+
+<main id="main">
+  <div class="hero">
+    <h1>Fancy Text Generator</h1>
+    <p>Type once, get 25+ cool Unicode fonts instantly. Copy and paste anywhere.</p>
+    <p class="trust-line">Runs 100% in your browser<span class="dot">•</span>Nothing is uploaded<span class="dot">•</span><span id="style-count">29</span> styles</p>
+  </div>
+
+  <div class="panel">
+    <label for="text-input" class="visually-hidden">Your text</label>
+    <input type="text" id="text-input" class="input-field" placeholder="Type something..." autocomplete="off" spellcheck="false" maxlength="300">
+  </div>
+
+  <div class="list-toolbar">
+    <label for="style-filter" class="visually-hidden">Filter styles</label>
+    <input type="text" id="style-filter" placeholder="Filter styles (e.g. bold, script, glitch)...">
+    <span class="style-count"><span id="visible-hint">All styles shown</span></span>
+  </div>
+
+  <div class="empty-state" id="empty-state">
+    Start typing above to see your text in <span id="empty-style-count">29</span>+ fonts. Meanwhile, here's a preview using <strong>“Fancy Text”</strong>.
+  </div>
+
+  <div class="style-list" id="style-list"></div>
+  <p class="no-results-msg">No styles match your filter.</p>
+
+  <div class="ad-slot ad-slot--inline" id="ad-inline" aria-hidden="true"></div>
+
+  <section class="container-narrow explainer" style="padding-top:0;">
+    <h2>How does this work? Is this a real font?</h2>
+    <p>Not quite — and that's exactly why it works everywhere. These aren't custom fonts loaded by a webpage; they're real, individual <strong>Unicode characters</strong> that happen to look bold, italic, script, or gothic. Unicode's <em>Mathematical Alphanumeric Symbols</em> block (and a handful of other blocks like Enclosed Alphanumerics and Letterlike Symbols) includes fully separate sets of lookalike letters for math notation — a bold 𝐀 is a genuinely different character from a plain A, with its own code point.</p>
+    <p>This tool simply maps each letter you type to its stylish counterpart from those blocks, and gives you the resulting string. Because it's just text — not an image, not a web font — it pastes correctly into Instagram bios, Discord messages, Twitter/X posts, TikTok captions, or literally any text field on the internet.</p>
+    <p>The tradeoff: since these characters live outside the basic Latin alphabet, a few very old devices, fonts, or apps with incomplete Unicode support may show them as boxes or fall back to a default glyph. Support is excellent on virtually all modern phones, browsers, and apps, but it's not guaranteed to be pixel-perfect everywhere. Also note that a handful of styles (subscript, superscript, small caps) don't have a complete A–Z Unicode range, since not every stylized letter has ever been assigned a code point — this generator automatically falls back to a plain character for anything that isn't supported, so you never get a blank result.</p>
+    <h2>Where can I use fancy text?</h2>
+    <ul>
+      <li>Instagram, TikTok and Twitter/X bios and captions</li>
+      <li>Discord nicknames, server names and channel topics</li>
+      <li>YouTube titles, comments and channel descriptions</li>
+      <li>Usernames and display names almost anywhere</li>
+      <li>Chat apps, forum posts, and text messages</li>
+    </ul>
+  </section>
+</main>
+
+<div class="ad-slot ad-slot--footer" id="ad-footer" aria-hidden="true"></div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>© <span id="year"></span> textglyph.com</div>
+    <div class="footer-links">
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>
