@@ -210,14 +210,11 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
 .clear-btn:hover { color: var(--text); background: var(--border-soft); }
 .clear-btn[hidden] { display: none; }
 
-.toolbar { display: flex; align-items: center; gap: 10px; }
-
 .filter-pills {
   display: flex;
   gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
-  flex: 1;
   min-width: 0;
 }
 .filter-pills::-webkit-scrollbar { display: none; }
@@ -240,26 +237,6 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   color: var(--accent-contrast);
 }
 .filter-pill[aria-pressed="true"]:hover { color: var(--accent-contrast); }
-
-.search-shell { position: relative; flex: none; width: 170px; }
-.search-icon {
-  position: absolute;
-  left: 11px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-faint);
-  pointer-events: none;
-}
-.filter-field {
-  font-size: 13px;
-  padding: 6px 10px 6px 34px;
-  border-radius: 999px;
-}
-@media (max-width: 560px) {
-  .toolbar { flex-direction: column-reverse; align-items: stretch; }
-  .search-shell { width: 100%; }
-  .filter-pills { width: 100%; }
-}
 
 /* ---------- preview hint (shown until the user types) ---------- */
 .preview-hint {
@@ -300,6 +277,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   box-shadow: 0 10px 24px -16px rgba(0, 0, 0, 0.55);
 }
 .tile:active { transform: scale(0.98); }
+.tile[hidden] { display: none; }
 
 .tile-output {
   flex: 1;
@@ -380,12 +358,8 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
 .tile.is-copied .tile-name { opacity: 0; }
 .tile.is-copied .tile-copied { opacity: 1; transform: translateY(0); }
 
-.tile-grid.no-results { display: none; }
-.no-results-msg { display: none; text-align: center; color: var(--text-faint); padding: 30px 10px; }
-.tile-grid.no-results ~ .no-results-msg { display: block; }
-
 /* ---------- about / explainer section ---------- */
-.explainer { padding-top: 8px; }
+.explainer { margin-top: 24px; }
 .explainer h2 { margin-top: 0; }
 .explainer p { color: var(--text-dim); }
 .explainer ul { color: var(--text-dim); padding-left: 20px; }

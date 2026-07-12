@@ -445,7 +445,6 @@ if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", () => {
       const input = document.getElementById("text-input");
       const clearBtn = document.getElementById("clear-btn");
-      const filterInput = document.getElementById("style-filter");
       const gallery = document.getElementById("gallery");
       const emptyState = document.getElementById("empty-state");
       const styleCountEl = document.getElementById("style-count");
@@ -516,7 +515,6 @@ if (typeof document !== "undefined") {
       function buildTile(style) {
         const tile = document.createElement("div");
         tile.className = "tile";
-        tile.dataset.name = style.name.toLowerCase();
         tile.tabIndex = 0;
         tile.setAttribute("role", "button");
         tile.setAttribute("aria-label", "Copy " + style.name + " text");
@@ -643,16 +641,9 @@ if (typeof document !== "undefined") {
       }
 
       function applyFilter() {
-        const q = filterInput.value.trim().toLowerCase();
-        let visibleCount = 0;
         for (const t of tiles) {
-          const match =
-            (!q || t.tileEl.dataset.name.includes(q)) &&
-            (!activeCategory || t.category === activeCategory);
-          t.tileEl.hidden = !match;
-          if (match) visibleCount++;
+          t.tileEl.hidden = Boolean(activeCategory) && t.category !== activeCategory;
         }
-        gallery.classList.toggle("no-results", visibleCount === 0);
         markClipped();
       }
 
@@ -666,7 +657,6 @@ if (typeof document !== "undefined") {
 
       const debouncedRender = debounce(render, 50);
       input.addEventListener("input", debouncedRender);
-      filterInput.addEventListener("input", applyFilter);
       window.addEventListener("resize", debounce(markClipped, 150));
 
       render();

@@ -66,25 +66,17 @@
           <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
         </button>
       </div>
-      <div class="toolbar">
-        <nav class="filter-pills" id="category-pills" aria-label="Filter styles by category"></nav>
-        <div class="search-shell">
-          <svg class="search-icon" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
-          <label for="style-filter" class="visually-hidden">Search styles</label>
-          <input type="text" id="style-filter" class="filter-field" placeholder="Search styles" autocomplete="off">
-        </div>
-      </div>
+      <nav class="filter-pills" id="category-pills" aria-label="Filter styles by category"></nav>
     </div>
   </div>
 
   <p class="preview-hint" id="empty-state">Previewing with <strong>“Fancy Text”</strong> — type above to use your own words, then tap any style to copy it.</p>
 
   <div class="tile-grid" id="gallery"></div>
-  <p class="no-results-msg">No styles match your search.</p>
 
   <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
 
-  <section class="container-narrow explainer" style="padding-top:0;">
+  <section class="container-narrow explainer">
     <h2>How does this work? Is this a real font?</h2>
     <p>Not quite — and that's exactly why it works everywhere. These aren't custom fonts loaded by a webpage; they're real, individual <strong>Unicode characters</strong> that happen to look bold, italic, script, or gothic. Unicode's <em>Mathematical Alphanumeric Symbols</em> block (and a handful of other blocks like Enclosed Alphanumerics and Letterlike Symbols) includes fully separate sets of lookalike letters for math notation — a bold 𝐀 is a genuinely different character from a plain A, with its own code point.</p>
     <p>This tool simply maps each letter you type to its stylish counterpart from those blocks, and gives you the resulting string. Because it's just text — not an image, not a web font — it pastes correctly into Instagram bios, Discord messages, Twitter/X posts, TikTok captions, or literally any text field on the internet.</p>
