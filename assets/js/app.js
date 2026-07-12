@@ -364,20 +364,26 @@ if (typeof document !== "undefined") {
       };
     }
 
-    // The handful of styles people actually search for by name — pinned as
-    // larger "Popular" cards up top so first-time visitors see recognizable
-    // options before the long tail of niche styles. Each still also appears
-    // in its normal category section below.
-    const FEATURED_IDS = ["bold", "italic", "script", "circled", "strikethrough", "upside-down"];
+    // One flat gallery, ordered so the styles people actually come looking
+    // for (bold, italic, cursive, gothic, bubble, glitch…) land in the first
+    // rows — the goal is maximum recognizable variety above the fold.
+    const TILE_ORDER = [
+      "bold", "italic", "script", "fraktur", "circled", "bold-italic",
+      "double-struck", "small-caps", "bold-script", "monospace",
+      "strikethrough", "underline", "upside-down", "negative-circled",
+      "squared", "negative-squared", "bold-fraktur", "sans-serif",
+      "sans-bold", "sans-italic", "sans-bold-italic", "fullwidth",
+      "superscript", "subscript", "spaced", "mirror",
+      "zalgo-light", "zalgo-medium", "zalgo-heavy",
+    ];
 
-    // Groups every style into a labelled section for the gallery. Every id
-    // in FancyText.STYLES must appear in exactly one group here (checked at
-    // startup below) so nothing is silently dropped from the gallery.
+    // Category filters (pills). Every id in FancyText.STYLES must appear in
+    // exactly one group here (checked at startup below) so nothing is
+    // silently dropped when a filter is active.
     const CATEGORIES = [
       {
         id: "bold-italic",
         title: "Bold & Italic",
-        icon: "𝐀",
         ids: [
           "bold", "italic", "bold-italic", "sans-serif", "sans-bold",
           "sans-italic", "sans-bold-italic", "monospace", "double-struck",
@@ -386,25 +392,21 @@ if (typeof document !== "undefined") {
       {
         id: "cursive-gothic",
         title: "Cursive & Gothic",
-        icon: "𝓐",
         ids: ["script", "bold-script", "fraktur", "bold-fraktur"],
       },
       {
         id: "circled-boxed",
         title: "Circled & Boxed",
-        icon: "Ⓐ",
         ids: ["circled", "negative-circled", "squared", "negative-squared"],
       },
       {
         id: "small-wide",
         title: "Small & Wide",
-        icon: "ᴬ",
         ids: ["small-caps", "superscript", "subscript", "fullwidth", "spaced"],
       },
       {
         id: "effects-glitch",
         title: "Effects & Glitch",
-        icon: "Z̷",
         ids: [
           "strikethrough", "underline", "upside-down", "mirror",
           "zalgo-light", "zalgo-medium", "zalgo-heavy",
@@ -442,12 +444,11 @@ if (typeof document !== "undefined") {
 
     document.addEventListener("DOMContentLoaded", () => {
       const input = document.getElementById("text-input");
+      const clearBtn = document.getElementById("clear-btn");
       const filterInput = document.getElementById("style-filter");
       const gallery = document.getElementById("gallery");
       const emptyState = document.getElementById("empty-state");
       const styleCountEl = document.getElementById("style-count");
-      const emptyStyleCountEl = document.getElementById("empty-style-count");
-      const visibleHintEl = document.getElementById("visible-hint");
       const pillsEl = document.getElementById("category-pills");
       const liveRegion = document.getElementById("copy-live-region");
       const header = document.querySelector(".site-header");
@@ -461,7 +462,6 @@ if (typeof document !== "undefined") {
         STYLE_BY_ID[s.id] = s;
       });
       styleCountEl.textContent = STYLES.length;
-      if (emptyStyleCountEl) emptyStyleCountEl.textContent = STYLES.length;
 
       // Keep the sticky control bar positioned right below the real
       // (variable-height) sticky header instead of a hardcoded guess.
@@ -489,28 +489,57 @@ if (typeof document !== "undefined") {
       })();
 
       // ---------------------------------------------------------------
-      // Build the gallery: a "Popular" section of featured cards, then
-      // every style grouped into category sections. Cards are built once
-      // up front and only re-labelled/hidden afterwards, so typing and
-      // filtering stay cheap.
+      // Build the gallery: one flat grid of tiles. The transformed text is
+      // the tile's content; the style name is a small footnote beneath it.
+      // Tiles are built once up front and only re-labelled/hidden
+      // afterwards, so typing and filtering stay cheap.
       // ---------------------------------------------------------------
 
-      const cards = []; // { style, cardEl, outputEl }
+      // style id -> category id, for pill filtering.
+      const CATEGORY_OF = {};
+      CATEGORIES.forEach((cat) => {
+        cat.ids.forEach((id) => {
+          CATEGORY_OF[id] = cat.id;
+        });
+      });
 
-      function buildCard(style, featured) {
-        const card = document.createElement("div");
-        card.className = "style-card" + (featured ? " style-card--featured" : "");
-        card.dataset.name = style.name.toLowerCase();
-        card.tabIndex = 0;
-        card.setAttribute("role", "button");
-        card.setAttribute("aria-label", "Copy " + style.name + " text");
+      // Dev-time sanity check: every style must belong to a category and
+      // appear in TILE_ORDER, or it would silently vanish from the gallery.
+      const orderSet = new Set(TILE_ORDER);
+      const missing = STYLES.filter((s) => !CATEGORY_OF[s.id] || !orderSet.has(s.id)).map((s) => s.id);
+      if (missing.length) {
+        console.warn("fontloom: styles missing from TILE_ORDER/CATEGORIES:", missing);
+      }
 
-        const head = document.createElement("div");
-        head.className = "style-card-head";
+      const tiles = []; // { style, tileEl, outputEl, category }
+
+      function buildTile(style) {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        tile.dataset.name = style.name.toLowerCase();
+        tile.tabIndex = 0;
+        tile.setAttribute("role", "button");
+        tile.setAttribute("aria-label", "Copy " + style.name + " text");
+
+        const output = document.createElement("div");
+        output.className = "tile-output";
+
+        const foot = document.createElement("div");
+        foot.className = "tile-foot";
+
+        const label = document.createElement("span");
+        label.className = "tile-foot-label";
 
         const nameEl = document.createElement("span");
-        nameEl.className = "style-card-name";
+        nameEl.className = "tile-name";
         nameEl.textContent = style.name;
+
+        const copiedEl = document.createElement("span");
+        copiedEl.className = "tile-copied";
+        copiedEl.setAttribute("aria-hidden", "true");
+        copiedEl.innerHTML = CHECK_ICON_SVG + "<span>Copied</span>";
+
+        label.append(nameEl, copiedEl);
 
         const copyBtn = document.createElement("button");
         copyBtn.type = "button";
@@ -518,36 +547,27 @@ if (typeof document !== "undefined") {
         copyBtn.setAttribute("aria-label", "Copy " + style.name + " text");
         copyBtn.innerHTML = COPY_ICON_SVG;
 
-        head.append(nameEl, copyBtn);
-
-        const output = document.createElement("div");
-        output.className = "style-card-output";
-
-        const badge = document.createElement("div");
-        badge.className = "copied-badge";
-        badge.setAttribute("aria-hidden", "true");
-        badge.innerHTML = CHECK_ICON_SVG + "<span>Copied</span>";
-
-        card.append(head, output, badge);
+        foot.append(label, copyBtn);
+        tile.append(output, foot);
 
         async function doCopy(evt) {
           if (evt) evt.stopPropagation();
           const ok = await copyText(output.textContent);
           if (!ok) return;
-          card.classList.remove("is-copied");
-          void card.offsetWidth; // restart the flash animation on rapid re-clicks
-          card.classList.add("is-copied");
-          clearTimeout(card._copyTimer);
-          card._copyTimer = setTimeout(() => card.classList.remove("is-copied"), 1200);
+          tile.classList.remove("is-copied");
+          void tile.offsetWidth; // restart the flash animation on rapid re-clicks
+          tile.classList.add("is-copied");
+          clearTimeout(tile._copyTimer);
+          tile._copyTimer = setTimeout(() => tile.classList.remove("is-copied"), 1200);
           if (liveRegion) liveRegion.textContent = style.name + " copied to clipboard";
         }
 
-        card.addEventListener("click", doCopy);
-        card.addEventListener("keydown", (evt) => {
-          // Only handle Enter/Space when the card itself is focused — if the
-          // nested copy button has focus, let its own click handler (below)
-          // own the interaction instead of double-firing.
-          if (evt.target !== card) return;
+        tile.addEventListener("click", doCopy);
+        tile.addEventListener("keydown", (evt) => {
+          // Only handle Enter/Space when the tile itself is focused — if the
+          // nested copy button has focus, let its own click handler own the
+          // interaction instead of double-firing.
+          if (evt.target !== tile) return;
           if (evt.key === "Enter" || evt.key === " ") {
             evt.preventDefault();
             doCopy(evt);
@@ -555,112 +575,99 @@ if (typeof document !== "undefined") {
         });
         copyBtn.addEventListener("click", doCopy);
 
-        cards.push({ style, cardEl: card, outputEl: output });
-        return card;
+        tiles.push({ style, tileEl: tile, outputEl: output, category: CATEGORY_OF[style.id] });
+        gallery.appendChild(tile);
       }
 
-      function buildSection(sectionId, title, icon, styleIds, featured) {
-        const section = document.createElement("section");
-        section.className = "style-category";
-        section.id = "cat-" + sectionId;
-        section.dataset.category = sectionId;
-
-        const heading = document.createElement("h2");
-        heading.className = "category-title";
-        const iconEl = document.createElement("span");
-        iconEl.className = "category-icon";
-        iconEl.setAttribute("aria-hidden", "true");
-        iconEl.textContent = icon;
-        heading.append(iconEl, document.createTextNode(title));
-        section.appendChild(heading);
-
-        const grid = document.createElement("div");
-        grid.className = "style-grid" + (featured ? " style-grid--featured" : "");
-        styleIds.forEach((id) => {
-          const style = STYLE_BY_ID[id];
-          if (!style) return;
-          grid.appendChild(buildCard(style, featured));
-        });
-        section.appendChild(grid);
-        gallery.appendChild(section);
-        return { id: "cat-" + sectionId, title };
-      }
-
-      const sectionList = [];
-      sectionList.push(buildSection("popular", "Popular", "🔥", FEATURED_IDS, true));
-
-      const usedIds = new Set();
-      CATEGORIES.forEach((cat) => {
-        cat.ids.forEach((id) => usedIds.add(id));
-        sectionList.push(buildSection(cat.id, cat.title, cat.icon, cat.ids, false));
+      TILE_ORDER.forEach((id) => {
+        const style = STYLE_BY_ID[id];
+        if (style) buildTile(style);
+      });
+      // Any style not in TILE_ORDER still gets a tile (appended last).
+      STYLES.forEach((s) => {
+        if (!orderSet.has(s.id)) buildTile(s);
       });
 
-      // Dev-time sanity check: every style must belong to a category, or it
-      // would silently vanish from the gallery.
-      const missing = STYLES.filter((s) => !usedIds.has(s.id)).map((s) => s.id);
-      if (missing.length) {
-        console.warn("fontloom: styles missing from category groups:", missing);
-      }
+      // Filter pills: "All" plus one per category. Selecting a pill filters
+      // the flat grid in place, so results always start at the top of the
+      // page instead of requiring a scroll to a section.
+      let activeCategory = null; // null = all
 
-      // Quick-jump pills, one per section (including Popular).
       if (pillsEl) {
-        sectionList.forEach(({ id, title }) => {
-          const pill = document.createElement("a");
-          pill.href = "#" + id;
-          pill.className = "category-pill";
+        const pillDefs = [{ id: null, title: "All" }].concat(
+          CATEGORIES.map((c) => ({ id: c.id, title: c.title }))
+        );
+        pillDefs.forEach(({ id, title }) => {
+          const pill = document.createElement("button");
+          pill.type = "button";
+          pill.className = "filter-pill";
           pill.textContent = title;
-          pill.addEventListener("click", (evt) => {
-            evt.preventDefault();
-            const target = document.getElementById(id);
-            if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+          pill.setAttribute("aria-pressed", String(id === activeCategory));
+          pill.addEventListener("click", () => {
+            activeCategory = id;
+            pillsEl.querySelectorAll(".filter-pill").forEach((p) => {
+              p.setAttribute("aria-pressed", String(p === pill));
+            });
+            applyFilter();
           });
           pillsEl.appendChild(pill);
         });
       }
 
       // ---------------------------------------------------------------
-      // Render (re-run transforms) + filter (show/hide cards & sections)
+      // Render (re-run transforms) + filter (show/hide tiles)
       // ---------------------------------------------------------------
+
+      // Long inputs get visually clipped inside the fixed-height tile; fade
+      // the clipped ones out at the bottom (the full string is still what
+      // gets copied). Checked after every render since it depends on both
+      // the text and the tile's current width.
+      function markClipped() {
+        for (const t of tiles) {
+          if (t.tileEl.hidden) continue;
+          t.tileEl.classList.toggle("is-clipped", t.outputEl.scrollHeight > t.outputEl.clientHeight + 1);
+        }
+      }
 
       function render() {
         const raw = input.value;
         const hasInput = raw.trim().length > 0;
         const text = hasInput ? raw : SAMPLE_TEXT;
         emptyState.hidden = hasInput;
+        if (clearBtn) clearBtn.hidden = raw.length === 0;
 
-        for (const c of cards) {
-          c.outputEl.textContent = c.style.transform(text);
+        for (const t of tiles) {
+          t.outputEl.textContent = t.style.transform(text);
         }
+        markClipped();
       }
 
       function applyFilter() {
         const q = filterInput.value.trim().toLowerCase();
         let visibleCount = 0;
-        const matchedStyleIds = new Set();
-        for (const c of cards) {
-          const match = !q || c.cardEl.dataset.name.includes(q);
-          c.cardEl.hidden = !match;
-          if (match) {
-            visibleCount++;
-            matchedStyleIds.add(c.style.id);
-          }
+        for (const t of tiles) {
+          const match =
+            (!q || t.tileEl.dataset.name.includes(q)) &&
+            (!activeCategory || t.category === activeCategory);
+          t.tileEl.hidden = !match;
+          if (match) visibleCount++;
         }
-        // Hide category headers (Popular included) that have zero matches,
-        // so the search results read as a clean, gap-free list.
-        gallery.querySelectorAll(".style-category").forEach((section) => {
-          section.hidden = !section.querySelector(".style-card:not([hidden])");
-        });
         gallery.classList.toggle("no-results", visibleCount === 0);
-        if (visibleHintEl) {
-          visibleHintEl.textContent = q
-            ? `${matchedStyleIds.size} of ${STYLES.length} styles match`
-            : "All styles shown";
-        }
+        markClipped();
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+          input.value = "";
+          render();
+          input.focus();
+        });
       }
 
       const debouncedRender = debounce(render, 50);
       input.addEventListener("input", debouncedRender);
       filterInput.addEventListener("input", applyFilter);
+      window.addEventListener("resize", debounce(markClipped, 150));
 
       render();
       applyFilter();
