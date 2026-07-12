@@ -19,7 +19,10 @@
 <meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/css/styles.css">
+<!-- Bump ?v= on BOTH asset links whenever styles.css or app.js change, so
+     browsers holding a cached copy (GitHub Pages serves max-age=600) can't
+     pair a stale asset with fresh HTML. -->
+<link rel="stylesheet" href="/assets/css/styles.css?v=2">
 
 <script type="application/ld+json">
 {
@@ -54,35 +57,29 @@
 <main id="main">
   <div class="hero">
     <h1>Fancy Text Generator</h1>
-    <p>Type once, get 39 cool Unicode fonts instantly — grouped so you can actually find the one you want.</p>
-    <p class="trust-line">Runs 100% in your browser<span class="dot">•</span>Nothing is uploaded<span class="dot">•</span><span id="style-count">39</span> styles</p>
+    <p><span id="style-count">39</span> copy-paste Unicode fonts<span class="dot">•</span>free<span class="dot">•</span>runs 100% in your browser</p>
   </div>
 
   <div class="control-bar" id="control-bar">
     <div class="control-bar-inner">
-      <div class="input-row">
+      <div class="input-shell">
         <label for="text-input" class="visually-hidden">Your text</label>
-        <input type="text" id="text-input" class="input-field" placeholder="Type something..." autocomplete="off" spellcheck="false" maxlength="300">
+        <input type="text" id="text-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
+        <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+        </button>
       </div>
-      <div class="control-row">
-        <label for="style-filter" class="visually-hidden">Search styles</label>
-        <input type="text" id="style-filter" class="filter-field" placeholder="Search styles (e.g. bold, script, glitch)..." autocomplete="off">
-        <span class="style-count"><span id="visible-hint">All styles shown</span></span>
-      </div>
-      <nav class="category-pills" id="category-pills" aria-label="Jump to a style category"></nav>
+      <nav class="filter-pills" id="category-pills" aria-label="Filter styles by category"></nav>
     </div>
   </div>
 
-  <div class="empty-state" id="empty-state">
-    Start typing above to see your text in <span id="empty-style-count">39</span>+ fonts, grouped into categories below. Meanwhile, here's a preview using <strong>“Fancy Text”</strong>.
-  </div>
+  <p class="preview-hint" id="empty-state">Previewing with <strong>“Fancy Text”</strong> — type above to use your own words, then tap any style to copy it.</p>
 
-  <div class="gallery" id="gallery"></div>
-  <p class="no-results-msg">No styles match your search.</p>
+  <div class="tile-grid" id="gallery"></div>
 
   <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
 
-  <section class="container-narrow explainer" style="padding-top:0;">
+  <section class="container-narrow explainer">
     <h2>How does this work? Is this a real font?</h2>
     <p>Not quite — and that's exactly why it works everywhere. These aren't custom fonts loaded by a webpage; they're real, individual <strong>Unicode characters</strong> that happen to look bold, italic, script, or gothic. Unicode's <em>Mathematical Alphanumeric Symbols</em> block (and a handful of other blocks like Enclosed Alphanumerics and Letterlike Symbols) includes fully separate sets of lookalike letters for math notation — a bold 𝐀 is a genuinely different character from a plain A, with its own code point.</p>
     <p>This tool simply maps each letter you type to its stylish counterpart from those blocks, and gives you the resulting string. Because it's just text — not an image, not a web font — it pastes correctly into Instagram bios, Discord messages, Twitter/X posts, TikTok captions, or literally any text field on the internet.</p>
@@ -108,6 +105,8 @@
   </div>
 </footer>
 
-<script src="/assets/js/app.js"></script>
+<a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+
+<script src="/assets/js/app.js?v=3"></script>
 </body>
 </html>

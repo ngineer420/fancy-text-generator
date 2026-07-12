@@ -22,6 +22,8 @@ python3 -m http.server 8000
 
 Then open `http://localhost:8000`.
 
+When changing `styles.css` or `app.js`, bump the `?v=` query param on both asset links in `index.html`. GitHub Pages caches assets for 10 minutes, so without the bump a visitor can get fresh HTML paired with a stale script/stylesheet from cache — which can break the page until the cache expires.
+
 ## Structure
 
 ```
