@@ -171,6 +171,33 @@
   const negativeSquaredUpper = Array.from({ length: 26 }, (_, i) => String.fromCodePoint(0x1f170 + i));
   const negativeSquaredMap = buildFromString(negativeSquaredUpper, negativeSquaredUpper, null);
 
+  // Parenthesized: lowercase ⒜ (U+249C) and uppercase 🄐 (U+1F110) sets both
+  // exist; digits 1–9 use the "parenthesized digit" range (U+2474). There is
+  // no parenthesized zero, so 0 falls back to plain.
+  const parenthesizedMap = buildFromString(
+    Array.from({ length: 26 }, (_, i) => String.fromCodePoint(0x1f110 + i)),
+    Array.from({ length: 26 }, (_, i) => String.fromCodePoint(0x249c + i)),
+    [null, "⑴", "⑵", "⑶", "⑷", "⑸", "⑹", "⑺", "⑻", "⑼"]
+  );
+
+  // Regional indicators: the 🇦–🇿 range (U+1F1E6) that flag emoji are built
+  // from. Adjacent pairs would render as country flags, so the transform
+  // below inserts a space between consecutive mapped letters.
+  const regionalUpper = Array.from({ length: 26 }, (_, i) => String.fromCodePoint(0x1f1e6 + i));
+  const regionalMap = buildFromString(regionalUpper, regionalUpper, null);
+
+  function regionalIndicatorText(str) {
+    const out = [];
+    let prevMapped = false;
+    for (const ch of str) {
+      const mapped = Object.prototype.hasOwnProperty.call(regionalMap, ch);
+      if (mapped && prevMapped) out.push(" ");
+      out.push(mapped ? regionalMap[ch] : ch);
+      prevMapped = mapped;
+    }
+    return out.join("");
+  }
+
   // Fullwidth: shifts ASCII into the CJK "Fullwidth Forms" block, plus a
   // handful of common punctuation marks for nicer results.
   const fullwidthMap = merge(
@@ -224,6 +251,34 @@
     ["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉"]
   );
 
+  /* ============================= lookalike alphabets ============================= */
+  /* Curated substitution alphabets built from letters in other scripts that
+     merely *resemble* Latin ones. Letters with no convincing lookalike stay
+     as themselves — same graceful-fallback rule as everywhere else. */
+
+  // Faux Cyrillic: the classic "Soviet poster" look (Я for R, И for N, Д for
+  // A). Purely visual — the Cyrillic letters don't sound like their Latin
+  // lookalikes.
+  const fauxCyrillicMap = buildFromString(
+    ["Д", "Б", "С", "D", "Э", "F", "G", "Н", "І", "Ј", "К", "L", "М",
+     "И", "О", "Р", "Q", "Я", "Ѕ", "Т", "Ц", "V", "Ш", "Х", "У", "З"],
+    ["а", "в", "с", "d", "є", "f", "g", "н", "і", "ј", "к", "l", "м",
+     "и", "о", "р", "q", "я", "ѕ", "т", "ц", "v", "ш", "х", "у", "z"],
+    null
+  );
+
+  // Greek-ish symbol alphabet (α в ¢ ∂ є…), a longtime MySpace/MSN favorite.
+  // One set only — uppercase input maps to the same glyphs.
+  const greekStyleLower = ["α", "в", "¢", "∂", "є", "ƒ", "ﻭ", "н", "ι", "נ", "к", "ℓ", "м",
+     "η", "σ", "ρ", "q", "я", "ѕ", "т", "υ", "ν", "ω", "χ", "у", "z"];
+  const greekStyleMap = buildFromString(greekStyleLower, greekStyleLower, null);
+
+  // Currency / crossed-letter alphabet (₳ ฿ ₵ Đ…): currency signs and
+  // stroked Latin letters. One set only — both cases map to the same glyphs.
+  const currencyUpper = ["₳", "฿", "₵", "Đ", "Ɇ", "₣", "₲", "Ⱨ", "ł", "J", "₭", "Ⱡ", "₥",
+     "₦", "Ø", "₱", "Q", "Ɽ", "₴", "₮", "Ʉ", "V", "₩", "Ӿ", "Ɏ", "Ⱬ"];
+  const currencyMap = buildFromString(currencyUpper, currencyUpper, null);
+
   /* ============================= character-substitution effects ============================= */
 
   const FLIP_MAP = {
@@ -264,8 +319,33 @@
       .join("");
   }
 
+  function doubleUnderline(str) {
+    return Array.from(str)
+      .map((ch) => (ch === " " ? ch : ch + "̳"))
+      .join("");
+  }
+
+  function slashed(str) {
+    return Array.from(str)
+      .map((ch) => (ch === " " ? ch : ch + "̸"))
+      .join("");
+  }
+
   function spacedOut(str) {
     return Array.from(str).join(" ");
+  }
+
+  function heartsBetween(str) {
+    return Array.from(str.trim()).join("♥").replace(/♥ ♥/g, " ");
+  }
+
+  // Decorative wrappers: leave the text itself untouched and frame it with
+  // ornamental characters — the "꧁★彡" look that's everywhere in gamer tags.
+  function wrapWith(prefix, suffix) {
+    return function (str) {
+      const core = str.trim();
+      return core ? prefix + core + suffix : core;
+    };
   }
 
   /* ============================= zalgo / glitch ============================= */
@@ -328,14 +408,24 @@
     { id: "negative-circled", name: "Negative Circled", transform: mapTransform(negativeCircledMap) },
     { id: "squared", name: "Squared", transform: mapTransform(squaredMap) },
     { id: "negative-squared", name: "Negative Squared", transform: mapTransform(negativeSquaredMap) },
+    { id: "parenthesized", name: "Parenthesized", transform: mapTransform(parenthesizedMap) },
+    { id: "regional-indicator", name: "Regional Indicator", transform: regionalIndicatorText },
+    { id: "faux-cyrillic", name: "Faux Cyrillic", transform: mapTransform(fauxCyrillicMap) },
+    { id: "greek-style", name: "Greek Style", transform: mapTransform(greekStyleMap) },
+    { id: "currency", name: "Currency / Crossed", transform: mapTransform(currencyMap) },
     { id: "fullwidth", name: "Fullwidth", transform: mapTransform(fullwidthMap) },
     { id: "superscript", name: "Superscript", transform: mapTransform(finalSuperscriptMap) },
     { id: "subscript", name: "Subscript", transform: mapTransform(subscriptMap) },
     { id: "strikethrough", name: "Strikethrough", transform: strikethrough },
     { id: "underline", name: "Underline", transform: underline },
+    { id: "double-underline", name: "Double Underline", transform: doubleUnderline },
+    { id: "slashed", name: "Slashed", transform: slashed },
     { id: "upside-down", name: "Upside-Down / Flip", transform: flipText },
     { id: "mirror", name: "Mirror / Reverse", transform: mirrorText },
     { id: "spaced", name: "Wide / Spaced Out", transform: spacedOut },
+    { id: "hearts-between", name: "Hearts Between", transform: heartsBetween },
+    { id: "ornamental-wrap", name: "Ornamental ꧁꧂", transform: wrapWith("꧁ ", " ꧂") },
+    { id: "star-wrap", name: "Starry ★彡", transform: wrapWith("★彡 ", " 彡★") },
     { id: "zalgo-light", name: "Zalgo — Light", transform: (s) => zalgoText(s, "light") },
     { id: "zalgo-medium", name: "Zalgo — Medium", transform: (s) => zalgoText(s, "medium") },
     { id: "zalgo-heavy", name: "Zalgo — Heavy", transform: (s) => zalgoText(s, "heavy") },
@@ -374,6 +464,10 @@ if (typeof document !== "undefined") {
       "squared", "negative-squared", "bold-fraktur", "sans-serif",
       "sans-bold", "sans-italic", "sans-bold-italic", "fullwidth",
       "superscript", "subscript", "spaced", "mirror",
+      "faux-cyrillic", "greek-style", "currency",
+      "parenthesized", "regional-indicator",
+      "double-underline", "slashed",
+      "hearts-between", "ornamental-wrap", "star-wrap",
       "zalgo-light", "zalgo-medium", "zalgo-heavy",
     ];
 
@@ -397,7 +491,15 @@ if (typeof document !== "undefined") {
       {
         id: "circled-boxed",
         title: "Circled & Boxed",
-        ids: ["circled", "negative-circled", "squared", "negative-squared"],
+        ids: [
+          "circled", "negative-circled", "squared", "negative-squared",
+          "parenthesized", "regional-indicator",
+        ],
+      },
+      {
+        id: "symbol-alphabets",
+        title: "Symbol Alphabets",
+        ids: ["faux-cyrillic", "greek-style", "currency"],
       },
       {
         id: "small-wide",
@@ -408,9 +510,15 @@ if (typeof document !== "undefined") {
         id: "effects-glitch",
         title: "Effects & Glitch",
         ids: [
-          "strikethrough", "underline", "upside-down", "mirror",
+          "strikethrough", "underline", "double-underline", "slashed",
+          "upside-down", "mirror",
           "zalgo-light", "zalgo-medium", "zalgo-heavy",
         ],
+      },
+      {
+        id: "decorated",
+        title: "Decorated",
+        ids: ["hearts-between", "ornamental-wrap", "star-wrap"],
       },
     ];
 

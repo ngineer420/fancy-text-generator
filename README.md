@@ -1,6 +1,6 @@
 # fontloom.com
 
-A free, ad-supported fancy text generator: type plain text and instantly get 29 stylized Unicode versions of it — bold, italic, script, gothic/fraktur, double-struck, bubble/circled, squared, small caps, superscript/subscript, strikethrough, upside-down, mirrored, and three intensities of zalgo/glitch text — each with a one-click Copy button.
+A free, ad-supported fancy text generator: type plain text and instantly get 39 stylized Unicode versions of it — bold, italic, script, gothic/fraktur, double-struck, bubble/circled, squared, small caps, superscript/subscript, strikethrough, upside-down, mirrored, and three intensities of zalgo/glitch text — each with a one-click Copy button.
 
 Everything runs client-side — no backend, no build step, no uploads. Deployed as static files on GitHub Pages.
 
