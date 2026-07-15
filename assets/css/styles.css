@@ -364,6 +364,8 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
 .explainer p { color: var(--text-dim); }
 .explainer ul { color: var(--text-dim); padding-left: 20px; }
 .explainer li { margin-bottom: 6px; }
+.explainer h3 { font-size: 15px; margin: 20px 0 4px; }
+.explainer h3 + p { margin-top: 0; }
 
 /* ---------- footer ---------- */
 .site-footer {
