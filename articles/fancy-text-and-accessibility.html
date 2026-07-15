@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fancy Text and Screen Readers: What to Know Before You Post — fontloom.com</title>
+<meta name="description" content="What fancy Unicode text sounds like in VoiceOver and other screen readers, why it breaks search and translation, and simple rules for using styled text without shutting anyone out.">
+<link rel="canonical" href="https://fontloom.com/articles/fancy-text-and-accessibility.html">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/styles.css?v=3">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="fontloom.com home">
+      <span class="brand-mark">fontloom</span>
+      <span class="brand-tag">fancy text generator</span>
+    </a>
+  </div>
+</header>
+<main class="container-narrow">
+  <h1>Fancy Text and Screen Readers: What to Know Before You Post</h1>
+
+  <p>The reason fancy text works everywhere is that it's made of <a href="/articles/how-fancy-text-works.html">real Unicode characters</a>, each with its own identity. That's also the reason it can go badly wrong for some readers. To your eyes, 𝓗𝓮𝓵𝓵𝓸 is the word "Hello" in a script style. To software that processes text by identity rather than by shape — a screen reader, a search index, a translator — it isn't the word "Hello" at all. It's five entirely different characters that merely resemble it.</p>
+  <p>This isn't a reason to stop using fancy text. It's a reason to know what it does, so you can use it where it's harmless and skip it where it locks people out. Here's what actually happens, and a few rules of thumb that cost you almost nothing.</p>
+
+  <h2>What a screen reader does with 𝓗𝓮𝓵𝓵𝓸</h2>
+  <p>Screen readers like VoiceOver (iPhone and Mac), TalkBack (Android), NVDA, and JAWS convert text to speech for blind and low-vision users. When one meets a mathematical script capital H, it does one of three things depending on the software and its settings: it announces the character's formal name ("mathematical script capital H"), it reads just the base letter, or it says nothing and skips it.</p>
+  <p>The first behavior turns a one-second word into a minute of noise. A short bio written in script style becomes "mathematical script capital H, mathematical script small e, mathematical script small l…" — for every letter. The third behavior is arguably worse: the screen reader skips the characters it doesn't know how to speak, and your sentence simply vanishes. The user doesn't hear something garbled they can puzzle out; they hear silence, with no indication anything was there.</p>
+  <p>How common is this? Screen reader users are a meaningful audience — millions of people, plus a long tail of sighted people who use text-to-speech while driving or use reading tools for dyslexia. If your account exists to reach people, some slice of "people" experiences your styled bio as either static or nothing.</p>
+
+  <h2>It's not only screen readers</h2>
+  <p>Everything that treats text as data trips over the same disguise:</p>
+  <ul>
+    <li><strong>Search.</strong> A profile name or post written in styled characters won't match anyone typing the plain word. Searching "hello" will never find 𝓗𝓮𝓵𝓵𝓸, on any platform, because they genuinely aren't the same string. (Our <a href="/articles/where-fancy-text-works.html">platform guide</a> covers this per site.)</li>
+    <li><strong>Translation.</strong> Machine translators either pass styled words through untranslated or mangle them. If part of your audience reads you through auto-translate, styled text is invisible to them.</li>
+    <li><strong>Copy-and-retype.</strong> Nobody can type a fancy character on a keyboard. A styled email address or promo code in your bio can't be retyped into another app, only copy-pasted — and on some platforms bios can't be selected.</li>
+    <li><strong>Spam filtering.</strong> Because spammers use lookalike characters to dodge word filters, some platforms treat heavy styled-character use as a spam signal and quietly down-rank it. Ironically, overusing fancy text can make you <em>less</em> visible.</li>
+  </ul>
+
+  <h2>Zalgo is a special case</h2>
+  <p>The glitchy "cursed" style stacks dozens of combining marks on each letter, and it deserves its own warning label. Screen readers may attempt to announce every single diacritic. Beyond that, tall zalgo stacks overflow their line and can render over neighboring posts, and extremely long combining sequences have historically crashed apps and even entire phones — several platforms now strip or limit combining marks for exactly that reason. Treat zalgo as a visual effect for places you control, not something to put in a display name that renders on other people's screens a thousand times a day.</p>
+
+  <h2>Rules of thumb that cost you nothing</h2>
+  <p><strong>Style the flourish, not the message.</strong> A styled word or two in a bio, a decorated name on a profile people reach through your handle, a caption headline — all fine. The information someone actually needs (what you do, how to contact you, the announcement itself) belongs in plain text. Ask: if every styled character were deleted, would the important part still be there?</p>
+  <p><strong>Keep it short.</strong> One decorated word reads as style; three decorated sentences read, at best, as noise — and for a screen reader user, as a wall of "mathematical script small e." The shorter the styled run, the smaller every downside on this page becomes.</p>
+  <p><strong>Prefer native formatting where it exists.</strong> If a platform offers real bold and italic — WhatsApp, Telegram, Discord's markdown, LinkedIn posts via its editor — use that instead of mathematical lookalikes. Native formatting is an instruction about <em>presentation</em>, so screen readers read the words normally, search matches them, and translation works. Unicode lookalikes are a workaround for platforms that offer no formatting at all; when there's a real tool, the workaround is strictly worse.</p>
+  <p><strong>Don't style hashtags, handles, or codes.</strong> These exist to be matched by machines, and styled characters never match. This one isn't even about accessibility — a fancy hashtag just doesn't work.</p>
+
+  <h2>The honest tradeoff</h2>
+  <p>Fancy text is a hack, in the affectionate sense: characters designed <a href="/articles/history-of-fancy-text.html">for mathematics</a> repurposed as typography for platforms that don't offer any. Like most good hacks it has sharp edges, and the sharp edges land on people you can't see — the reader using VoiceOver, the follower reading you in translation. The fix isn't abstinence, it's proportion. Decorate the decoration. Keep the message plain. Used that way, a <a href="/">fancy text generator</a> adds personality at essentially no cost — and your bio still says something when it's read aloud.</p>
+
+  <h2>Keep reading</h2>
+  <ul>
+    <li><a href="/articles/how-fancy-text-works.html">How fancy text actually works: Unicode lookalikes, not fonts</a></li>
+    <li><a href="/articles/where-fancy-text-works.html">Where fancy text works (and where it breaks): a platform-by-platform guide</a></li>
+    <li><a href="/articles/history-of-fancy-text.html">Why Unicode has a dozen hidden alphabets: a short history of fancy text</a></li>
+    <li><a href="/">Try the fancy text generator</a></li>
+  </ul>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>© <span id="year"></span> fontloom.com</div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

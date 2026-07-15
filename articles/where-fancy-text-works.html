@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where Fancy Text Works (and Where It Breaks) — fontloom.com</title>
+<meta name="description" content="A platform-by-platform guide to pasting fancy Unicode text: Instagram, TikTok, Discord, X, YouTube, WhatsApp, gaming usernames — plus the fields where it fails and why.">
+<link rel="canonical" href="https://fontloom.com/articles/where-fancy-text-works.html">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/styles.css?v=3">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="fontloom.com home">
+      <span class="brand-mark">fontloom</span>
+      <span class="brand-tag">fancy text generator</span>
+    </a>
+  </div>
+</header>
+<main class="container-narrow">
+  <h1>Where Fancy Text Works (and Where It Breaks)</h1>
+
+  <p>The promise of fancy text is that it pastes anywhere, because it's <a href="/articles/how-fancy-text-works.html">real Unicode characters rather than a font</a>. That promise is mostly true — and the exceptions are predictable once you know what causes them. This guide walks through the major platforms, the fields that quietly reject styled characters, and a few habits that save you from finding out the hard way.</p>
+
+  <h2>The general rule</h2>
+  <p>Any field that accepts free-form text — a bio, a caption, a message, a comment — will accept fancy text, because to the platform it's just text. Fields break the promise for one of two reasons. Either the platform <strong>restricts the character set</strong> (usernames and handles are the classic case, often limited to plain letters, digits, and underscores), or the receiving device <strong>lacks a glyph</strong> and shows an empty box. The first is a hard wall; the second is increasingly rare and mostly affects very old devices or minimal embedded fonts.</p>
+
+  <h2>Social platforms, one by one</h2>
+  <p><strong>Instagram</strong> is the natural habitat of fancy text. Bios, captions, comments, Notes, and your display name all accept it. Your <em>handle</em> (the @name) does not — Instagram usernames allow only letters, numbers, periods, and underscores. The same split applies almost everywhere: display name yes, handle no.</p>
+  <p><strong>TikTok</strong> accepts fancy text in bios, captions, comments, and display names ("nicknames"), with the same ASCII-only restriction on the @username. One caveat: TikTok's search treats styled text as the distinct characters it really is, so a keyword written in fancy letters won't match anyone searching for the plain word — fine for decoration, a bad idea for hashtags. Hashtags on every platform generally require plain characters anyway; a styled hashtag either fails to become a link or becomes a tag nobody will ever search.</p>
+  <p><strong>Discord</strong> is unusually permissive: server names, channel names, nicknames, "About Me" sections, and messages all render fancy text, which is why elaborately decorated channel lists are a whole aesthetic. The main friction is practical rather than technical — fancy channel names are harder to find with Ctrl+K quick-switching, since you'd have to type the styled characters to match them.</p>
+  <p><strong>X (Twitter)</strong> allows fancy text in display names, bios, and posts. Two things to know: characters from the mathematical block count as two characters against the length limit, so a fully-styled post loses half its budget; and X's algorithm has at times down-ranked posts written substantially in styled characters because the same trick is popular with spam accounts. Decorating a name is safe; writing entire posts in fraktur is pushing your luck.</p>
+  <p><strong>YouTube</strong> accepts fancy text in video titles, descriptions, comments, and channel names. It shows up frequently in titles for exactly that reason. The searchability caveat applies double here: YouTube search largely won't match a styled title to a plain-text query, so put keywords in plain text and use styling for flourish.</p>
+  <p><strong>WhatsApp, Telegram, and iMessage</strong> pass fancy text through untouched in messages, group names, and profile names. This is often the most delightful place to use it, since a message in gothic script arrives with no explanation. Older feature phones on the receiving end may show boxes, but among smartphones support is effectively universal.</p>
+  <p><strong>Facebook</strong> allows fancy text in posts, comments, and bios, but not in your profile name — Facebook enforces "authentic name" rules and its name fields reject most styled characters outright.</p>
+
+  <h2>Games, forums, and everywhere else</h2>
+  <p>Gaming platforms are a mixed bag by design. <strong>Fortnite</strong>, <strong>Roblox</strong>, <strong>Steam</strong>, and <strong>Minecraft</strong> differ: Steam profile names are famously permissive; Roblox usernames are ASCII-only while display names allow more; Minecraft account names are strictly plain. In-game chat often renders only what the game's bundled font contains, so even when a name is <em>accepted</em>, other players may see boxes. If a clean look for teammates matters, test with one styled character before committing to a full renamed loadout.</p>
+  <p>Forums and comment systems built on standard web stacks (Reddit, most blogs) display fancy text fine in posts, while usernames follow the usual restriction. Email <em>bodies</em> handle it; email <em>addresses</em> never will. And nothing styled survives in domains, file names on some systems, or anything that must be typed back by a human — nobody can type 𝔊 on a keyboard to find you.</p>
+
+  <h2>Where it breaks, summarized</h2>
+  <ul>
+    <li><strong>@handles and account usernames</strong> — almost always restricted to plain letters, digits, and a few punctuation marks.</li>
+    <li><strong>Hashtags and search keywords</strong> — styled characters don't match plain-text searches, on any platform.</li>
+    <li><strong>Password and email fields</strong> — validated against strict character sets; don't even try.</li>
+    <li><strong>Old devices and minimal fonts</strong> — the □ tofu box means the character arrived but nothing could draw it. Rare on anything made in the last decade.</li>
+    <li><strong>Spam filters</strong> — heavy use of styled characters in posts or DMs pattern-matches to spam on some platforms, because spammers use the same characters to dodge word filters.</li>
+  </ul>
+
+  <h2>Three habits that prevent surprises</h2>
+  <p>First, <strong>paste before you publish</strong>: drop the styled text into the actual field and look at it — the preview costs five seconds and catches both rejection and rendering issues. Second, <strong>style the decoration, not the information</strong>: keep names people need to search, tags you want indexed, and anything someone might retype in plain text, and spend the flair on the parts that are purely visual. Third, <strong>keep a plain copy</strong> of anything important, because editing styled text later on a phone keyboard is an exercise in frustration.</p>
+  <p>The pattern behind all of this is worth internalizing: fancy text works wherever text is displayed and fails wherever text is <em>validated, indexed, or retyped</em>. Once you sort fields into those two buckets, nothing on this page will ever surprise you again. There's one more bucket worth knowing about — how styled characters behave when text is <em>read aloud</em> — and that's the subject of our guide to <a href="/articles/fancy-text-and-accessibility.html">fancy text and screen readers</a>.</p>
+
+  <h2>Keep reading</h2>
+  <ul>
+    <li><a href="/articles/how-fancy-text-works.html">How fancy text actually works: Unicode lookalikes, not fonts</a></li>
+    <li><a href="/articles/fancy-text-and-accessibility.html">Fancy text and screen readers: what to know before you post</a></li>
+    <li><a href="/articles/history-of-fancy-text.html">Why Unicode has a dozen hidden alphabets: a short history of fancy text</a></li>
+    <li><a href="/">Try the fancy text generator</a></li>
+  </ul>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>© <span id="year"></span> fontloom.com</div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
