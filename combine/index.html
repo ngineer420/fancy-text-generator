@@ -22,7 +22,7 @@
 <!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
      browsers holding a cached copy (GitHub Pages serves max-age=600) can't
      pair a stale asset with fresh HTML. -->
-<link rel="stylesheet" href="/assets/css/styles.css?v=4">
+<link rel="stylesheet" href="/assets/css/styles.css?v=5">
 
 <script type="application/ld+json">
 {
@@ -61,7 +61,7 @@
 <main id="main" class="tool-page">
   <div class="hero">
     <h1>Font Combiner</h1>
-    <p>Stack styles in sequence<span class="dot">•</span>each step transforms the last<span class="dot">•</span>copy results no single font can make</p>
+    <p>Tap styles to stack them in sequence<span class="dot">•</span>each step transforms the last<span class="dot">•</span>copy results no single font can make</p>
   </div>
 
   <div class="tool-shell">
@@ -76,7 +76,6 @@
     <div class="preset-row" id="preset-row" role="group" aria-label="Preset combos"></div>
 
     <ol class="chain-list" id="chain-list"></ol>
-    <button type="button" id="add-step" class="add-step-btn">+ Add a step</button>
 
     <div class="result-panel">
       <div class="result-head">
@@ -85,6 +84,14 @@
       </div>
       <div class="result-text" id="combine-output"></div>
     </div>
+
+    <section class="combine-picker" aria-label="Add a step">
+      <h2 class="picker-title">Add a step</h2>
+      <p class="picker-hint">Tap any style to add it to the chain — each tile previews what your current result would become. Dimmed styles wouldn't change anything.</p>
+      <nav class="filter-pills" id="category-pills" aria-label="Filter styles by category"></nav>
+      <div class="tile-grid picker-grid" id="style-gallery"></div>
+      <p class="picker-hint" id="picker-full" hidden>The chain is full (6 steps) — remove a step to add another.</p>
+    </section>
   </div>
 
   <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
@@ -113,8 +120,8 @@
 
 <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
 
-<script src="/assets/js/fancytext-core.js?v=1"></script>
+<script src="/assets/js/fancytext-core.js?v=2"></script>
 <script src="/assets/js/site.js?v=1"></script>
-<script src="/assets/js/combine.js?v=1"></script>
+<script src="/assets/js/combine.js?v=2"></script>
 </body>
 </html>
