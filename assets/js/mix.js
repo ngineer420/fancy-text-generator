@@ -1,13 +1,16 @@
 /* Font Mixer — /mix/ page wiring.
    Keeps a FancyText style per letter: pick a style from the palette, then
-   click or drag across the letter tiles to paint it on. Requires
-   fancytext-core.js and site.js to be loaded first. */
+   click or drag across the letter tiles to paint it on. Finished paint
+   jobs can be named and starred; favorites live in the chips row up top
+   and the whole state is shareable via ?text=&styles=. Requires
+   fancytext-core.js, site.js and favorites.js to be loaded first. */
 
 (function () {
   "use strict";
 
   const { debounce, copyText } = window.Site;
   const { STYLES, STYLE_BY_ID, splitGraphemes } = FancyText;
+  const Favs = window.Favs;
 
   const SAMPLE_TEXT = "Fancy Text";
 
@@ -36,8 +39,14 @@
     const clearBtn = document.getElementById("clear-btn");
     const letterRow = document.getElementById("letter-row");
     const palette = document.getElementById("palette");
+    const favRow = document.getElementById("fav-row");
     const output = document.getElementById("mix-output");
     const copyBtn = document.getElementById("copy-result");
+    const saveFavBtn = document.getElementById("save-fav");
+    const nameRow = document.getElementById("fav-name-row");
+    const nameInput = document.getElementById("fav-name-input");
+    const nameSave = document.getElementById("fav-name-save");
+    const nameCancel = document.getElementById("fav-name-cancel");
     const liveRegion = document.getElementById("copy-live-region");
     if (!input || !letterRow) return;
 
@@ -54,6 +63,130 @@
 
     function applyStyle(id, grapheme) {
       return id ? STYLE_BY_ID[id].transform(grapheme) : grapheme;
+    }
+
+    function currentText() {
+      return usingSample ? SAMPLE_TEXT : input.value;
+    }
+
+    /* ---------- URL state (shareable mixes) ---------- */
+
+    function readUrl() {
+      const params = new URLSearchParams(location.search);
+      const text = params.get("text") || "";
+      const stylesParam = params.get("styles");
+      const ids = stylesParam
+        ? stylesParam.split(",").map((id) => (STYLE_BY_ID[id] ? id : null))
+        : null;
+      return { text, ids };
+    }
+
+    function writeUrl() {
+      const params = new URLSearchParams();
+      if (!usingSample && input.value) {
+        params.set("text", input.value);
+        if (styleIds.some(Boolean)) {
+          params.set("styles", styleIds.map((id) => id || "-").join(","));
+        }
+      }
+      const qs = params.toString();
+      history.replaceState(null, "", qs ? "?" + qs : location.pathname);
+    }
+    const writeUrlDebounced = debounce(writeUrl, 300);
+
+    /* ---------- favorites row + save/star ---------- */
+
+    function renderFavRow() {
+      if (!favRow) return;
+      const mixes = Favs.mixes();
+      favRow.hidden = mixes.length === 0;
+      favRow.innerHTML = "";
+      mixes.forEach((mix) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "filter-pill fav-pill";
+        chip.title = mix.text;
+
+        const label = document.createElement("span");
+        label.textContent = mix.name;
+
+        const unstar = document.createElement("span");
+        unstar.className = "fav-unstar";
+        unstar.textContent = "★";
+        unstar.setAttribute("role", "button");
+        unstar.setAttribute("aria-label", "Remove " + mix.name + " from favorites");
+        unstar.title = "Remove from favorites";
+        unstar.addEventListener("click", (evt) => {
+          evt.stopPropagation();
+          Favs.removeMix(mix.id);
+          renderFavRow();
+          updateStarState();
+        });
+
+        chip.append(label, unstar);
+        chip.addEventListener("click", () => loadMix(mix));
+        favRow.appendChild(chip);
+      });
+    }
+
+    function loadMix(mix) {
+      usingSample = false;
+      input.value = mix.text;
+      graphemes = splitGraphemes(mix.text);
+      styleIds = graphemes.map((_, i) => {
+        const id = mix.styleIds[i];
+        return id && STYLE_BY_ID[id] ? id : null;
+      });
+      buildLetterRow();
+      render();
+      updateStarState();
+      writeUrlDebounced();
+    }
+
+    function updateStarState() {
+      if (!saveFavBtn) return;
+      const saved = Favs.findMix(currentText(), styleIds);
+      saveFavBtn.textContent = saved ? "★" : "☆";
+      saveFavBtn.setAttribute("aria-pressed", String(Boolean(saved)));
+      saveFavBtn.title = saved
+        ? "Remove this mix from favorites"
+        : "Save this mix as a favorite";
+      if (!saved && nameRow && !nameRow.hidden) return; // keep the open form
+      if (nameRow) nameRow.hidden = true;
+    }
+
+    if (saveFavBtn) {
+      saveFavBtn.addEventListener("click", () => {
+        const saved = Favs.findMix(currentText(), styleIds);
+        if (saved) {
+          Favs.removeMix(saved.id);
+          renderFavRow();
+          updateStarState();
+          return;
+        }
+        nameRow.hidden = false;
+        nameInput.value = currentText();
+        nameInput.focus();
+        nameInput.select();
+      });
+
+      function saveCurrent() {
+        const name = nameInput.value.trim() || currentText();
+        Favs.addMix(name, currentText(), styleIds);
+        nameRow.hidden = true;
+        renderFavRow();
+        updateStarState();
+        if (liveRegion) liveRegion.textContent = name + " saved to favorites";
+      }
+
+      nameSave.addEventListener("click", saveCurrent);
+      nameInput.addEventListener("keydown", (evt) => {
+        if (evt.key === "Enter") saveCurrent();
+        if (evt.key === "Escape") nameRow.hidden = true;
+      });
+      nameCancel.addEventListener("click", () => {
+        nameRow.hidden = true;
+      });
     }
 
     /* ---------- text / letter tiles ---------- */
@@ -102,6 +235,7 @@
       });
       output.textContent = pieces.join("");
       if (clearBtn) clearBtn.hidden = input.value.length === 0;
+      updateStarState();
     }
 
     /* ---------- painting ---------- */
@@ -116,6 +250,7 @@
       if (styleIds[index] === activeStyle) return;
       styleIds[index] = activeStyle;
       render();
+      writeUrlDebounced();
     }
 
     letterRow.addEventListener("pointerdown", (evt) => {
@@ -142,8 +277,15 @@
 
     /* ---------- palette ---------- */
 
+    // Starred styles (shared with the galleries) come first in the palette.
+    const ORDERED_ELIGIBLE = ELIGIBLE.slice().sort((a, b) => {
+      const fa = Favs.hasStyle(a.id) ? 0 : 1;
+      const fb = Favs.hasStyle(b.id) ? 0 : 1;
+      return fa - fb;
+    });
+
     const swatchDefs = [{ id: null, name: "Plain" }].concat(
-      ELIGIBLE.map((s) => ({ id: s.id, name: s.name }))
+      ORDERED_ELIGIBLE.map((s) => ({ id: s.id, name: s.name }))
     );
     swatchDefs.forEach(({ id, name }) => {
       const swatch = document.createElement("button");
@@ -181,6 +323,7 @@
         styleIds[idx] = n % 2 === 0 ? style : null;
       });
       render();
+      writeUrlDebounced();
     });
 
     document.getElementById("pattern-words").addEventListener("click", () => {
@@ -196,6 +339,7 @@
         styleIds[i] = WORD_STYLES[word % WORD_STYLES.length];
       });
       render();
+      writeUrlDebounced();
     });
 
     document.getElementById("pattern-shuffle").addEventListener("click", () => {
@@ -203,11 +347,13 @@
         styleIds[idx] = SHUFFLE_POOL[Math.floor(Math.random() * SHUFFLE_POOL.length)];
       });
       render();
+      writeUrlDebounced();
     });
 
     document.getElementById("pattern-reset").addEventListener("click", () => {
       styleIds = graphemes.map(() => null);
       render();
+      writeUrlDebounced();
     });
 
     /* ---------- input / copy ---------- */
@@ -221,6 +367,7 @@
       usingSample = !hasInput;
       setText(hasInput ? raw : SAMPLE_TEXT, leavingSample || !hasInput);
       if (!hasInput) demoPaint();
+      writeUrlDebounced();
     }, 50));
 
     if (clearBtn) {
@@ -229,6 +376,7 @@
         usingSample = true;
         setText(SAMPLE_TEXT, true);
         demoPaint();
+        writeUrlDebounced();
         input.focus();
       });
     }
@@ -262,7 +410,20 @@
       render();
     }
 
-    setText(SAMPLE_TEXT, true);
-    demoPaint();
+    renderFavRow();
+
+    const initial = readUrl();
+    if (initial.text.trim()) {
+      usingSample = false;
+      input.value = initial.text.slice(0, 80);
+      setText(input.value, true);
+      if (initial.ids) {
+        styleIds = graphemes.map((_, i) => initial.ids[i] || null);
+        render();
+      }
+    } else {
+      setText(SAMPLE_TEXT, true);
+      demoPaint();
+    }
   });
 })();

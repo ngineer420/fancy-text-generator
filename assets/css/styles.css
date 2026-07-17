@@ -516,8 +516,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   color: var(--text-dim);
 }
 /* The style picker: the homepage tile gallery repurposed as an "add a
-   step" palette. Tiles are <button>s here, so undo the base button skin
-   (the .tile class provides its own card look). */
+   step" palette. */
 .combine-picker { margin-top: 26px; }
 .picker-title {
   font-size: 16px;
@@ -534,7 +533,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   font-size: inherit;
 }
 .picker-tile:hover { color: inherit; }
-.picker-tile:disabled { cursor: default; opacity: 0.45; }
+.picker-grid.is-full .picker-tile { cursor: default; opacity: 0.45; pointer-events: none; }
 .tile-add {
   flex: none;
   display: flex;
@@ -552,6 +551,104 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
 .picker-tile:hover .tile-add { opacity: 1; color: var(--accent); }
 .tile-noop { opacity: 0.45; }
 .tile-noop:hover { opacity: 0.7; }
+
+/* ---------- favorites: stars, chips, name form, homepage strip ---------- */
+
+/* star toggle inside gallery tiles (homepage + picker) */
+.tile-star {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  color: var(--text-faint);
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.55;
+  transition: opacity .12s ease, color .12s ease, background .12s ease;
+}
+.tile:hover .tile-star { opacity: 1; }
+.tile-star:hover { background: var(--bg-inset); color: var(--accent); }
+.tile-star[aria-pressed="true"] { opacity: 1; color: var(--accent); }
+.tile-star:focus-visible { opacity: 1; }
+
+/* favorite chips (combo/mix rows on the tool pages, strip on the homepage) */
+.fav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+a.fav-pill { text-decoration: none; }
+a.fav-pill:hover { text-decoration: none; }
+.fav-unstar {
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0.7;
+  cursor: pointer;
+}
+.fav-unstar:hover { opacity: 1; }
+
+/* star button beside Copy in the result panel */
+.result-actions { display: flex; align-items: center; gap: 6px; }
+.fav-star-btn {
+  padding: 5px 10px;
+  font-size: 15px;
+  line-height: 1.2;
+  background: transparent;
+  color: var(--text-faint);
+}
+.fav-star-btn:hover { color: var(--accent); }
+.fav-star-btn[aria-pressed="true"] { color: var(--accent); }
+
+/* inline "name this combo/mix" form inside the result panel */
+.fav-name-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.fav-name-row[hidden] { display: none; }
+.fav-name-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 7px 10px;
+  font-size: 13.5px;
+}
+.fav-name-cancel {
+  font-size: 13px;
+  color: var(--text-dim);
+  background: transparent;
+}
+
+/* homepage strip: saved combos and mixes linking back to their editors */
+.fav-strip {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 0 0 14px;
+}
+.fav-strip-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-faint);
+}
+.fav-strip-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
 
 /* ---------- result panel (shared by both tools) ---------- */
 .result-panel {

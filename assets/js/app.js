@@ -7,6 +7,7 @@
   "use strict";
 
   const { debounce, copyText } = window.Site;
+  const Favs = window.Favs;
 
   // Gallery order + category pills are shared with the Combiner's style
   // picker and live in fancytext-core.js.
@@ -87,13 +88,24 @@
 
       label.append(nameEl, copiedEl);
 
+      const starEl = document.createElement("button");
+      starEl.type = "button";
+      starEl.className = "tile-star";
+      starEl.setAttribute("aria-label", "Pin " + style.name + " to the top");
+      starEl.addEventListener("click", (evt) => {
+        evt.stopPropagation();
+        Favs.toggleStyle(style.id);
+        syncStars();
+        orderGallery();
+      });
+
       const copyBtn = document.createElement("button");
       copyBtn.type = "button";
       copyBtn.className = "copy-icon-btn";
       copyBtn.setAttribute("aria-label", "Copy " + style.name + " text");
       copyBtn.innerHTML = COPY_ICON_SVG;
 
-      foot.append(label, copyBtn);
+      foot.append(label, starEl, copyBtn);
       tile.append(output, foot);
 
       async function doCopy(evt) {
@@ -121,7 +133,7 @@
       });
       copyBtn.addEventListener("click", doCopy);
 
-      tiles.push({ style, tileEl: tile, outputEl: output, category: CATEGORY_OF[style.id] });
+      tiles.push({ style, tileEl: tile, outputEl: output, starEl, category: CATEGORY_OF[style.id] });
       gallery.appendChild(tile);
     }
 
@@ -133,6 +145,56 @@
     STYLES.forEach((s) => {
       if (!orderSet.has(s.id)) buildTile(s);
     });
+
+    function syncStars() {
+      for (const t of tiles) {
+        const starred = Favs.hasStyle(t.style.id);
+        t.starEl.textContent = starred ? "★" : "☆";
+        t.starEl.setAttribute("aria-pressed", String(starred));
+        t.starEl.title = starred ? "Unpin from the top" : "Pin to the top";
+        t.tileEl.classList.toggle("is-starred", starred);
+      }
+    }
+
+    // Starred styles float to the front, keeping TILE_ORDER within each half.
+    function orderGallery() {
+      const sorted = tiles.slice().sort((a, b) => {
+        const fa = Favs.hasStyle(a.style.id) ? 0 : 1;
+        const fb = Favs.hasStyle(b.style.id) ? 0 : 1;
+        return fa - fb;
+      });
+      sorted.forEach((t) => gallery.appendChild(t.tileEl));
+    }
+
+    // Combos and mixes saved on the tool pages, linked back to their edit
+    // screens (the chips row above the gallery stays hidden until one exists).
+    function renderFavStrip() {
+      const strip = document.getElementById("fav-strip");
+      const chips = document.getElementById("fav-strip-chips");
+      if (!strip || !chips) return;
+      chips.innerHTML = "";
+      const combos = Favs.combos();
+      const mixes = Favs.mixes();
+      strip.hidden = combos.length === 0 && mixes.length === 0;
+      combos.forEach((combo) => {
+        const chip = document.createElement("a");
+        chip.className = "filter-pill fav-pill";
+        chip.href = "/combine/?chain=" + encodeURIComponent(combo.ids.join(","));
+        chip.textContent = combo.name;
+        chip.title = "Open in the Font Combiner";
+        chips.appendChild(chip);
+      });
+      mixes.forEach((mix) => {
+        const chip = document.createElement("a");
+        chip.className = "filter-pill fav-pill";
+        chip.href =
+          "/mix/?text=" + encodeURIComponent(mix.text) +
+          "&styles=" + encodeURIComponent(mix.styleIds.map((id) => id || "-").join(","));
+        chip.textContent = mix.name;
+        chip.title = "Open in the Font Mixer";
+        chips.appendChild(chip);
+      });
+    }
 
     // Filter pills: "All" plus one per category. Selecting a pill filters
     // the flat grid in place, so results always start at the top of the
@@ -207,6 +269,9 @@
     input.addEventListener("input", debouncedRender);
     window.addEventListener("resize", debounce(markClipped, 150));
 
+    syncStars();
+    orderGallery();
+    renderFavStrip();
     render();
     applyFilter();
   });
