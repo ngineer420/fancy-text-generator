@@ -1,13 +1,15 @@
 /* Font Combiner — /combine/ page wiring.
    Chains FancyText styles in sequence: each step's output is the next
-   step's input. Requires fancytext-core.js and site.js to be loaded first. */
+   step's input. Steps are added by tapping tiles in a style gallery whose
+   previews always show what the *current result* would become — so every
+   pick is previewed before it happens. Requires fancytext-core.js and
+   site.js to be loaded first. */
 
 (function () {
   "use strict";
 
   const { debounce, copyText } = window.Site;
-  const STYLES = FancyText.STYLES;
-  const STYLE_BY_ID = FancyText.STYLE_BY_ID;
+  const { STYLES, STYLE_BY_ID, TILE_ORDER, CATEGORIES } = FancyText;
 
   const SAMPLE_TEXT = "Fancy Text";
   const MAX_STEPS = 6;
@@ -15,30 +17,32 @@
   // underline every inverted letter.
   const DEFAULT_CHAIN = ["upside-down", "underline"];
 
+  // Presets showcase *obviously* combined effects: marks stacked on marks
+  // (strikethrough + underline), effects on transformed letters (superscript
+  // or flipped text crossed out), and one three-step chain. They stick to
+  // marks on plain-ish BMP characters — marks stacked on Mathematical
+  // Alphanumeric characters render poorly in many fonts.
   const PRESETS = [
     { name: "Flipped Underline", ids: ["upside-down", "underline"] },
     { name: "Struck Bold", ids: ["bold", "strikethrough"] },
-    { name: "Gothic Glitch", ids: ["fraktur", "zalgo-medium"] },
-    { name: "Wide Script", ids: ["script", "spaced"] },
-    { name: "Royal Wrap", ids: ["bold-script", "ornamental-wrap"] },
-    { name: "Cursed Bubble", ids: ["circled", "zalgo-light"] },
+    { name: "Crossed Underline", ids: ["strikethrough", "underline"] },
+    { name: "Struck Superscript", ids: ["superscript", "strikethrough"] },
+    { name: "Underlined Subscript", ids: ["subscript", "underline"] },
+    { name: "Triple Flip", ids: ["upside-down", "strikethrough", "underline"] },
   ];
-
-  // When the user adds a blank step, seed it with an effect that's not
-  // already in the chain — effects apply to anything, so the new step
-  // visibly does something instead of starting as a "no change" dud.
-  const ADD_CANDIDATES = ["underline", "strikethrough", "zalgo-light", "spaced", "slashed", "double-underline"];
 
   document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("combine-input");
     const clearBtn = document.getElementById("clear-btn");
     const chainList = document.getElementById("chain-list");
-    const addStepBtn = document.getElementById("add-step");
     const presetRow = document.getElementById("preset-row");
+    const gallery = document.getElementById("style-gallery");
+    const pillsEl = document.getElementById("category-pills");
+    const pickerFull = document.getElementById("picker-full");
     const output = document.getElementById("combine-output");
     const copyBtn = document.getElementById("copy-result");
     const liveRegion = document.getElementById("copy-live-region");
-    if (!input || !chainList) return;
+    if (!input || !chainList || !gallery) return;
 
     let chain = []; // ordered style ids
     let stepEls = []; // parallel to chain: { previewEl, badgeEl }
@@ -88,20 +92,9 @@
       num.className = "chain-step-num";
       num.textContent = index + 1;
 
-      const select = document.createElement("select");
-      select.className = "chain-select";
-      select.setAttribute("aria-label", "Style for step " + (index + 1));
-      STYLES.forEach((s) => {
-        const opt = document.createElement("option");
-        opt.value = s.id;
-        opt.textContent = s.name;
-        select.appendChild(opt);
-      });
-      select.value = styleId;
-      select.addEventListener("change", () => {
-        chain[index] = select.value;
-        rebuildSteps();
-      });
+      const name = document.createElement("span");
+      name.className = "chain-step-name";
+      name.textContent = style.name;
 
       const badge = document.createElement("span");
       badge.className = "noop-badge";
@@ -139,7 +132,7 @@
       });
 
       controls.append(up, down, remove);
-      head.append(num, select, badge, controls);
+      head.append(num, name, badge, controls);
 
       const preview = document.createElement("div");
       preview.className = "chain-step-preview";
@@ -153,9 +146,93 @@
       chainList.innerHTML = "";
       stepEls = [];
       chain.forEach((id, i) => chainList.appendChild(buildStep(id, i)));
-      addStepBtn.hidden = chain.length >= MAX_STEPS;
       render();
       writeUrlDebounced();
+    }
+
+    /* ---------- style picker gallery ---------- */
+
+    // style id -> category id, for pill filtering.
+    const CATEGORY_OF = {};
+    CATEGORIES.forEach((cat) => {
+      cat.ids.forEach((id) => {
+        CATEGORY_OF[id] = cat.id;
+      });
+    });
+
+    const tiles = []; // { style, tileEl, outputEl, category }
+
+    function buildTile(style) {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "tile picker-tile";
+      tile.setAttribute("aria-label", "Add " + style.name + " to the chain");
+
+      const outputEl = document.createElement("div");
+      outputEl.className = "tile-output";
+
+      const foot = document.createElement("div");
+      foot.className = "tile-foot";
+
+      const nameEl = document.createElement("span");
+      nameEl.className = "tile-name";
+      nameEl.textContent = style.name;
+
+      const addEl = document.createElement("span");
+      addEl.className = "tile-add";
+      addEl.setAttribute("aria-hidden", "true");
+      addEl.textContent = "+";
+
+      foot.append(nameEl, addEl);
+      tile.append(outputEl, foot);
+
+      tile.addEventListener("click", () => {
+        if (chain.length >= MAX_STEPS) return;
+        chain.push(style.id);
+        rebuildSteps();
+      });
+
+      tiles.push({ style, tileEl: tile, outputEl, category: CATEGORY_OF[style.id] });
+      gallery.appendChild(tile);
+    }
+
+    const orderSet = new Set(TILE_ORDER);
+    TILE_ORDER.forEach((id) => {
+      const style = STYLE_BY_ID[id];
+      if (style) buildTile(style);
+    });
+    STYLES.forEach((s) => {
+      if (!orderSet.has(s.id)) buildTile(s);
+    });
+
+    // Filter pills, same set as the homepage gallery.
+    let activeCategory = null; // null = all
+
+    if (pillsEl) {
+      const pillDefs = [{ id: null, title: "All" }].concat(
+        CATEGORIES.map((c) => ({ id: c.id, title: c.title }))
+      );
+      pillDefs.forEach(({ id, title }) => {
+        const pill = document.createElement("button");
+        pill.type = "button";
+        pill.className = "filter-pill";
+        pill.textContent = title;
+        pill.setAttribute("aria-pressed", String(id === activeCategory));
+        pill.addEventListener("click", () => {
+          activeCategory = id;
+          pillsEl.querySelectorAll(".filter-pill").forEach((p) => {
+            p.setAttribute("aria-pressed", String(p === pill));
+          });
+          applyFilter();
+        });
+        pillsEl.appendChild(pill);
+      });
+    }
+
+    function applyFilter() {
+      for (const t of tiles) {
+        t.tileEl.hidden = Boolean(activeCategory) && t.category !== activeCategory;
+      }
     }
 
     /* ---------- rendering ---------- */
@@ -173,6 +250,21 @@
         text = next;
       });
       output.textContent = text;
+
+      // Gallery tiles preview the *next* step: what the current result
+      // becomes if this style is tapped. Styles that wouldn't change
+      // anything are dimmed (alphabet styles no-op on already-styled text).
+      const full = chain.length >= MAX_STEPS;
+      if (pickerFull) pickerFull.hidden = !full;
+      gallery.classList.toggle("is-full", full);
+      for (const t of tiles) {
+        const next = t.style.transform(text);
+        t.outputEl.textContent = next;
+        const noop = next === text;
+        t.tileEl.classList.toggle("tile-noop", noop);
+        t.tileEl.disabled = full;
+        t.tileEl.title = noop ? "Won't change the current result" : "";
+      }
     }
 
     /* ---------- presets ---------- */
@@ -190,13 +282,6 @@
     });
 
     /* ---------- controls ---------- */
-
-    addStepBtn.addEventListener("click", () => {
-      if (chain.length >= MAX_STEPS) return;
-      const id = ADD_CANDIDATES.find((c) => !chain.includes(c)) || "underline";
-      chain.push(id);
-      rebuildSteps();
-    });
 
     copyBtn.addEventListener("click", async () => {
       const ok = await copyText(output.textContent);

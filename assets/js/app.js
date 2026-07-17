@@ -8,73 +8,10 @@
 
   const { debounce, copyText } = window.Site;
 
-  // One flat gallery, ordered so the styles people actually come looking
-  // for (bold, italic, cursive, gothic, bubble, glitch…) land in the first
-  // rows — the goal is maximum recognizable variety above the fold.
-  const TILE_ORDER = [
-    "bold", "italic", "script", "fraktur", "circled", "bold-italic",
-    "double-struck", "small-caps", "bold-script", "monospace",
-    "strikethrough", "underline", "upside-down", "negative-circled",
-    "squared", "negative-squared", "bold-fraktur", "sans-serif",
-    "sans-bold", "sans-italic", "sans-bold-italic", "fullwidth",
-    "superscript", "subscript", "spaced", "mirror",
-    "faux-cyrillic", "greek-style", "currency",
-    "parenthesized", "regional-indicator",
-    "double-underline", "slashed",
-    "hearts-between", "ornamental-wrap", "star-wrap",
-    "zalgo-light", "zalgo-medium", "zalgo-heavy",
-  ];
-
-  // Category filters (pills). Every id in FancyText.STYLES must appear in
-  // exactly one group here (checked at startup below) so nothing is
-  // silently dropped when a filter is active.
-  const CATEGORIES = [
-    {
-      id: "bold-italic",
-      title: "Bold & Italic",
-      ids: [
-        "bold", "italic", "bold-italic", "sans-serif", "sans-bold",
-        "sans-italic", "sans-bold-italic", "monospace", "double-struck",
-      ],
-    },
-    {
-      id: "cursive-gothic",
-      title: "Cursive & Gothic",
-      ids: ["script", "bold-script", "fraktur", "bold-fraktur"],
-    },
-    {
-      id: "circled-boxed",
-      title: "Circled & Boxed",
-      ids: [
-        "circled", "negative-circled", "squared", "negative-squared",
-        "parenthesized", "regional-indicator",
-      ],
-    },
-    {
-      id: "symbol-alphabets",
-      title: "Symbol Alphabets",
-      ids: ["faux-cyrillic", "greek-style", "currency"],
-    },
-    {
-      id: "small-wide",
-      title: "Small & Wide",
-      ids: ["small-caps", "superscript", "subscript", "fullwidth", "spaced"],
-    },
-    {
-      id: "effects-glitch",
-      title: "Effects & Glitch",
-      ids: [
-        "strikethrough", "underline", "double-underline", "slashed",
-        "upside-down", "mirror",
-        "zalgo-light", "zalgo-medium", "zalgo-heavy",
-      ],
-    },
-    {
-      id: "decorated",
-      title: "Decorated",
-      ids: ["hearts-between", "ornamental-wrap", "star-wrap"],
-    },
-  ];
+  // Gallery order + category pills are shared with the Combiner's style
+  // picker and live in fancytext-core.js.
+  const TILE_ORDER = FancyText.TILE_ORDER;
+  const CATEGORIES = FancyText.CATEGORIES;
 
   const COPY_ICON_SVG =
     '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">' +

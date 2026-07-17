@@ -467,9 +467,79 @@
     STYLE_BY_ID[s.id] = s;
   });
 
+  // Gallery presentation order, shared by the homepage and the Combiner's
+  // style picker: the styles people actually come looking for (bold, italic,
+  // cursive, gothic, bubble, glitch…) land in the first rows.
+  const TILE_ORDER = [
+    "bold", "italic", "script", "fraktur", "circled", "bold-italic",
+    "double-struck", "small-caps", "bold-script", "monospace",
+    "strikethrough", "underline", "upside-down", "negative-circled",
+    "squared", "negative-squared", "bold-fraktur", "sans-serif",
+    "sans-bold", "sans-italic", "sans-bold-italic", "fullwidth",
+    "superscript", "subscript", "spaced", "mirror",
+    "faux-cyrillic", "greek-style", "currency",
+    "parenthesized", "regional-indicator",
+    "double-underline", "slashed",
+    "hearts-between", "ornamental-wrap", "star-wrap",
+    "zalgo-light", "zalgo-medium", "zalgo-heavy",
+  ];
+
+  // Category filters (pills). Every id in STYLES must appear in exactly one
+  // group (the consumers warn at startup) so nothing is silently dropped
+  // when a filter is active.
+  const CATEGORIES = [
+    {
+      id: "bold-italic",
+      title: "Bold & Italic",
+      ids: [
+        "bold", "italic", "bold-italic", "sans-serif", "sans-bold",
+        "sans-italic", "sans-bold-italic", "monospace", "double-struck",
+      ],
+    },
+    {
+      id: "cursive-gothic",
+      title: "Cursive & Gothic",
+      ids: ["script", "bold-script", "fraktur", "bold-fraktur"],
+    },
+    {
+      id: "circled-boxed",
+      title: "Circled & Boxed",
+      ids: [
+        "circled", "negative-circled", "squared", "negative-squared",
+        "parenthesized", "regional-indicator",
+      ],
+    },
+    {
+      id: "symbol-alphabets",
+      title: "Symbol Alphabets",
+      ids: ["faux-cyrillic", "greek-style", "currency"],
+    },
+    {
+      id: "small-wide",
+      title: "Small & Wide",
+      ids: ["small-caps", "superscript", "subscript", "fullwidth", "spaced"],
+    },
+    {
+      id: "effects-glitch",
+      title: "Effects & Glitch",
+      ids: [
+        "strikethrough", "underline", "double-underline", "slashed",
+        "upside-down", "mirror",
+        "zalgo-light", "zalgo-medium", "zalgo-heavy",
+      ],
+    },
+    {
+      id: "decorated",
+      title: "Decorated",
+      ids: ["hearts-between", "ornamental-wrap", "star-wrap"],
+    },
+  ];
+
   const FancyText = {
     STYLES,
     STYLE_BY_ID,
+    TILE_ORDER,
+    CATEGORIES,
     mapTransform,
     zalgoText,
     flipText,
