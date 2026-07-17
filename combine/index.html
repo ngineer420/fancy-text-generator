@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Font Combiner - Stack Fancy Text Styles Together | fontloom</title>
+<meta name="description" content="Chain fancy text styles in sequence — flip it upside-down, then underline it; make it gothic, then glitch it. Layer Unicode font effects that no single style can make, then copy the result.">
+<link rel="canonical" href="https://fontloom.com/combine/">
+<meta name="theme-color" content="#0c0a12">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Font Combiner - Stack Fancy Text Styles Together">
+<meta property="og:description" content="Chain fancy text styles in sequence and copy results no single style can make — like ʇ̲x̲ǝ̲ʇ̲ ʎ̲ɔ̲u̲ɐ̲ɟ̲.">
+<meta property="og:url" content="https://fontloom.com/combine/">
+<meta property="og:image" content="https://fontloom.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Font Combiner - Stack Fancy Text Styles Together">
+<meta name="twitter:description" content="Chain fancy text styles in sequence and copy results no single style can make — like ʇ̲x̲ǝ̲ʇ̲ ʎ̲ɔ̲u̲ɐ̲ɟ̲.">
+<meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
+
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
+     browsers holding a cached copy (GitHub Pages serves max-age=600) can't
+     pair a stale asset with fresh HTML. -->
+<link rel="stylesheet" href="/assets/css/styles.css?v=4">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Font Combiner",
+  "url": "https://fontloom.com/combine/",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free browser-based tool that chains multiple Unicode fancy text styles in sequence for combined effects no single style produces."
+}
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="fontloom.com home">
+      <span class="brand-mark">fontloom</span>
+      <span class="brand-tag">fancy text generator</span>
+    </a>
+    <div class="header-actions">
+      <nav class="site-nav" aria-label="Tools">
+        <a href="/combine/" aria-current="page">Combiner</a>
+        <a href="/mix/">Mixer</a>
+      </nav>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="tool-page">
+  <div class="hero">
+    <h1>Font Combiner</h1>
+    <p>Stack styles in sequence<span class="dot">•</span>each step transforms the last<span class="dot">•</span>copy results no single font can make</p>
+  </div>
+
+  <div class="tool-shell">
+    <div class="input-shell">
+      <label for="combine-input" class="visually-hidden">Your text</label>
+      <input type="text" id="combine-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
+      <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+      </button>
+    </div>
+
+    <div class="preset-row" id="preset-row" role="group" aria-label="Preset combos"></div>
+
+    <ol class="chain-list" id="chain-list"></ol>
+    <button type="button" id="add-step" class="add-step-btn">+ Add a step</button>
+
+    <div class="result-panel">
+      <div class="result-head">
+        <span class="result-label">Result</span>
+        <button type="button" id="copy-result" class="copy-result-btn">Copy</button>
+      </div>
+      <div class="result-text" id="combine-output"></div>
+    </div>
+  </div>
+
+  <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
+
+  <section class="container-narrow explainer">
+    <h2>What does combining fonts do?</h2>
+    <p>Every style on the <a href="/">main generator</a> transforms plain text once. The Combiner feeds each step's <em>output</em> into the next step as its <em>input</em> — the same thing you'd get by copying a result and pasting it back in, but live. Some combinations produce text that no single style can: flip your words upside-down and then underline them, and every inverted letter carries its own underline — ʇ̲x̲ǝ̲ʇ̲ ʎ̲ɔ̲u̲ɐ̲ɟ̲.</p>
+    <h2>Why do some steps say “no change”?</h2>
+    <p>Most alphabet styles (bold, script, fraktur…) only know how to transform ordinary letters A–Z. Once a step has replaced those with special Unicode characters — say, 𝐛𝐨𝐥𝐝 letters — a second alphabet style has nothing left to transform and passes the text through untouched. That's what the <em>no change</em> badge means. Effects are different: underlines, strikethroughs and glitch marks are <em>combining characters</em> that attach to any letter, so they stack happily on top of whatever came before. The rule of thumb: at most one alphabet style (usually first), then as many effects as you like.</p>
+    <h2>Will the combined text paste anywhere?</h2>
+    <p>Yes — the result is still just Unicode text, exactly like the single styles, so it works in Instagram bios, Discord, TikTok, X and nearly any text field. The more marks you stack, the more you depend on each platform's fonts rendering combining characters cleanly, so very heavy stacks (especially zalgo) can look different from app to app. See <a href="/articles/where-fancy-text-works.html">where fancy text works</a> for the platform-by-platform picture.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>© <span id="year"></span> fontloom.com</div>
+    <div class="footer-links">
+      <a href="/">All fonts</a>
+      <a href="/mix/">Font Mixer</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+
+<script src="/assets/js/fancytext-core.js?v=1"></script>
+<script src="/assets/js/site.js?v=1"></script>
+<script src="/assets/js/combine.js?v=1"></script>
+</body>
+</html>

@@ -389,6 +389,242 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
 .erabbit-mark { display: block; width: 10px; margin: 0 0 0 auto; line-height: 0; }
 .erabbit-mark img { display: block; width: 10px; height: 10px; }
 
+/* ---------- header tool nav ---------- */
+.site-nav { display: flex; gap: 14px; margin-right: 4px; }
+.site-nav a {
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 600;
+}
+.site-nav a:hover { color: var(--accent); text-decoration: none; }
+.site-nav a[aria-current="page"] { color: var(--accent); }
+
+/* ---------- homepage promo strip for the tool pages ---------- */
+.tool-promos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  max-width: 760px;
+  margin: 0 auto 18px;
+}
+@media (min-width: 640px) { .tool-promos { grid-template-columns: 1fr 1fr; } }
+.tool-promo {
+  display: block;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 12px 16px;
+  color: var(--text);
+  transition: border-color .12s ease, transform .12s ease;
+}
+.tool-promo:hover { border-color: var(--accent-dim); text-decoration: none; transform: translateY(-1px); }
+.tool-promo-title { display: block; font-weight: 700; font-size: 14px; }
+.tool-promo-title .tool-promo-arrow { color: var(--accent); }
+.tool-promo-desc { display: block; color: var(--text-dim); font-size: 12.5px; margin-top: 2px; }
+
+/* ---------- shared tool-page layout (/combine/, /mix/) ---------- */
+.tool-page .hero { padding-bottom: 20px; }
+.tool-shell { max-width: 820px; margin: 0 auto; }
+.tool-shell .input-shell input {
+  font-size: 18px;
+  padding: 14px 46px 14px 18px;
+  border-radius: 12px;
+}
+.tool-shell .input-shell input:focus-visible {
+  outline: none;
+  border-color: var(--accent-dim);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.preset-row, .pattern-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 18px;
+}
+
+/* ---------- Font Combiner: the chain ---------- */
+.chain-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.chain-step {
+  background: var(--bg-raised);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 10px 14px 12px;
+}
+.chain-step-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.chain-step-num {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  color: var(--text-faint);
+  font-size: 11px;
+  font-weight: 700;
+}
+.chain-select {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 6px 10px;
+  font-size: 13.5px;
+  min-width: 0;
+}
+.noop-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-faint);
+  border: 1px dashed var(--border);
+  border-radius: 999px;
+  padding: 2px 8px;
+  cursor: help;
+}
+.chain-step-controls { display: flex; gap: 4px; margin-left: auto; }
+.chain-btn {
+  padding: 2px 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-faint);
+  background: transparent;
+  border-color: transparent;
+}
+.chain-btn:hover:not(:disabled) { color: var(--accent); border-color: var(--accent-dim); }
+.chain-btn:disabled { opacity: 0.3; cursor: default; }
+.chain-step-preview {
+  margin-top: 8px;
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  color: var(--text-dim);
+}
+.add-step-btn {
+  margin-top: 8px;
+  width: 100%;
+  border-style: dashed;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  padding: 10px;
+}
+.add-step-btn[hidden] { display: none; }
+
+/* ---------- result panel (shared by both tools) ---------- */
+.result-panel {
+  margin-top: 18px;
+  background: var(--bg-raised);
+  border: 1px solid var(--accent-dim);
+  border-radius: 14px;
+  padding: 12px 16px 16px;
+}
+.result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.result-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-faint);
+}
+.result-text {
+  font-size: clamp(21px, 3vw, 26px);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.copy-result-btn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 7px 16px;
+}
+.copy-result-btn:hover { color: var(--accent-contrast); border-color: var(--accent-dim); background: var(--accent-dim); }
+.copy-result-btn.is-copied { background: var(--accent-dim); border-color: var(--accent-dim); }
+
+/* ---------- Font Mixer: letter tiles + palette ---------- */
+.mix-letters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: stretch;
+  margin-bottom: 8px;
+  touch-action: none; /* drags paint letters instead of scrolling the page */
+}
+.mix-letter {
+  min-width: 40px;
+  padding: 8px 6px;
+  font-size: clamp(20px, 3vw, 26px);
+  line-height: 1.3;
+  text-align: center;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.mix-letter:hover { border-color: var(--accent-dim); }
+.mix-letter.has-style {
+  border-color: var(--accent-dim);
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-raised));
+}
+.mix-space { width: 14px; }
+#mix-hint { text-align: left; margin: 0 0 10px; }
+
+.mix-palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+  gap: 6px;
+}
+.mix-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px 6px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+}
+.mix-swatch:hover { border-color: var(--accent-dim); }
+.mix-swatch[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg-raised));
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.mix-swatch-sample { font-size: 19px; line-height: 1.3; }
+.mix-swatch-name {
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-faint);
+  text-align: center;
+  line-height: 1.3;
+}
+
 /* ---------- misc ---------- */
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;

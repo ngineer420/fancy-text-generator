@@ -6,7 +6,7 @@ Everything runs client-side — no backend, no build step, no uploads. Deployed 
 
 ## How it works
 
-Most styles are implemented using the standard "Unicode Mathematical Alphanumeric Symbols" trick: that Unicode block (U+1D400–U+1D7FF) contains fully separate bold/italic/script/fraktur/double-struck/sans-serif/monospace copies of A–Z, a–z and 0–9 for use in math notation. `assets/js/app.js` builds a lookup table mapping each ASCII letter/digit to its styled code point for each of these families, including the handful of documented "holes" in that block that fall back to older Letterlike Symbols characters (e.g. italic *h* is U+210E, not part of the contiguous math-italic run).
+Most styles are implemented using the standard "Unicode Mathematical Alphanumeric Symbols" trick: that Unicode block (U+1D400–U+1D7FF) contains fully separate bold/italic/script/fraktur/double-struck/sans-serif/monospace copies of A–Z, a–z and 0–9 for use in math notation. `assets/js/fancytext-core.js` builds a lookup table mapping each ASCII letter/digit to its styled code point for each of these families, including the handful of documented "holes" in that block that fall back to older Letterlike Symbols characters (e.g. italic *h* is U+210E, not part of the contiguous math-italic run).
 
 Other styles (small caps, circled, squared, fullwidth, superscript, subscript) use their own scattered Unicode ranges via explicit lookup tables. Where a style has incomplete A–Z coverage (subscript and superscript are missing several letters; small caps has no dedicated glyph for q or x), unmapped characters gracefully fall back to the plain character instead of producing blank or broken output.
 
@@ -22,19 +22,32 @@ python3 -m http.server 8000
 
 Then open `http://localhost:8000`.
 
-When changing `styles.css` or `app.js`, bump the `?v=` query param on both asset links in `index.html`. GitHub Pages caches assets for 10 minutes, so without the bump a visitor can get fresh HTML paired with a stale script/stylesheet from cache — which can break the page until the cache expires.
+When changing `styles.css` or any JS file, bump the `?v=` query param on the matching asset links in every HTML page that references them. GitHub Pages caches assets for 10 minutes, so without the bump a visitor can get fresh HTML paired with a stale script/stylesheet from cache — which can break the page until the cache expires.
+
+The pure transform engine has a small test suite (plain Node asserts, no dependencies):
+
+```
+node test/core.test.js
+```
 
 ## Structure
 
 ```
-index.html              Main app
-privacy.html             Privacy policy (required for ad networks)
-terms.html                Terms of use
-404.html                   Custom 404 page
-assets/favicon.svg          Site icon
-assets/css/styles.css        Design system
-assets/js/app.js               Unicode transform engine + DOM wiring
-CNAME                            GitHub Pages custom domain (fontloom.com)
+index.html                     Main app (style gallery)
+combine/index.html             Font Combiner — chain styles in sequence
+mix/index.html                 Font Mixer — a different style per letter
+privacy.html                   Privacy policy (required for ad networks)
+terms.html                     Terms of use
+404.html                       Custom 404 page
+assets/favicon.svg             Site icon
+assets/css/styles.css          Design system
+assets/js/fancytext-core.js    Pure Unicode transform engine (no DOM)
+assets/js/site.js              Shared chrome: theme toggle, header, copy helper
+assets/js/app.js               Homepage gallery wiring
+assets/js/combine.js           Font Combiner page wiring
+assets/js/mix.js               Font Mixer page wiring
+test/core.test.js              Transform engine tests (node test/core.test.js)
+CNAME                          GitHub Pages custom domain (fontloom.com)
 ```
 
 ## Enabling ads (Google AdSense)

@@ -19,10 +19,10 @@
 <meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<!-- Bump ?v= on BOTH asset links whenever styles.css or app.js change, so
+<!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
      browsers holding a cached copy (GitHub Pages serves max-age=600) can't
      pair a stale asset with fresh HTML. -->
-<link rel="stylesheet" href="/assets/css/styles.css?v=3">
+<link rel="stylesheet" href="/assets/css/styles.css?v=4">
 
 <script type="application/ld+json">
 {
@@ -49,6 +49,10 @@
       <span class="brand-tag">fancy text generator</span>
     </a>
     <div class="header-actions">
+      <nav class="site-nav" aria-label="Tools">
+        <a href="/combine/">Combiner</a>
+        <a href="/mix/">Mixer</a>
+      </nav>
       <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">◐</button>
     </div>
   </div>
@@ -76,6 +80,19 @@
   <p class="preview-hint" id="empty-state">Previewing with <strong>“Fancy Text”</strong> — type above to use your own words, then tap any style to copy it.</p>
 
   <div class="tile-grid" id="gallery"></div>
+
+  <div class="container-narrow tool-promos" aria-label="More tools">
+    <a class="tool-promo" href="/combine/">
+      <span class="tool-promo-title">Font Combiner</span>
+      <span class="tool-promo-sample">ʇ̲x̲ǝ̲ʇ̲ ʎ̲ɔ̲u̲ɐ̲ɟ̲</span>
+      <span class="tool-promo-desc">Stack styles in sequence — flip it, then underline it — for results no single font can make.</span>
+    </a>
+    <a class="tool-promo" href="/mix/">
+      <span class="tool-promo-title">Font Mixer</span>
+      <span class="tool-promo-sample">𝕱a̶ₙcy Tₑₓₜ</span>
+      <span class="tool-promo-desc">Paint a different fancy font onto every letter of the same sentence.</span>
+    </a>
+  </div>
 
   <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
 
@@ -121,6 +138,8 @@
 
 <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
 
-<script src="/assets/js/app.js?v=4"></script>
+<script src="/assets/js/fancytext-core.js?v=1"></script>
+<script src="/assets/js/site.js?v=1"></script>
+<script src="/assets/js/app.js?v=5"></script>
 </body>
 </html>
