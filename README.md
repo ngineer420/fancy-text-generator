@@ -43,10 +43,12 @@ assets/favicon.svg             Site icon
 assets/css/styles.css          Design system
 assets/js/fancytext-core.js    Pure Unicode transform engine (no DOM)
 assets/js/site.js              Shared chrome: theme toggle, header, copy helper
+assets/js/favorites.js         Local favorites store (starred styles, combos, mixes)
 assets/js/app.js               Homepage gallery wiring
 assets/js/combine.js           Font Combiner page wiring
 assets/js/mix.js               Font Mixer page wiring
 test/core.test.js              Transform engine tests (node test/core.test.js)
+test/favorites.test.js         Favorites store tests (node test/favorites.test.js)
 CNAME                          GitHub Pages custom domain (fontloom.com)
 ```
 

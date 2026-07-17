@@ -22,7 +22,7 @@
 <!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
      browsers holding a cached copy (GitHub Pages serves max-age=600) can't
      pair a stale asset with fresh HTML. -->
-<link rel="stylesheet" href="/assets/css/styles.css?v=5">
+<link rel="stylesheet" href="/assets/css/styles.css?v=6">
 
 <script type="application/ld+json">
 {
@@ -73,16 +73,25 @@
       </button>
     </div>
 
-    <div class="preset-row" id="preset-row" role="group" aria-label="Preset combos"></div>
+    <div class="preset-row" id="fav-row" role="group" aria-label="Favorite combos"></div>
 
     <ol class="chain-list" id="chain-list"></ol>
 
     <div class="result-panel">
       <div class="result-head">
         <span class="result-label">Result</span>
-        <button type="button" id="copy-result" class="copy-result-btn">Copy</button>
+        <span class="result-actions">
+          <button type="button" id="save-fav" class="fav-star-btn" aria-pressed="false" title="Save this combo as a favorite">☆</button>
+          <button type="button" id="copy-result" class="copy-result-btn">Copy</button>
+        </span>
       </div>
       <div class="result-text" id="combine-output"></div>
+      <div class="fav-name-row" id="fav-name-row" hidden>
+        <label for="fav-name-input" class="visually-hidden">Name this combo</label>
+        <input type="text" id="fav-name-input" class="fav-name-input" maxlength="40" placeholder="Name this combo" autocomplete="off">
+        <button type="button" id="fav-name-save" class="copy-result-btn">Save</button>
+        <button type="button" id="fav-name-cancel" class="fav-name-cancel">Cancel</button>
+      </div>
     </div>
 
     <section class="combine-picker" aria-label="Add a step">
@@ -122,6 +131,7 @@
 
 <script src="/assets/js/fancytext-core.js?v=2"></script>
 <script src="/assets/js/site.js?v=1"></script>
-<script src="/assets/js/combine.js?v=3"></script>
+<script src="/assets/js/favorites.js?v=1"></script>
+<script src="/assets/js/combine.js?v=4"></script>
 </body>
 </html>

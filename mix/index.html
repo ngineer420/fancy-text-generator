@@ -22,7 +22,7 @@
 <!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
      browsers holding a cached copy (GitHub Pages serves max-age=600) can't
      pair a stale asset with fresh HTML. -->
-<link rel="stylesheet" href="/assets/css/styles.css?v=5">
+<link rel="stylesheet" href="/assets/css/styles.css?v=6">
 
 <script type="application/ld+json">
 {
@@ -73,6 +73,8 @@
       </button>
     </div>
 
+    <div class="preset-row" id="fav-row" role="group" aria-label="Favorite mixes" hidden></div>
+
     <div class="pattern-row" role="group" aria-label="Quick patterns">
       <button type="button" id="pattern-alternate" class="filter-pill" title="Apply the selected style to every other letter">Alternate</button>
       <button type="button" id="pattern-words" class="filter-pill" title="A different style for each word">By word</button>
@@ -88,9 +90,18 @@
     <div class="result-panel">
       <div class="result-head">
         <span class="result-label">Result</span>
-        <button type="button" id="copy-result" class="copy-result-btn">Copy</button>
+        <span class="result-actions">
+          <button type="button" id="save-fav" class="fav-star-btn" aria-pressed="false" title="Save this mix as a favorite">☆</button>
+          <button type="button" id="copy-result" class="copy-result-btn">Copy</button>
+        </span>
       </div>
       <div class="result-text" id="mix-output"></div>
+      <div class="fav-name-row" id="fav-name-row" hidden>
+        <label for="fav-name-input" class="visually-hidden">Name this mix</label>
+        <input type="text" id="fav-name-input" class="fav-name-input" maxlength="40" placeholder="Name this mix" autocomplete="off">
+        <button type="button" id="fav-name-save" class="copy-result-btn">Save</button>
+        <button type="button" id="fav-name-cancel" class="fav-name-cancel">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -122,6 +133,7 @@
 
 <script src="/assets/js/fancytext-core.js?v=2"></script>
 <script src="/assets/js/site.js?v=1"></script>
-<script src="/assets/js/mix.js?v=1"></script>
+<script src="/assets/js/favorites.js?v=1"></script>
+<script src="/assets/js/mix.js?v=2"></script>
 </body>
 </html>

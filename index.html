@@ -22,7 +22,7 @@
 <!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
      browsers holding a cached copy (GitHub Pages serves max-age=600) can't
      pair a stale asset with fresh HTML. -->
-<link rel="stylesheet" href="/assets/css/styles.css?v=5">
+<link rel="stylesheet" href="/assets/css/styles.css?v=6">
 
 <script type="application/ld+json">
 {
@@ -78,6 +78,11 @@
   </div>
 
   <p class="preview-hint" id="empty-state">Previewing with <strong>“Fancy Text”</strong> — type above to use your own words, then tap any style to copy it.</p>
+
+  <div class="fav-strip" id="fav-strip" hidden>
+    <span class="fav-strip-label">★ Your favorites</span>
+    <span class="fav-strip-chips" id="fav-strip-chips"></span>
+  </div>
 
   <div class="tile-grid" id="gallery"></div>
 
@@ -140,6 +145,7 @@
 
 <script src="/assets/js/fancytext-core.js?v=2"></script>
 <script src="/assets/js/site.js?v=1"></script>
-<script src="/assets/js/app.js?v=6"></script>
+<script src="/assets/js/favorites.js?v=1"></script>
+<script src="/assets/js/app.js?v=7"></script>
 </body>
 </html>
