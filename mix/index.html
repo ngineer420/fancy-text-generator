@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Font Mixer - A Different Fancy Font for Every Letter | fontloom</title>
+<meta name="description" content="Mix fancy Unicode fonts letter by letter — paint a different style onto each character, or shuffle the whole phrase. Make 𝕱a̶n̶ₙcy mixed text and copy it anywhere.">
+<link rel="canonical" href="https://fontloom.com/mix/">
+<meta name="theme-color" content="#0c0a12">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Font Mixer - A Different Fancy Font for Every Letter">
+<meta property="og:description" content="Paint a different Unicode font onto each letter of your text, or shuffle the whole phrase — then copy it anywhere.">
+<meta property="og:url" content="https://fontloom.com/mix/">
+<meta property="og:image" content="https://fontloom.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Font Mixer - A Different Fancy Font for Every Letter">
+<meta name="twitter:description" content="Paint a different Unicode font onto each letter of your text, or shuffle the whole phrase — then copy it anywhere.">
+<meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
+
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
+     browsers holding a cached copy (GitHub Pages serves max-age=600) can't
+     pair a stale asset with fresh HTML. -->
+<link rel="stylesheet" href="/assets/css/styles.css?v=4">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Font Mixer",
+  "url": "https://fontloom.com/mix/",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free browser-based tool that applies a different Unicode fancy font to each letter of your text."
+}
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="fontloom.com home">
+      <span class="brand-mark">fontloom</span>
+      <span class="brand-tag">fancy text generator</span>
+    </a>
+    <div class="header-actions">
+      <nav class="site-nav" aria-label="Tools">
+        <a href="/combine/">Combiner</a>
+        <a href="/mix/" aria-current="page">Mixer</a>
+      </nav>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="tool-page">
+  <div class="hero">
+    <h1>Font Mixer</h1>
+    <p>A different font for every letter<span class="dot">•</span>pick a style, paint it on<span class="dot">•</span>or shuffle the lot</p>
+  </div>
+
+  <div class="tool-shell">
+    <div class="input-shell">
+      <label for="mix-input" class="visually-hidden">Your text</label>
+      <input type="text" id="mix-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="80">
+      <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+      </button>
+    </div>
+
+    <div class="pattern-row" role="group" aria-label="Quick patterns">
+      <button type="button" id="pattern-alternate" class="filter-pill" title="Apply the selected style to every other letter">Alternate</button>
+      <button type="button" id="pattern-words" class="filter-pill" title="A different style for each word">By word</button>
+      <button type="button" id="pattern-shuffle" class="filter-pill" title="A random style for every letter">Shuffle</button>
+      <button type="button" id="pattern-reset" class="filter-pill" title="Back to plain text">Reset</button>
+    </div>
+
+    <div class="mix-letters" id="letter-row"></div>
+    <p class="preview-hint" id="mix-hint">Pick a style below, then click or drag across your letters to paint it on.</p>
+
+    <div class="mix-palette" id="palette" role="group" aria-label="Styles"></div>
+
+    <div class="result-panel">
+      <div class="result-head">
+        <span class="result-label">Result</span>
+        <button type="button" id="copy-result" class="copy-result-btn">Copy</button>
+      </div>
+      <div class="result-text" id="mix-output"></div>
+    </div>
+  </div>
+
+  <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
+
+  <section class="container-narrow explainer">
+    <h2>How does per-letter styling work?</h2>
+    <p>Each style on the <a href="/">main generator</a> is really a lookup table of Unicode characters — a bold 𝐚, a gothic 𝔞, a bubble ⓐ are all separate real characters. That means styles don't have to apply to whole strings: this tool keeps a style <em>per letter</em> and swaps each character for its counterpart in whatever alphabet you painted onto it. The result — something like 𝕱a̶n̶ₙcy Tₑₓₜ — is still ordinary text you can paste into any bio, chat or caption.</p>
+    <h2>Why do some letters barely change?</h2>
+    <p>Not every stylized letter exists in Unicode. Subscript is missing most letters, small caps has no q or x, and several styles have no digits. When a painted style has no character for that letter, fontloom falls back to the plain letter rather than showing a broken box — so a few style/letter combinations look identical to plain text. Details in <a href="/articles/how-fancy-text-works.html">how fancy text works</a>.</p>
+    <h2>A quick accessibility note</h2>
+    <p>Mixed-font text is the hardest flavor of fancy text for screen readers, which may announce each styled letter separately ("mathematical fraktur capital F…"). Great for a display name, less kind in the middle of a paragraph — see <a href="/articles/fancy-text-and-accessibility.html">fancy text and screen readers</a> for simple rules of thumb.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>© <span id="year"></span> fontloom.com</div>
+    <div class="footer-links">
+      <a href="/">All fonts</a>
+      <a href="/combine/">Font Combiner</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+
+<script src="/assets/js/fancytext-core.js?v=1"></script>
+<script src="/assets/js/site.js?v=1"></script>
+<script src="/assets/js/mix.js?v=1"></script>
+</body>
+</html>
