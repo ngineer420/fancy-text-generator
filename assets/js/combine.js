@@ -17,16 +17,18 @@
   // underline every inverted letter.
   const DEFAULT_CHAIN = ["upside-down", "underline"];
 
-  // Presets favor combining marks on plain-ish BMP characters (small caps,
-  // fullwidth, flipped letters) or mark-free decorations — marks stacked on
-  // Mathematical Alphanumeric characters render poorly in many fonts.
+  // Presets showcase *obviously* combined effects: marks stacked on marks
+  // (strikethrough + underline), effects on transformed letters (superscript
+  // or flipped text crossed out), and one three-step chain. They stick to
+  // marks on plain-ish BMP characters — marks stacked on Mathematical
+  // Alphanumeric characters render poorly in many fonts.
   const PRESETS = [
     { name: "Flipped Underline", ids: ["upside-down", "underline"] },
     { name: "Struck Bold", ids: ["bold", "strikethrough"] },
-    { name: "Gothic Stars", ids: ["fraktur", "star-wrap"] },
-    { name: "Boxed Out", ids: ["squared", "spaced"] },
-    { name: "Vapor Hearts", ids: ["fullwidth", "hearts-between"] },
-    { name: "Spaced Caps", ids: ["small-caps", "spaced"] },
+    { name: "Crossed Underline", ids: ["strikethrough", "underline"] },
+    { name: "Struck Superscript", ids: ["superscript", "strikethrough"] },
+    { name: "Underlined Subscript", ids: ["subscript", "underline"] },
+    { name: "Triple Flip", ids: ["upside-down", "strikethrough", "underline"] },
   ];
 
   document.addEventListener("DOMContentLoaded", () => {
