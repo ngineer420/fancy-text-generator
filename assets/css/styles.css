@@ -515,25 +515,51 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   overflow-wrap: anywhere;
   color: var(--text-dim);
 }
-/* The style picker: the homepage tile gallery repurposed as an "add a
-   step" palette. */
-.combine-picker { margin-top: 26px; }
-.picker-title {
-  font-size: 16px;
-  margin: 0 0 4px;
+/* The style picker: the homepage tile gallery repurposed as a palette
+   that expands *inside* whichever chain step is being edited. */
+.chain-step-head[role="button"] { cursor: pointer; }
+.chain-step.is-editing {
+  border-color: var(--accent-dim);
+  box-shadow: 0 0 0 1px var(--accent-dim);
+}
+.chain-caret {
+  color: var(--text-faint);
+  font-size: 11px;
+  align-self: center;
+  margin-left: 2px;
+}
+.chain-add-row {
+  border-style: dashed;
+  background: transparent;
+}
+.chain-add-row .chain-step-name { color: var(--text-dim); }
+.chain-add-row.is-disabled .chain-step-head { cursor: default; }
+.chain-add-row.is-disabled .chain-step-name {
+  color: var(--text-faint);
+  font-weight: 500;
+  white-space: normal;
+}
+.step-picker {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-soft);
 }
 .picker-hint {
   color: var(--text-faint);
   font-size: 12.5px;
   margin: 0 0 12px;
 }
-.combine-picker .filter-pills { margin-bottom: 12px; }
+.step-picker .filter-pills { margin-bottom: 12px; }
 .picker-tile {
   text-align: left;
   font-size: inherit;
 }
 .picker-tile:hover { color: inherit; }
-.picker-grid.is-full .picker-tile { cursor: default; opacity: 0.45; pointer-events: none; }
+.picker-tile.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-dim) inset;
+}
+.picker-tile.is-active .tile-add { opacity: 1; color: var(--accent); }
 .tile-add {
   flex: none;
   display: flex;

@@ -1,11 +1,14 @@
 /* Font Combiner — /combine/ page wiring.
    Chains FancyText styles in sequence: each step's output is the next
-   step's input. Steps are added by tapping tiles in a style gallery whose
-   previews always show what the *current result* would become — so every
-   pick is previewed before it happens. Favorite combos (seeded with the
-   classic presets) live in the chips row up top; the current chain can be
-   named and starred from the result panel. Requires fancytext-core.js,
-   site.js and favorites.js to be loaded first. */
+   step's input. One shared style gallery expands *inside* whichever chain
+   step is being edited: its tiles preview the text as of that step (the
+   preceding steps plus each candidate style), so every pick is previewed
+   in place, and any later steps re-derive their output from the choice. A
+   dashed "add a step" row at the end hosts the same gallery in append
+   mode. Favorite combos (seeded with the classic presets) live in the
+   chips row up top; the current chain can be named and starred from the
+   result panel. Requires fancytext-core.js, site.js and favorites.js to
+   be loaded first. */
 
 (function () {
   "use strict";
@@ -27,7 +30,9 @@
     const favRow = document.getElementById("fav-row");
     const gallery = document.getElementById("style-gallery");
     const pillsEl = document.getElementById("category-pills");
-    const pickerFull = document.getElementById("picker-full");
+    const pickerEl = document.getElementById("step-picker");
+    const pickerPark = document.getElementById("picker-park");
+    const pickerHint = document.getElementById("picker-hint");
     const output = document.getElementById("combine-output");
     const copyBtn = document.getElementById("copy-result");
     const saveFavBtn = document.getElementById("save-fav");
@@ -40,6 +45,9 @@
 
     let chain = []; // ordered style ids
     let stepEls = []; // parallel to chain: { previewEl, badgeEl }
+    // Which step the picker is expanded in: 0..chain.length-1 edits that
+    // step in place, chain.length is the "add a step" row, null = closed.
+    let editingIndex = null;
 
     /* ---------- URL state (shareable combos) ---------- */
 
@@ -97,6 +105,7 @@
         chip.append(label, unstar);
         chip.addEventListener("click", () => {
           chain = combo.ids.filter((id) => STYLE_BY_ID[id]).slice(0, MAX_STEPS);
+          editingIndex = null;
           rebuildSteps();
         });
         favRow.appendChild(chip);
@@ -163,13 +172,37 @@
       return btn;
     }
 
+    // Make a step head toggle the inline picker for `index` on click /
+    // Enter / Space, ignoring clicks on the control buttons inside it.
+    function makeToggleHead(head, index, label) {
+      head.setAttribute("role", "button");
+      head.tabIndex = 0;
+      head.setAttribute("aria-label", label);
+      head.setAttribute("aria-expanded", String(editingIndex === index));
+      function toggle(evt) {
+        if (evt.target.closest("button")) return;
+        editingIndex = editingIndex === index ? null : index;
+        rebuildSteps();
+      }
+      head.addEventListener("click", toggle);
+      head.addEventListener("keydown", (evt) => {
+        if (evt.target !== head) return;
+        if (evt.key === "Enter" || evt.key === " ") {
+          evt.preventDefault();
+          toggle(evt);
+        }
+      });
+    }
+
     function buildStep(styleId, index) {
       const style = STYLE_BY_ID[styleId];
       const li = document.createElement("li");
       li.className = "chain-step";
+      if (editingIndex === index) li.classList.add("is-editing");
 
       const head = document.createElement("div");
       head.className = "chain-step-head";
+      makeToggleHead(head, index, "Change the style of step " + (index + 1) + " (" + style.name + ")");
 
       const num = document.createElement("span");
       num.className = "chain-step-num";
@@ -198,6 +231,8 @@
       up.disabled = index === 0;
       up.addEventListener("click", () => {
         [chain[index - 1], chain[index]] = [chain[index], chain[index - 1]];
+        if (editingIndex === index) editingIndex = index - 1;
+        else if (editingIndex === index - 1) editingIndex = index;
         rebuildSteps();
       });
 
@@ -205,16 +240,28 @@
       down.disabled = index === chain.length - 1;
       down.addEventListener("click", () => {
         [chain[index + 1], chain[index]] = [chain[index], chain[index + 1]];
+        if (editingIndex === index) editingIndex = index + 1;
+        else if (editingIndex === index + 1) editingIndex = index;
         rebuildSteps();
       });
 
       const remove = iconButton("chain-remove", "✕", "Remove step " + (index + 1));
       remove.addEventListener("click", () => {
         chain.splice(index, 1);
+        if (editingIndex !== null) {
+          if (editingIndex === index) editingIndex = null;
+          else if (editingIndex > index) editingIndex--;
+        }
+        if (!chain.length) editingIndex = 0; // empty chain: open the add row
         rebuildSteps();
       });
 
-      controls.append(up, down, remove);
+      const caret = document.createElement("span");
+      caret.className = "chain-caret";
+      caret.setAttribute("aria-hidden", "true");
+      caret.textContent = editingIndex === index ? "▾" : "▸";
+
+      controls.append(up, down, remove, caret);
       head.append(num, name, badge, controls);
 
       const preview = document.createElement("div");
@@ -225,10 +272,79 @@
       return li;
     }
 
+    // The trailing "add a step" row; when the chain is full it turns into
+    // an inert note instead.
+    function buildAddRow() {
+      const index = chain.length;
+      const li = document.createElement("li");
+      li.className = "chain-step chain-add-row";
+
+      const head = document.createElement("div");
+      head.className = "chain-step-head";
+
+      const num = document.createElement("span");
+      num.className = "chain-step-num";
+      num.textContent = "+";
+
+      const name = document.createElement("span");
+      name.className = "chain-step-name";
+
+      if (chain.length >= MAX_STEPS) {
+        li.classList.add("is-disabled");
+        name.textContent = "Chain is full (" + MAX_STEPS + " steps) — remove a step to add another";
+        head.append(num, name);
+        li.appendChild(head);
+        return li;
+      }
+
+      if (editingIndex === index) li.classList.add("is-editing");
+      name.textContent = "Add a step";
+      makeToggleHead(head, index, "Add a step to the chain");
+
+      const caret = document.createElement("span");
+      caret.className = "chain-step-controls chain-caret";
+      caret.setAttribute("aria-hidden", "true");
+      caret.textContent = editingIndex === index ? "▾" : "▸";
+
+      head.append(num, name, caret);
+      li.appendChild(head);
+      return li;
+    }
+
+    // Move the shared picker into the step being edited (or back to its
+    // hidden parking spot). Must run before chainList is cleared, or the
+    // picker DOM would be destroyed along with the old steps.
+    function parkPicker() {
+      pickerPark.appendChild(pickerEl);
+    }
+
+    function attachPicker() {
+      if (editingIndex === null) return;
+      const adding = editingIndex === chain.length;
+      if (adding && chain.length >= MAX_STEPS) return; // full: row is inert
+      const li = chainList.children[editingIndex];
+      if (!li) return;
+      pickerHint.textContent = adding
+        ? "Tap a style to add it as step " + (chain.length + 1) + " — each tile previews what your result would become. Dimmed styles wouldn't change anything."
+        : "Tap a style to use it for step " + (editingIndex + 1) + " — each tile previews your text through this step. Later steps update to match.";
+      for (const t of tiles) {
+        t.tileEl.setAttribute(
+          "aria-label",
+          adding
+            ? "Add " + t.style.name + " as step " + (chain.length + 1)
+            : "Use " + t.style.name + " for step " + (editingIndex + 1)
+        );
+      }
+      li.appendChild(pickerEl);
+    }
+
     function rebuildSteps() {
+      parkPicker();
       chainList.innerHTML = "";
       stepEls = [];
       chain.forEach((id, i) => chainList.appendChild(buildStep(id, i)));
+      chainList.appendChild(buildAddRow());
+      attachPicker();
       render();
       updateStarState();
       writeUrlDebounced();
@@ -244,7 +360,7 @@
       });
     });
 
-    const tiles = []; // { style, tileEl, outputEl, starEl, category }
+    const tiles = []; // { style, tileEl, outputEl, starEl, addEl, category }
 
     function buildTile(style) {
       const tile = document.createElement("div");
@@ -276,19 +392,30 @@
       foot.append(nameEl, starEl, addEl);
       tile.append(outputEl, foot);
 
-      function addStep(evt) {
+      // In append mode (the "add a step" row) a tap pushes a new step and
+      // keeps the row open for stacking more; in edit mode it swaps the
+      // expanded step's style in place, and any later steps re-derive
+      // their previews from the new choice on the rerender.
+      function pickStyle(evt) {
         if (evt) evt.stopPropagation();
-        if (chain.length >= MAX_STEPS) return;
-        chain.push(style.id);
+        if (editingIndex === null) return;
+        if (editingIndex === chain.length) {
+          if (chain.length >= MAX_STEPS) return;
+          chain.push(style.id);
+          // Stay in append mode, unless that pick just filled the chain.
+          editingIndex = chain.length < MAX_STEPS ? chain.length : null;
+        } else {
+          chain[editingIndex] = style.id;
+        }
         rebuildSteps();
       }
 
-      tile.addEventListener("click", addStep);
+      tile.addEventListener("click", pickStyle);
       tile.addEventListener("keydown", (evt) => {
         if (evt.target !== tile) return;
         if (evt.key === "Enter" || evt.key === " ") {
           evt.preventDefault();
-          addStep(evt);
+          pickStyle(evt);
         }
       });
       starEl.addEventListener("click", (evt) => {
@@ -298,7 +425,7 @@
         orderGallery();
       });
 
-      tiles.push({ style, tileEl: tile, outputEl, starEl, category: CATEGORY_OF[style.id] });
+      tiles.push({ style, tileEl: tile, outputEl, starEl, addEl, category: CATEGORY_OF[style.id] });
       gallery.appendChild(tile);
     }
 
@@ -368,8 +495,12 @@
       const hasInput = raw.trim().length > 0;
       if (clearBtn) clearBtn.hidden = raw.length === 0;
 
+      // prefixes[i] = the text entering step i, so tile previews can show
+      // "everything before the edited step + this candidate style".
+      const prefixes = [];
       let text = hasInput ? raw : SAMPLE_TEXT;
       chain.forEach((id, i) => {
+        prefixes[i] = text;
         const next = STYLE_BY_ID[id].transform(text);
         stepEls[i].previewEl.textContent = next;
         stepEls[i].badgeEl.hidden = next !== text;
@@ -377,18 +508,24 @@
       });
       output.textContent = text;
 
-      // Gallery tiles preview the *next* step: what the current result
-      // becomes if this style is tapped. Styles that wouldn't change
-      // anything are dimmed (alphabet styles no-op on already-styled text).
-      const full = chain.length >= MAX_STEPS;
-      if (pickerFull) pickerFull.hidden = !full;
-      gallery.classList.toggle("is-full", full);
+      // Gallery tiles preview the step being edited: the text through the
+      // preceding steps with each candidate style applied (in append mode,
+      // the current result with the candidate on top). Styles that wouldn't
+      // change anything are dimmed (alphabet styles no-op on already-styled
+      // text); the step's current style is marked active.
+      if (editingIndex === null) return;
+      const adding = editingIndex === chain.length;
+      const base = adding ? text : prefixes[editingIndex];
+      const currentId = adding ? null : chain[editingIndex];
       for (const t of tiles) {
-        const next = t.style.transform(text);
+        const next = t.style.transform(base);
         t.outputEl.textContent = next;
-        const noop = next === text;
+        const active = t.style.id === currentId;
+        const noop = next === base && !active;
+        t.tileEl.classList.toggle("is-active", active);
         t.tileEl.classList.toggle("tile-noop", noop);
-        t.tileEl.title = noop ? "Won't change the current result" : "";
+        t.addEl.textContent = active ? "✓" : "+";
+        t.tileEl.title = noop ? "Won't change the text at this step" : "";
       }
     }
 
@@ -426,6 +563,9 @@
     const initial = readUrl();
     input.value = initial.text.slice(0, 300);
     chain = initial.ids && initial.ids.length ? initial.ids : DEFAULT_CHAIN.slice();
+    // Start with the "add a step" row expanded so the gallery is visible
+    // (unless the chain arrived full from the URL).
+    editingIndex = chain.length < MAX_STEPS ? chain.length : null;
     renderFavRow();
     syncStars();
     orderGallery();
