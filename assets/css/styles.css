@@ -550,6 +550,15 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   margin: 0 0 12px;
 }
 .step-picker .filter-pills { margin-bottom: 12px; }
+/* Cap the inline gallery so an expanded step doesn't take over the page:
+   the tile grid scrolls on its own, hint and pills stay put above it. */
+.step-picker .picker-grid {
+  max-height: min(46vh, 420px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2px 2px 6px; /* room for tile borders/shadows at the edges */
+  scrollbar-width: thin;
+}
 .picker-tile {
   text-align: left;
   font-size: inherit;
