@@ -172,24 +172,28 @@
       return btn;
     }
 
-    // Make a step head toggle the inline picker for `index` on click /
-    // Enter / Space, ignoring clicks on the control buttons inside it.
-    function makeToggleHead(head, index, label) {
+    function toggleEditing(index) {
+      editingIndex = editingIndex === index ? null : index;
+      rebuildSteps();
+    }
+
+    // Make the whole step card toggle the inline picker for `index`:
+    // click anywhere on the li (except its buttons and the expanded
+    // picker itself), or Enter / Space with the head focused.
+    function makeToggleArea(li, head, index, label) {
       head.setAttribute("role", "button");
       head.tabIndex = 0;
       head.setAttribute("aria-label", label);
       head.setAttribute("aria-expanded", String(editingIndex === index));
-      function toggle(evt) {
-        if (evt.target.closest("button")) return;
-        editingIndex = editingIndex === index ? null : index;
-        rebuildSteps();
-      }
-      head.addEventListener("click", toggle);
+      li.addEventListener("click", (evt) => {
+        if (evt.target.closest("button, .step-picker")) return;
+        toggleEditing(index);
+      });
       head.addEventListener("keydown", (evt) => {
         if (evt.target !== head) return;
         if (evt.key === "Enter" || evt.key === " ") {
           evt.preventDefault();
-          toggle(evt);
+          toggleEditing(index);
         }
       });
     }
@@ -202,7 +206,7 @@
 
       const head = document.createElement("div");
       head.className = "chain-step-head";
-      makeToggleHead(head, index, "Change the style of step " + (index + 1) + " (" + style.name + ")");
+      makeToggleArea(li, head, index, "Change the style of step " + (index + 1) + " (" + style.name + ")");
 
       const num = document.createElement("span");
       num.className = "chain-step-num";
@@ -256,12 +260,21 @@
         rebuildSteps();
       });
 
-      const caret = document.createElement("span");
-      caret.className = "chain-caret";
-      caret.setAttribute("aria-hidden", "true");
-      caret.textContent = editingIndex === index ? "▾" : "▸";
+      // An explicit, always-visible affordance for the inline editor —
+      // the whole card toggles too, but this labels the interaction.
+      const editing = editingIndex === index;
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "chain-btn chain-edit-btn";
+      editBtn.textContent = editing ? "▾ Done" : "✎ Change";
+      editBtn.setAttribute("aria-expanded", String(editing));
+      editBtn.setAttribute(
+        "aria-label",
+        (editing ? "Close the style picker for step " : "Change the style of step ") + (index + 1)
+      );
+      editBtn.addEventListener("click", () => toggleEditing(index));
 
-      controls.append(up, down, remove, caret);
+      controls.append(up, down, remove, editBtn);
       head.append(num, name, badge, controls);
 
       const preview = document.createElement("div");
@@ -299,7 +312,7 @@
 
       if (editingIndex === index) li.classList.add("is-editing");
       name.textContent = "Add a step";
-      makeToggleHead(head, index, "Add a step to the chain");
+      makeToggleArea(li, head, index, "Add a step to the chain");
 
       const caret = document.createElement("span");
       caret.className = "chain-step-controls chain-caret";

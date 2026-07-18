@@ -516,8 +516,13 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   color: var(--text-dim);
 }
 /* The style picker: the homepage tile gallery repurposed as a palette
-   that expands *inside* whichever chain step is being edited. */
-.chain-step-head[role="button"] { cursor: pointer; }
+   that expands *inside* whichever chain step is being edited. The whole
+   card is a click target for opening/closing the editor; the expanded
+   picker and the control buttons opt back out. */
+.chain-step { cursor: pointer; transition: border-color .12s ease; }
+.chain-step:not(.is-editing):hover { border-color: var(--accent-dim); }
+.chain-step .step-picker { cursor: auto; }
+.chain-add-row.is-disabled { cursor: default; }
 .chain-step.is-editing {
   border-color: var(--accent-dim);
   box-shadow: 0 0 0 1px var(--accent-dim);
@@ -528,6 +533,18 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   align-self: center;
   margin-left: 2px;
 }
+/* The labeled "✎ Change" / "▾ Done" pill: unlike the other chain
+   buttons it keeps a visible border, so editing is discoverable. */
+.chain-edit-btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.chain-step:hover .chain-edit-btn { color: var(--accent); border-color: var(--accent-dim); }
+.chain-step.is-editing .chain-edit-btn { color: var(--accent); border-color: var(--accent-dim); }
 .chain-add-row {
   border-style: dashed;
   background: transparent;
