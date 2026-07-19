@@ -51,6 +51,58 @@
       });
     });
 
+    // ---------------------------------------------------------------
+    // Combo & mix examples: preset multi-style recipes from the core,
+    // shown as ordinary gallery tiles (mixed in near their ingredient
+    // styles) to introduce the Combiner and Mixer. Each is copyable like
+    // any tile and carries an ✎ link that opens its editor with the
+    // recipe loaded. They form their own homepage-only filter category.
+    // ---------------------------------------------------------------
+
+    const EXAMPLE_CATEGORY = "combos";
+
+    const EXAMPLES = FancyText.COMBO_EXAMPLES.map((ex) => ({
+      id: ex.id,
+      name: ex.name,
+      tag: "combo",
+      toolName: "Font Combiner",
+      transform: (text) => FancyText.applyChain(ex.ids, text),
+      editUrl: (typed) =>
+        "/combine/?chain=" + encodeURIComponent(ex.ids.join(",")) +
+        (typed ? "&text=" + encodeURIComponent(typed) : ""),
+    })).concat(
+      FancyText.MIX_EXAMPLES.map((ex) => ({
+        id: ex.id,
+        name: ex.name,
+        tag: "mix",
+        toolName: "Font Mixer",
+        transform: (text) => FancyText.applyMixPattern(ex.styleIds, text),
+        editUrl: (typed, text) =>
+          "/mix/?text=" + encodeURIComponent(text) +
+          "&styles=" + encodeURIComponent(
+            FancyText.mixPatternIds(ex.styleIds, text).map((id) => id || "-").join(",")
+          ),
+      }))
+    );
+    const EXAMPLE_BY_ID = {};
+    EXAMPLES.forEach((ex) => {
+      EXAMPLE_BY_ID[ex.id] = ex;
+      CATEGORY_OF[ex.id] = EXAMPLE_CATEGORY;
+    });
+
+    // Where each example lands in the gallery: right after a style it's
+    // made of, so they read as neighbors rather than a separate block.
+    const EXAMPLE_AFTER = {
+      "circled": ["mix-bold-script"],
+      "small-caps": ["mix-fraktur-double"],
+      "underline": ["combo-struck-bold"],
+      "upside-down": ["combo-flipped-underline"],
+      "negative-squared": ["mix-circled-squared"],
+      "superscript": ["mix-caps-super"],
+      "subscript": ["combo-struck-superscript", "combo-underlined-subscript"],
+      "slashed": ["combo-crossed-underline", "combo-triple-flip"],
+    };
+
     // Dev-time sanity check: every style must belong to a category and
     // appear in TILE_ORDER, or it would silently vanish from the gallery.
     const orderSet = new Set(TILE_ORDER);
@@ -59,7 +111,7 @@
       console.warn("fontloom: styles missing from TILE_ORDER/CATEGORIES:", missing);
     }
 
-    const tiles = []; // { style, tileEl, outputEl, category }
+    const tiles = []; // { style, tileEl, outputEl, starEl?, editEl?, category }
 
     function buildTile(style) {
       const tile = document.createElement("div");
@@ -88,16 +140,40 @@
 
       label.append(nameEl, copiedEl);
 
-      const starEl = document.createElement("button");
-      starEl.type = "button";
-      starEl.className = "tile-star";
-      starEl.setAttribute("aria-label", "Pin " + style.name + " to the top");
-      starEl.addEventListener("click", (evt) => {
-        evt.stopPropagation();
-        Favs.toggleStyle(style.id);
-        syncStars();
-        orderGallery();
-      });
+      // Examples (combo/mix recipes) get a tag + edit link instead of a
+      // pin star; plain styles get the star.
+      const example = EXAMPLE_BY_ID[style.id] || null;
+      let starEl = null;
+      let editEl = null;
+
+      if (example) {
+        tile.classList.add("tile-example");
+
+        const tagEl = document.createElement("span");
+        tagEl.className = "tile-tag";
+        tagEl.textContent = example.tag;
+        tagEl.title = "Made with the " + example.toolName;
+        label.appendChild(tagEl);
+
+        editEl = document.createElement("a");
+        editEl.className = "tile-edit";
+        editEl.textContent = "✎";
+        editEl.setAttribute("aria-label", "Edit " + style.name + " in the " + example.toolName);
+        editEl.title = "Edit in the " + example.toolName;
+        // Don't let the tile's copy handler swallow the navigation.
+        editEl.addEventListener("click", (evt) => evt.stopPropagation());
+      } else {
+        starEl = document.createElement("button");
+        starEl.type = "button";
+        starEl.className = "tile-star";
+        starEl.setAttribute("aria-label", "Pin " + style.name + " to the top");
+        starEl.addEventListener("click", (evt) => {
+          evt.stopPropagation();
+          Favs.toggleStyle(style.id);
+          syncStars();
+          orderGallery();
+        });
+      }
 
       const copyBtn = document.createElement("button");
       copyBtn.type = "button";
@@ -105,7 +181,7 @@
       copyBtn.setAttribute("aria-label", "Copy " + style.name + " text");
       copyBtn.innerHTML = COPY_ICON_SVG;
 
-      foot.append(label, starEl, copyBtn);
+      foot.append(label, starEl || editEl, copyBtn);
       tile.append(output, foot);
 
       async function doCopy(evt) {
@@ -133,13 +209,16 @@
       });
       copyBtn.addEventListener("click", doCopy);
 
-      tiles.push({ style, tileEl: tile, outputEl: output, starEl, category: CATEGORY_OF[style.id] });
+      tiles.push({ style, tileEl: tile, outputEl: output, starEl, editEl, category: CATEGORY_OF[style.id] });
       gallery.appendChild(tile);
     }
 
     TILE_ORDER.forEach((id) => {
       const style = STYLE_BY_ID[id];
       if (style) buildTile(style);
+      (EXAMPLE_AFTER[id] || []).forEach((exId) => {
+        if (EXAMPLE_BY_ID[exId]) buildTile(EXAMPLE_BY_ID[exId]);
+      });
     });
     // Any style not in TILE_ORDER still gets a tile (appended last).
     STYLES.forEach((s) => {
@@ -148,6 +227,7 @@
 
     function syncStars() {
       for (const t of tiles) {
+        if (!t.starEl) continue;
         const starred = Favs.hasStyle(t.style.id);
         t.starEl.textContent = starred ? "★" : "☆";
         t.starEl.setAttribute("aria-pressed", String(starred));
@@ -166,44 +246,17 @@
       sorted.forEach((t) => gallery.appendChild(t.tileEl));
     }
 
-    // Combos and mixes saved on the tool pages, linked back to their edit
-    // screens (the chips row above the gallery stays hidden until one exists).
-    function renderFavStrip() {
-      const strip = document.getElementById("fav-strip");
-      const chips = document.getElementById("fav-strip-chips");
-      if (!strip || !chips) return;
-      chips.innerHTML = "";
-      const combos = Favs.combos();
-      const mixes = Favs.mixes();
-      strip.hidden = combos.length === 0 && mixes.length === 0;
-      combos.forEach((combo) => {
-        const chip = document.createElement("a");
-        chip.className = "filter-pill fav-pill";
-        chip.href = "/combine/?chain=" + encodeURIComponent(combo.ids.join(","));
-        chip.textContent = combo.name;
-        chip.title = "Open in the Font Combiner";
-        chips.appendChild(chip);
-      });
-      mixes.forEach((mix) => {
-        const chip = document.createElement("a");
-        chip.className = "filter-pill fav-pill";
-        chip.href =
-          "/mix/?text=" + encodeURIComponent(mix.text) +
-          "&styles=" + encodeURIComponent(mix.styleIds.map((id) => id || "-").join(","));
-        chip.textContent = mix.name;
-        chip.title = "Open in the Font Mixer";
-        chips.appendChild(chip);
-      });
-    }
-
     // Filter pills: "All" plus one per category. Selecting a pill filters
     // the flat grid in place, so results always start at the top of the
-    // page instead of requiring a scroll to a section.
+    // page instead of requiring a scroll to a section. The combo/mix
+    // examples get a homepage-only pill (the shared CATEGORIES list also
+    // drives the Combiner's picker, where the examples don't appear).
     let activeCategory = null; // null = all
 
     if (pillsEl) {
       const pillDefs = [{ id: null, title: "All" }].concat(
-        CATEGORIES.map((c) => ({ id: c.id, title: c.title }))
+        CATEGORIES.map((c) => ({ id: c.id, title: c.title })),
+        [{ id: EXAMPLE_CATEGORY, title: "Combos & Mixes" }]
       );
       pillDefs.forEach(({ id, title }) => {
         const pill = document.createElement("button");
@@ -246,6 +299,11 @@
 
       for (const t of tiles) {
         t.outputEl.textContent = t.style.transform(text);
+        if (t.editEl) {
+          // Keep the ✎ link pointing at the editor with whatever the
+          // visitor typed (mix URLs always need a concrete text).
+          t.editEl.href = t.style.editUrl(hasInput ? raw : "", text);
+        }
       }
       markClipped();
     }
@@ -271,7 +329,6 @@
 
     syncStars();
     orderGallery();
-    renderFavStrip();
     render();
     applyFilter();
   });
