@@ -1,11 +1,39 @@
 /* Tests for the favorites store (assets/js/favorites.js).
    Run with: node test/favorites.test.js
-   In Node there is no localStorage, so the module falls back to its
-   in-memory store — which is exactly what these tests exercise. */
+   A fake localStorage is installed before the module loads so the tests
+   control exactly what's stored — including legacy data that the
+   one-time migration must clean up. */
 
 "use strict";
 
 const assert = require("assert");
+
+// Deterministic in-memory localStorage, installed before the module loads.
+const backing = new Map();
+Object.defineProperty(globalThis, "localStorage", {
+  configurable: true,
+  value: {
+    getItem: (k) => (backing.has(k) ? backing.get(k) : null),
+    setItem: (k, v) => backing.set(k, String(v)),
+    removeItem: (k) => backing.delete(k),
+  },
+});
+
+// Legacy store shape: combos seeded by the old default-favorites version.
+backing.set(
+  "ftg-favorites-v1",
+  JSON.stringify({
+    styles: ["bold"],
+    combos: [
+      { id: "a1", name: "Flipped Underline", ids: ["upside-down", "underline"] },
+      { id: "a2", name: "Struck Bold", ids: ["bold", "strikethrough"] },
+      { id: "a3", name: "My Own Combo", ids: ["fraktur", "underline"] },
+      { id: "a4", name: "Triple Flip", ids: ["upside-down", "strikethrough", "underline"] },
+    ],
+    mixes: [],
+  })
+);
+
 const Favs = require("../assets/js/favorites.js");
 const FancyText = require("../assets/js/fancytext-core.js");
 
@@ -16,38 +44,41 @@ function test(name, fn) {
   console.log("ok  " + name);
 }
 
-test("seeds the default combos on first use", () => {
+test("migration prunes legacy seeded combos but keeps custom ones", () => {
   const combos = Favs.combos();
-  assert.strictEqual(combos.length, Favs.DEFAULT_COMBOS.length);
-  assert.strictEqual(combos[0].name, "Flipped Underline");
-  combos.forEach((c) => {
-    assert.ok(c.id, "seeded combo has an id");
-  });
+  assert.deepStrictEqual(combos.map((c) => c.name), ["My Own Combo"]);
+  assert.ok(Favs.hasStyle("bold"), "starred styles survive the migration");
 });
 
-test("every default combo uses only real style ids", () => {
-  Favs.DEFAULT_COMBOS.forEach((c) => {
+test("migration runs once: re-saving a legacy-named combo sticks", () => {
+  const combo = Favs.addCombo("Struck Bold", ["bold", "strikethrough"]);
+  assert.ok(Favs.findCombo(["bold", "strikethrough"]), "identical recipe can be re-saved");
+  Favs.removeCombo(combo.id);
+});
+
+test("legacy seeded list only references real style ids", () => {
+  Favs.LEGACY_SEEDED.forEach((c) => {
     c.ids.forEach((id) => {
       assert.ok(FancyText.STYLE_BY_ID[id], c.name + " references unknown style " + id);
     });
   });
 });
 
-test("default combos can be unstarred (removed)", () => {
-  const before = Favs.combos();
-  Favs.removeCombo(before[0].id);
-  const after = Favs.combos();
-  assert.strictEqual(after.length, before.length - 1);
-  assert.ok(!after.some((c) => c.id === before[0].id));
+test("a fresh store starts with no combos, mixes or stars", () => {
+  backing.clear();
+  assert.deepStrictEqual(Favs.combos(), []);
+  assert.deepStrictEqual(Favs.mixes(), []);
+  assert.deepStrictEqual(Favs.styleIds(), []);
 });
 
 test("findCombo matches by exact chain", () => {
-  assert.ok(Favs.findCombo(["bold", "strikethrough"]), "seeded Struck Bold is found");
+  Favs.addCombo("Test", ["bold", "strikethrough"]);
+  assert.ok(Favs.findCombo(["bold", "strikethrough"]));
   assert.strictEqual(Favs.findCombo(["strikethrough", "bold"]), null, "order matters");
   assert.strictEqual(Favs.findCombo(["bold"]), null, "prefix does not match");
 });
 
-test("custom combos can be named, saved and found", () => {
+test("custom combos can be named, saved and removed", () => {
   const combo = Favs.addCombo("My Combo", ["fraktur", "underline"]);
   assert.strictEqual(combo.name, "My Combo");
   const found = Favs.findCombo(["fraktur", "underline"]);

@@ -535,11 +535,63 @@
     },
   ];
 
+  // ---------------------------------------------------------------
+  // Ready-made multi-style examples. The homepage shows these as gallery
+  // tiles (mixed in among the single styles) to introduce the Combiner
+  // and Mixer; each carries an edit link into the tool with the recipe
+  // loaded. Combos are Combiner chains; mixes alternate styles letter by
+  // letter. Only deterministic styles belong here — no zalgo.
+  // ---------------------------------------------------------------
+
+  const COMBO_EXAMPLES = [
+    { id: "combo-flipped-underline", name: "Flipped Underline", ids: ["upside-down", "underline"] },
+    { id: "combo-struck-bold", name: "Struck Bold", ids: ["bold", "strikethrough"] },
+    { id: "combo-crossed-underline", name: "Crossed Underline", ids: ["strikethrough", "underline"] },
+    { id: "combo-struck-superscript", name: "Struck Superscript", ids: ["superscript", "strikethrough"] },
+    { id: "combo-underlined-subscript", name: "Underlined Subscript", ids: ["subscript", "underline"] },
+    { id: "combo-triple-flip", name: "Triple Flip", ids: ["upside-down", "strikethrough", "underline"] },
+  ];
+
+  const MIX_EXAMPLES = [
+    { id: "mix-bold-script", name: "Bold × Script", styleIds: ["bold", "script"] },
+    { id: "mix-fraktur-double", name: "Gothic × Double-Struck", styleIds: ["fraktur", "double-struck"] },
+    { id: "mix-circled-squared", name: "Circled × Squared", styleIds: ["circled", "squared"] },
+    { id: "mix-caps-super", name: "Small Caps × Superscript", styleIds: ["small-caps", "superscript"] },
+  ];
+
+  // Run a Combiner chain: each style's output feeds the next.
+  function applyChain(ids, text) {
+    return ids.reduce((t, id) => (STYLE_BY_ID[id] ? STYLE_BY_ID[id].transform(t) : t), text);
+  }
+
+  // Per-grapheme style ids for a Mixer alternating pattern: the cycle
+  // advances only on non-whitespace characters, which stay unstyled
+  // (null) — the same shape the Mixer stores and reads from its URL.
+  function mixPatternIds(styleIds, text) {
+    let at = 0;
+    return splitGraphemes(text).map((g) => {
+      if (/\s/.test(g)) return null;
+      return styleIds[at++ % styleIds.length];
+    });
+  }
+
+  function applyMixPattern(styleIds, text) {
+    const perLetter = mixPatternIds(styleIds, text);
+    return splitGraphemes(text)
+      .map((g, i) => (perLetter[i] ? STYLE_BY_ID[perLetter[i]].transform(g) : g))
+      .join("");
+  }
+
   const FancyText = {
     STYLES,
     STYLE_BY_ID,
     TILE_ORDER,
     CATEGORIES,
+    COMBO_EXAMPLES,
+    MIX_EXAMPLES,
+    applyChain,
+    mixPatternIds,
+    applyMixPattern,
     mapTransform,
     zalgoText,
     flipText,

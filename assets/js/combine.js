@@ -576,9 +576,9 @@
     const initial = readUrl();
     input.value = initial.text.slice(0, 300);
     chain = initial.ids && initial.ids.length ? initial.ids : DEFAULT_CHAIN.slice();
-    // Start with the "add a step" row expanded so the gallery is visible
-    // (unless the chain arrived full from the URL).
-    editingIndex = chain.length < MAX_STEPS ? chain.length : null;
+    // Everything starts collapsed so the copyable result stays above the
+    // fold; the picker opens when a step or the add row is tapped.
+    editingIndex = null;
     renderFavRow();
     syncStars();
     orderGallery();

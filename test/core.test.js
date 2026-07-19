@@ -96,4 +96,38 @@ test("random flag marks the zalgo styles", () => {
   assert.deepStrictEqual(flagged, ["zalgo-heavy", "zalgo-light", "zalgo-medium"]);
 });
 
+test("combo and mix examples reference only real, deterministic styles", () => {
+  FancyText.COMBO_EXAMPLES.forEach((ex) => {
+    ex.ids.forEach((id) => {
+      assert.ok(STYLE_BY_ID[id], ex.name + " references unknown style " + id);
+      assert.ok(!STYLE_BY_ID[id].random, ex.name + " uses a random style");
+    });
+  });
+  FancyText.MIX_EXAMPLES.forEach((ex) => {
+    ex.styleIds.forEach((id) => {
+      assert.ok(STYLE_BY_ID[id], ex.name + " references unknown style " + id);
+      assert.ok(!STYLE_BY_ID[id].random && !STYLE_BY_ID[id].wholeString,
+        ex.name + " uses a style the Mixer can't paint per letter");
+    });
+  });
+});
+
+test("applyChain matches transforming step by step", () => {
+  const manual = t("underline")(t("upside-down")("Fancy Text"));
+  assert.strictEqual(FancyText.applyChain(["upside-down", "underline"], "Fancy Text"), manual);
+  assert.strictEqual(FancyText.applyChain([], "abc"), "abc");
+});
+
+test("mixPatternIds cycles over letters and skips whitespace", () => {
+  const ids = FancyText.mixPatternIds(["bold", "script"], "ab cd");
+  assert.deepStrictEqual(ids, ["bold", "script", null, "bold", "script"]);
+});
+
+test("applyMixPattern styles each letter and leaves spaces alone", () => {
+  const out = FancyText.applyMixPattern(["bold", "script"], "ab cd");
+  const b = (c) => t("bold")(c);
+  const s = (c) => t("script")(c);
+  assert.strictEqual(out, b("a") + s("b") + " " + b("c") + s("d"));
+});
+
 console.log("\nAll " + count + " tests passed.");
