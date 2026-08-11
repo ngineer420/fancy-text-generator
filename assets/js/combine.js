@@ -13,7 +13,7 @@
 (function () {
   "use strict";
 
-  const { debounce, copyText } = window.Site;
+  const { debounce, copyText, renderCharCount } = window.Site;
   const { STYLES, STYLE_BY_ID, TILE_ORDER, CATEGORIES } = FancyText;
   const Favs = window.Favs;
 
@@ -34,6 +34,7 @@
     const pickerPark = document.getElementById("picker-park");
     const pickerHint = document.getElementById("picker-hint");
     const output = document.getElementById("combine-output");
+    const countEl = document.getElementById("char-count");
     const copyBtn = document.getElementById("copy-result");
     const saveFavBtn = document.getElementById("save-fav");
     const nameRow = document.getElementById("fav-name-row");
@@ -520,6 +521,9 @@
         text = next;
       });
       output.textContent = text;
+      // Chained effects are where the count runs away fastest: each step can
+      // add another mark per character while the line looks no longer.
+      renderCharCount(countEl, hasInput ? raw : SAMPLE_TEXT, text);
 
       // Gallery tiles preview the step being edited: the text through the
       // preceding steps with each candidate style applied (in append mode,

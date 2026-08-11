@@ -357,6 +357,10 @@
   const underline = appendCombiningMark("̲");
   const doubleUnderline = appendCombiningMark("̳");
   const slashed = appendCombiningMark("̸");
+  // U+0305 COMBINING OVERLINE. The counterpart to underline, and the one
+  // people reach for to fake a vinculum (x̅ for a mean, 0.3̅ for a repeating
+  // decimal) in a field that will not take markup.
+  const overline = appendCombiningMark("̅");
 
   function spacedOut(str) {
     return splitGraphemes(str).join(" ");
@@ -393,22 +397,65 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  /**
+   * How far the glitch can be turned up before it stops being a text effect
+   * and starts being a denial of service.
+   *
+   * Text shaping is not linear in the number of combining marks on one base
+   * character — the engine has to position each mark relative to the ones
+   * already stacked — so an uncapped slider is a reliable way to hang a tab.
+   * Twelve marks per character is well past "unreadable horror" and still
+   * lays out instantly, so nothing is lost by refusing to go further.
+   */
+  const ZALGO_MAX_MARKS = 12;
+
+  // The named levels the style registry ships, expressed on the same 0-100
+  // scale the slider uses, so the tiles and the slider cannot drift apart.
+  const ZALGO_LEVELS = { light: 12, medium: 40, heavy: 78 };
+
+  /**
+   * Turn an intensity into per-character mark counts.
+   *
+   * Accepts the legacy "light" / "medium" / "heavy" names as well as a number
+   * from 0 to 100, and always returns counts inside ZALGO_MAX_MARKS. Pure and
+   * exported so a test can assert the cap holds at the top of the range
+   * without generating text and counting marks by hand.
+   */
+  function zalgoRanges(level) {
+    const named = typeof level === "string" ? ZALGO_LEVELS[level] : level;
+    const pct = Math.max(0, Math.min(100, typeof named === "number" && isFinite(named) ? named : ZALGO_LEVELS.medium));
+    const scale = pct / 100;
+    // Up and down carry the bulk of the effect; mid (the strike-through-ish
+    // overlays) stays sparse, because a dense mid band erases the letters.
+    const peak = Math.round(scale * (ZALGO_MAX_MARKS / 2));
+    const midPeak = Math.round(scale * (ZALGO_MAX_MARKS / 6));
+    const span = (top) => [Math.max(0, top - (top > 1 ? 2 : top)), top];
+    return { up: span(peak), down: span(peak), mid: span(midPeak), intensity: pct };
+  }
+
   function zalgoText(str, level) {
-    const ranges = {
-      light: { up: [0, 1], down: [0, 1], mid: [0, 0] },
-      medium: { up: [1, 3], down: [1, 3], mid: [0, 1] },
-      heavy: { up: [3, 6], down: [3, 6], mid: [1, 3] },
-    }[level];
+    const ranges = zalgoRanges(level);
     return splitGraphemes(str)
       .map((g) => {
         if (g === " ") return g;
         let out = g;
-        const upCount = randInt(ranges.up[0], ranges.up[1]);
-        const downCount = randInt(ranges.down[0], ranges.down[1]);
-        const midCount = randInt(ranges.mid[0], ranges.mid[1]);
-        for (let i = 0; i < upCount; i++) out += ZALGO_UP[randInt(0, ZALGO_UP.length - 1)];
-        for (let i = 0; i < downCount; i++) out += ZALGO_DOWN[randInt(0, ZALGO_DOWN.length - 1)];
-        for (let i = 0; i < midCount; i++) out += ZALGO_MID[randInt(0, ZALGO_MID.length - 1)];
+        // Budget in code points, not in draws from the pool: at least one
+        // entry (U+0344, stored decomposed as U+0308 U+0301) is two marks in
+        // one string, and it is the renderer that pays per mark. Counting
+        // draws would let the cap be quietly exceeded.
+        let spent = 0;
+        const add = (pool, draws) => {
+          for (let i = 0; i < draws; i++) {
+            const mark = pool[randInt(0, pool.length - 1)];
+            const cost = Array.from(mark).length;
+            if (spent + cost > ZALGO_MAX_MARKS) return;
+            out += mark;
+            spent += cost;
+          }
+        };
+        add(ZALGO_UP, randInt(ranges.up[0], ranges.up[1]));
+        add(ZALGO_DOWN, randInt(ranges.down[0], ranges.down[1]));
+        add(ZALGO_MID, randInt(ranges.mid[0], ranges.mid[1]));
         return out;
       })
       .join("");
@@ -451,6 +498,7 @@
     { id: "underline", name: "Underline", transform: underline },
     { id: "double-underline", name: "Double Underline", transform: doubleUnderline },
     { id: "slashed", name: "Slashed", transform: slashed },
+    { id: "overline", name: "Overline", transform: overline },
     { id: "upside-down", name: "Upside-Down / Flip", transform: flipText },
     { id: "mirror", name: "Mirror / Reverse", transform: mirrorText, wholeString: true },
     { id: "spaced", name: "Wide / Spaced Out", transform: spacedOut, wholeString: true },
@@ -467,6 +515,111 @@
     STYLE_BY_ID[s.id] = s;
   });
 
+  /* ========================== where this actually works ========================== */
+  /* The most common complaint about tools in this category is that the text
+     looked fine in the generator and then arrived somewhere as boxes, as
+     plain letters, or not at all. That is not a bug in the transform — it is
+     the destination normalising, filtering, or lacking the font — but a tool
+     that stays silent about it is letting people find out the hard way.
+
+     Notes are attached by mechanism rather than one per style, because the
+     mechanism is what decides the answer: every Math Alphanumeric style
+     behaves alike, every combining-mark style behaves alike. `kind` also
+     tells a UI which caveat to lead with. */
+
+  const SUPPORT_KINDS = {
+    math: {
+      kind: "math",
+      works: "Works in most bios, posts, display names and chat — X, Instagram, TikTok, Discord, Reddit.",
+      watch: "Refused by real-name fields (Facebook, LinkedIn's name field) and unsearchable: these are separate characters from ordinary letters, so nobody will find you by typing your name.",
+    },
+    combining: {
+      kind: "combining",
+      works: "Works anywhere plain text goes, and is the only way to strike through or underline in a field that will not take formatting.",
+      watch: "Each mark is its own character, so the length counts against a bio limit even though nothing extra is visible. A few platforms strip combining marks on save.",
+    },
+    enclosed: {
+      kind: "enclosed",
+      works: "Very widely supported — these are long-standing characters and most fonts on most devices have them.",
+      watch: "Some Android system fonts miss the lowercase enclosed letters and draw an empty box instead.",
+    },
+    partial: {
+      kind: "partial",
+      works: "Reads as ordinary text everywhere, because these are normal Unicode letters rather than a maths alphabet.",
+      watch: "Unicode has no character for every letter in this style, so the missing ones stay plain. That is the honest fallback, not a fault.",
+    },
+    fullwidth: {
+      kind: "fullwidth",
+      works: "About as safe as fancy text gets: these come from the CJK block, which every font that supports Chinese, Japanese or Korean already has.",
+      watch: "Each character is twice as wide, so a name that fit before may now be truncated.",
+    },
+    reordered: {
+      kind: "reordered",
+      works: "Ordinary letters in an unusual order, so it survives almost anywhere plain text does.",
+      watch: "Bidirectional text handling means some apps re-order it back on display, and a screen reader will read it letter by letter as nonsense.",
+    },
+    symbols: {
+      kind: "symbols",
+      works: "Plain symbol characters with broad font coverage — safe in gamer tags, chat and display names.",
+      watch: "Ornamental brackets can trip length limits and look like spam to some moderation filters.",
+    },
+    zalgo: {
+      kind: "zalgo",
+      works: "Renders in most chat apps and on the web, where it is meant as a visual joke rather than readable text.",
+      watch: "Tall stacks overflow the line above and many platforms strip or reject them. Assume it will be refused by any field with a length limit — the character count is enormous.",
+    },
+    flags: {
+      kind: "flags",
+      works: "Renders as coloured letter tiles on most platforms.",
+      watch: "Two of these in a row that happen to form a country code turn into that country's flag — so 'GB' becomes 🇬🇧. Rarely what you wanted mid-word.",
+    },
+  };
+
+  // style id -> support kind. Anything absent is treated as "math", which is
+  // the overwhelming majority and the most conservative note of the set.
+  const SUPPORT_BY_ID = {
+    "small-caps": "partial", superscript: "partial", subscript: "partial",
+    circled: "enclosed", "negative-circled": "enclosed", squared: "enclosed",
+    "negative-squared": "enclosed", parenthesized: "enclosed",
+    "regional-indicator": "flags",
+    "faux-cyrillic": "partial", "greek-style": "partial", currency: "partial",
+    fullwidth: "fullwidth", spaced: "fullwidth",
+    strikethrough: "combining", underline: "combining",
+    "double-underline": "combining", slashed: "combining", overline: "combining",
+    "upside-down": "reordered", mirror: "reordered",
+    "hearts-between": "symbols", "ornamental-wrap": "symbols", "star-wrap": "symbols",
+    "zalgo-light": "zalgo", "zalgo-medium": "zalgo", "zalgo-heavy": "zalgo",
+  };
+
+  /** The "where this works" note for a style id, never null. */
+  function supportNote(styleId) {
+    return SUPPORT_KINDS[SUPPORT_BY_ID[styleId] || "math"];
+  }
+
+  /* ============================== counting characters ============================== */
+
+  /**
+   * What a string costs, three ways, because platforms disagree and the
+   * disagreement is invisible.
+   *
+   * A "20 character" bio written in underlined text is 40 characters to
+   * anything counting code points, and one styled with bold Math letters is
+   * 40 to anything counting UTF-16 units. People hit the limit, cannot see
+   * why, and blame the generator. Reporting all three is the fix:
+   *
+   * - `visible`  grapheme clusters — what a human counts by eye
+   * - `counted`  code points — what most bio limits actually count
+   * - `utf16`    JS string length — what a few older systems count
+   */
+  function countText(str) {
+    const s = typeof str === "string" ? str : "";
+    return {
+      visible: splitGraphemes(s).length,
+      counted: Array.from(s).length,
+      utf16: s.length,
+    };
+  }
+
   // Gallery presentation order, shared by the homepage and the Combiner's
   // style picker: the styles people actually come looking for (bold, italic,
   // cursive, gothic, bubble, glitch…) land in the first rows.
@@ -479,7 +632,7 @@
     "superscript", "subscript", "spaced", "mirror",
     "faux-cyrillic", "greek-style", "currency",
     "parenthesized", "regional-indicator",
-    "double-underline", "slashed",
+    "double-underline", "slashed", "overline",
     "hearts-between", "ornamental-wrap", "star-wrap",
     "zalgo-light", "zalgo-medium", "zalgo-heavy",
   ];
@@ -523,7 +676,7 @@
       id: "effects-glitch",
       title: "Effects & Glitch",
       ids: [
-        "strikethrough", "underline", "double-underline", "slashed",
+        "strikethrough", "underline", "double-underline", "slashed", "overline",
         "upside-down", "mirror",
         "zalgo-light", "zalgo-medium", "zalgo-heavy",
       ],
@@ -594,9 +747,15 @@
     applyMixPattern,
     mapTransform,
     zalgoText,
+    zalgoRanges,
+    ZALGO_MAX_MARKS,
+    ZALGO_LEVELS,
     flipText,
     mirrorText,
     splitGraphemes,
+    supportNote,
+    SUPPORT_KINDS,
+    countText,
   };
 
   if (typeof module !== "undefined" && module.exports) {

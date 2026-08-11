@@ -23,15 +23,21 @@ conventions every change must follow.
 
 ## Product shape
 
-Three tools sharing one transform engine (`FancyText` in
+Eight tools sharing one transform engine (`FancyText` in
 `assets/js/fancytext-core.js`, requirable from Node):
 
-- **Homepage `/`** — flat gallery of all 39 styles; type once, copy anywhere.
+- **Homepage `/`** — flat gallery of all 40 styles; type once, copy anywhere.
 - **Combiner `/combine/`** — chain up to 6 styles; each step's output feeds
   the next. URL state: `?text=&chain=id1,id2`.
 - **Mixer `/mix/`** — a different style per letter (paint, or pattern
   buttons). URL state: `?text=&styles=id1,-,id2` (`-` = plain, one entry per
   grapheme).
+- **Five focused pages** — `/flip/`, `/glitch/`, `/strikethrough/`,
+  `/small-caps/`, `/vaporwave/`. One query cluster each, all driven by the
+  single `assets/js/styletool.js` runtime off a `data-tool` attribute on
+  `<main>`; the shortlist of styles and the copy live in its `TOOLS` table.
+  URL state: `?text=` only. Adding a tool means an entry in `TOOLS` and a page
+  from the same shell — never a sixth near-identical script.
 
 ## UX rules (hard-won — don't regress these)
 
@@ -73,6 +79,28 @@ super/subscript). Alphabet styles no-op on already-styled text — so recipes
 are "at most one alphabet style first, then effects". Subtle results
 (spacing tweaks) don't make the cut; crossed/underlined/flipped stacks do.
 Zalgo (`random: true`) never goes in a preset or example.
+
+### Say where it works, and what it costs
+Every tool page carries two things that are not decoration:
+- a **"where this works" note** per style, from `supportNote(id)` in core.
+  Notes attach by *mechanism* (math alphabet / combining mark / enclosed /
+  partial coverage / fullwidth / reordered / zalgo), because the mechanism is
+  what decides the answer — not one hand-written line per style.
+- a **character-count readout** (`Site.renderCharCount`), reporting visible
+  characters and, when they differ, what the string counts as against a length
+  limit. This is the most-reported surprise with fancy text and it is
+  completely invisible without the number.
+
+### Zalgo has a hard cap
+`ZALGO_MAX_MARKS` (12) is a safety limit, not a style choice: shaping cost is
+super-linear in marks per base character, so an uncapped slider hangs the tab.
+Budget in **code points**, not draws from the mark pool — one pool entry
+(U+0344) is stored decomposed and is two marks in one string.
+
+### Combining marks and fullwidth do not mix
+A strikethrough or underline is drawn to the width of its base character, so
+on fullwidth bases the marks meet end to end and render as solid black bars
+with the letters hidden. Don't offer that combination.
 
 ### Small patterns to preserve
 - Tiles that contain buttons are `div[role=button][tabindex=0]` with
