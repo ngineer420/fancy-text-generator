@@ -294,6 +294,11 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   overflow: hidden;
   overflow-wrap: anywhere;
   max-height: 122px;
+  /* The spaced-out styles put real runs of spaces in the text. Collapsing
+     them on screen makes the preview disagree with what the copy button
+     actually puts on the clipboard, which is the one thing a preview must
+     never do. pre-wrap keeps the runs and still wraps normally. */
+  white-space: pre-wrap;
 }
 .tile.is-clipped .tile-output {
   -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 97%);
@@ -398,7 +403,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
 .erabbit-mark img { display: block; width: 10px; height: 10px; }
 
 /* ---------- header tool nav ---------- */
-.site-nav { display: flex; gap: 14px; margin-right: 4px; }
+.site-nav { display: flex; gap: 14px; margin-right: 4px; flex-wrap: wrap; }
 .site-nav a {
   color: var(--text-dim);
   font-size: 13px;
@@ -752,6 +757,9 @@ a.fav-pill:hover { text-decoration: none; }
   font-size: clamp(21px, 3vw, 26px);
   line-height: 1.5;
   overflow-wrap: anywhere;
+  /* Same reason as .tile-output: a chain ending in a spacing style must show
+     the spaces it is about to copy. */
+  white-space: pre-wrap;
 }
 .copy-result-btn {
   background: var(--accent);
@@ -823,6 +831,180 @@ a.fav-pill:hover { text-decoration: none; }
   color: var(--text-faint);
   text-align: center;
   line-height: 1.3;
+}
+
+/* ---------- header nav at eight tools ---------- */
+/* The nav was a plain flex row, which was fine for two tools and overflows
+   the header at eight. Above 760px it wraps inside the header; below, it
+   drops onto its own full-width row and scrolls sideways — the same
+   affordance the filter pills already use, so nothing new to learn, and no
+   JavaScript standing between a phone visitor and the other seven tools. */
+@media (max-width: 760px) {
+  .header-inner { flex-wrap: wrap; row-gap: 0; }
+  /* The nav is nested inside .header-actions, which is sized by its content —
+     so a full-width nav inside it is circular and just overflows the page.
+     `display: contents` promotes the nav and the theme toggle to direct
+     children of the header row, which lets the brand and the toggle share
+     line one and the nav take a line of its own. */
+  .header-actions { display: contents; }
+  .site-nav {
+    order: 3;
+    flex: 1 1 100%;
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    gap: 4px;
+    margin-top: 4px;
+  }
+  .site-nav::-webkit-scrollbar { display: none; }
+  /* 10px of vertical padding keeps each link at a real tap target without
+     making the header tall. */
+  .site-nav a { white-space: nowrap; padding: 10px 6px; }
+}
+
+/* ---------- footer tool list ---------- */
+/* Every tool, on every tool page, with no JavaScript and no disclosure to
+   open. It is the fallback route off a page whose header nav has scrolled,
+   and it is crawlable. */
+.footer-tools {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 20px 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 16px;
+  font-size: 13px;
+}
+.footer-tools-label {
+  color: var(--text-faint);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+.footer-tools a { color: var(--text-dim); }
+.footer-tools a:hover { color: var(--accent); }
+.footer-tools a[aria-current="page"] { color: var(--accent); }
+@media (max-width: 700px) {
+  .footer-tools a { padding: 8px 0; }
+}
+
+/* ---------- character count readout ---------- */
+/* Sits directly under the input because it is about the text you just typed,
+   and because the number it reports is the one that decides whether a bio
+   will be accepted. */
+.char-count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 6px;
+  font-size: 12.5px;
+  color: var(--text-faint);
+  margin: 8px 2px 0;
+  min-height: 1.3em;
+}
+.char-count strong { color: var(--text-dim); font-weight: 700; }
+/* The gap between "visible" and "counted" is the whole reason this exists,
+   so the second number gets the warmer colour rather than blending in. */
+.count-warn { color: var(--accent-dim); }
+.count-warn strong { color: var(--accent); }
+.count-sep { color: var(--border); }
+
+/* ---------- variant cards on the single-purpose tool pages ---------- */
+.variant-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 16px; }
+@media (min-width: 700px) {
+  .variant-grid { grid-template-columns: 1fr 1fr; }
+}
+/* These cards carry a support note, so they are taller and the output must
+   not be clipped the way a dense gallery tile is. */
+.variant-tile { cursor: pointer; }
+.variant-tile .tile-output {
+  max-height: none;
+  font-size: clamp(20px, 2.4vw, 24px);
+  padding-bottom: 2px;
+}
+
+/* ---------- "where this works" note ---------- */
+.tile-support {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 9px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-faint);
+}
+.support-blurb { color: var(--text-dim); }
+.support-line { display: block; }
+.support-key {
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-faint);
+}
+.support-works .support-key { color: var(--accent-dim); }
+.support-watch .support-key, .support-gap .support-key { color: #d98a5a; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .support-watch .support-key,
+  :root:not([data-theme="dark"]) .support-gap .support-key { color: #a2542a; }
+}
+:root[data-theme="light"] .support-watch .support-key,
+:root[data-theme="light"] .support-gap .support-key { color: #a2542a; }
+
+.support-standalone .tile-support {
+  background: var(--bg-raised);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-top: 14px;
+}
+
+/* ---------- glitch intensity slider ---------- */
+.intensity-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+.intensity-row label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+.intensity-row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--accent);
+}
+.intensity-value {
+  font-size: 12px;
+  color: var(--text-dim);
+  min-width: 3.5em;
+  text-align: right;
+}
+@media (max-width: 560px) {
+  /* At the cap the readout grows a sentence, which would squeeze the slider
+     to nothing on a phone — give it its own line instead. */
+  .intensity-row { flex-wrap: wrap; }
+  .intensity-value { text-align: left; flex-basis: 100%; }
+}
+/* Stacked marks bleed upward into whatever is above them; the extra leading
+   and the clipped box keep a heavy glitch inside its own panel instead of
+   over the label above it. */
+.glitch-out {
+  line-height: 2.1;
+  overflow: hidden;
+  padding: 6px 0;
 }
 
 /* ---------- misc ---------- */

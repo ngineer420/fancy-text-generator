@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zalgo Glitch Text Generator - Cursed Text with an Intensity Slider | fontloom</title>
+<meta name="description" content="Make zalgo glitch text with a slider for exactly how far it bleeds — from a light shimmer to fully cursed. Capped so it cannot lock your browser. Copy it anywhere.">
+<link rel="canonical" href="https://fontloom.com/glitch/">
+<meta name="theme-color" content="#0c0a12">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Zalgo Glitch Text Generator - Cursed Text with an Intensity Slider">
+<meta property="og:description" content="Stack combining marks to any intensity you like, re-roll for a different scramble, and copy the result anywhere.">
+<meta property="og:url" content="https://fontloom.com/glitch/">
+<meta property="og:image" content="https://fontloom.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zalgo Glitch Text Generator - Cursed Text with an Intensity Slider">
+<meta name="twitter:description" content="Stack combining marks to any intensity you like, re-roll for a different scramble, and copy the result anywhere.">
+<meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
+
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
+     browsers holding a cached copy (GitHub Pages serves max-age=600) can't
+     pair a stale asset with fresh HTML. -->
+<link rel="stylesheet" href="/assets/css/styles.css?v=12">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Zalgo Glitch Text Generator",
+  "url": "https://fontloom.com/glitch/",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free browser-based zalgo generator that stacks Unicode combining marks to a controllable, capped intensity."
+}
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="fontloom.com home">
+      <span class="brand-mark">fontloom</span>
+      <span class="brand-tag">fancy text generator</span>
+    </a>
+    <div class="header-actions">
+      <nav class="site-nav" aria-label="Tools">
+        <a href="/flip/">Flip</a>
+        <a href="/glitch/" aria-current="page">Glitch</a>
+        <a href="/strikethrough/">Strike</a>
+        <a href="/small-caps/">Small Caps</a>
+        <a href="/vaporwave/">Vaporwave</a>
+        <a href="/combine/">Combiner</a>
+        <a href="/mix/">Mixer</a>
+      </nav>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="tool-page" data-tool="glitch">
+  <div class="hero">
+    <h1>Glitch / Zalgo Text</h1>
+    <p>Stack the marks<span class="dot">•</span>slide the intensity<span class="dot">•</span>re-roll until it looks right</p>
+  </div>
+
+  <div class="tool-shell">
+    <div class="input-shell">
+      <label for="tool-input" class="visually-hidden">Your text</label>
+      <input type="text" id="tool-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
+      <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+      </button>
+    </div>
+    <p class="char-count" id="char-count" role="status"></p>
+
+    <div class="intensity-row">
+      <label for="intensity">Intensity</label>
+      <input type="range" id="intensity" min="0" max="100" value="40" step="1">
+      <span class="intensity-value" id="intensity-value" aria-live="off">40%</span>
+    </div>
+    <div class="pattern-row" role="group" aria-label="Intensity presets">
+      <button type="button" class="filter-pill" data-level="light">Light</button>
+      <button type="button" class="filter-pill" data-level="medium">Medium</button>
+      <button type="button" class="filter-pill" data-level="heavy">Heavy</button>
+      <button type="button" class="filter-pill" id="reroll" title="Zalgo is random — generate a different scramble at the same intensity">↻ Re-roll</button>
+    </div>
+
+    <div class="result-panel">
+      <div class="result-head">
+        <span class="result-label">Result</span>
+        <span class="result-actions">
+          <button type="button" id="copy-result" class="copy-result-btn">Copy</button>
+        </span>
+      </div>
+      <div class="result-text glitch-out" id="tool-output"></div>
+    </div>
+
+    <div id="support-note" class="support-standalone"></div>
+
+  </div>
+
+  <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
+
+  <section class="container-narrow explainer">
+    <h2>What is zalgo text made of?</h2>
+    <p>Combining marks. Unicode lets an accent attach to the character before it, and it does not stop at one — stack a dozen and they pile up above and below the letter until the line bleeds into its neighbours. Zalgo is that mechanism used on purpose: the base text is untouched and perfectly readable to a computer, with a heap of U+0300-range marks riding on top. That is also why it copies cleanly into a chat box.</p>
+    <h2>Why does the slider stop getting stronger?</h2>
+    <p>Because text shaping is not linear in the number of marks on one character — the renderer has to position each one relative to everything already stacked — so an uncapped slider is a reliable way to freeze a browser tab. This one caps at twelve marks per character, which is well past unreadable and still lays out instantly. The readout says so when you reach it, rather than leaving the top of the slider feeling broken.</p>
+    <h2>Where can I actually use it?</h2>
+    <p>Discord, most chat apps and anywhere on the web that renders raw text. Expect it to be refused elsewhere: the character count is enormous — watch the readout above — so anything with a length limit will reject it, and several platforms strip combining marks on save. Some also treat tall stacks as abuse, since the marks overflow into the line above. Use it where it is a joke, not where it is a username.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <nav class="footer-tools" aria-label="All tools">
+    <span class="footer-tools-label">Tools</span>
+      <a href="/">All fonts</a>
+      <a href="/flip/">Flip</a>
+      <a href="/glitch/" aria-current="page">Glitch</a>
+      <a href="/strikethrough/">Strike</a>
+      <a href="/small-caps/">Small Caps</a>
+      <a href="/vaporwave/">Vaporwave</a>
+      <a href="/combine/">Combiner</a>
+      <a href="/mix/">Mixer</a>
+  </nav>
+  <div class="footer-inner">
+    <div>© <span id="year"></span> fontloom.com</div>
+    <div class="footer-links">
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+
+<script src="/assets/js/fancytext-core.js?v=4"></script>
+<script src="/assets/js/site.js?v=2"></script>
+<script src="/assets/js/favorites.js?v=2"></script>
+<script src="/assets/js/styletool.js?v=1"></script>
+</body>
+</html>

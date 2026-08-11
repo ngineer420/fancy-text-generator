@@ -1,6 +1,8 @@
 # fontloom.com
 
-A free, ad-supported fancy text generator: type plain text and instantly get 39 stylized Unicode versions of it — bold, italic, script, gothic/fraktur, double-struck, bubble/circled, squared, small caps, superscript/subscript, strikethrough, upside-down, mirrored, and three intensities of zalgo/glitch text — each with a one-click Copy button.
+A free, ad-supported fancy text generator: type plain text and instantly get 40 stylized Unicode versions of it — bold, italic, script, gothic/fraktur, double-struck, bubble/circled, squared, small caps, superscript/subscript, strikethrough, underline, overline, upside-down, mirrored, and three intensities of zalgo/glitch text — each with a one-click Copy button.
+
+Alongside the full gallery there are seven focused tools, each one query cluster deep: a Combiner, a Mixer, and five single-purpose pages (flip, glitch, strikethrough, small caps, vaporwave). Every one of them carries a **"where this works" note** per style — most of these transforms are stripped or refused somewhere, and finding that out after pasting is the commonest complaint about tools in this category — and a **character-count readout**, because combining marks push a bio past its limit with nothing visible to explain it.
 
 Everything runs client-side — no backend, no build step, no uploads. Deployed as static files on GitHub Pages.
 
@@ -28,6 +30,7 @@ The pure transform engine has a small test suite (plain Node asserts, no depende
 
 ```
 node test/core.test.js
+node test/favorites.test.js
 ```
 
 ## Structure
@@ -36,6 +39,11 @@ node test/core.test.js
 index.html                     Main app (style gallery)
 combine/index.html             Font Combiner — chain styles in sequence
 mix/index.html                 Font Mixer — a different style per letter
+flip/index.html                Upside-down and mirror text
+glitch/index.html              Zalgo/glitch, with a capped intensity slider
+strikethrough/index.html       Strikethrough, underline, overline, slash
+small-caps/index.html          Small caps, superscript, subscript
+vaporwave/index.html           Fullwidth and spaced-out text
 privacy.html                   Privacy policy (required for ad networks)
 terms.html                     Terms of use
 404.html                       Custom 404 page
@@ -47,6 +55,7 @@ assets/js/favorites.js         Local favorites store (starred styles, combos, mi
 assets/js/app.js               Homepage gallery wiring
 assets/js/combine.js           Font Combiner page wiring
 assets/js/mix.js               Font Mixer page wiring
+assets/js/styletool.js         Shared runtime for the five focused tool pages
 test/core.test.js              Transform engine tests (node test/core.test.js)
 test/favorites.test.js         Favorites store tests (node test/favorites.test.js)
 CNAME                          GitHub Pages custom domain (fontloom.com)

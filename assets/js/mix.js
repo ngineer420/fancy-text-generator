@@ -8,7 +8,7 @@
 (function () {
   "use strict";
 
-  const { debounce, copyText } = window.Site;
+  const { debounce, copyText, renderCharCount } = window.Site;
   const { STYLES, STYLE_BY_ID, splitGraphemes } = FancyText;
   const Favs = window.Favs;
 
@@ -41,6 +41,7 @@
     const palette = document.getElementById("palette");
     const favRow = document.getElementById("fav-row");
     const output = document.getElementById("mix-output");
+    const countEl = document.getElementById("char-count");
     const copyBtn = document.getElementById("copy-result");
     const saveFavBtn = document.getElementById("save-fav");
     const nameRow = document.getElementById("fav-name-row");
@@ -233,7 +234,9 @@
         tile.setAttribute("aria-label", "Letter " + g + ", style " + styleName(styleIds[i]));
         tile.title = styleName(styleIds[i]);
       });
-      output.textContent = pieces.join("");
+      const joined = pieces.join("");
+      output.textContent = joined;
+      renderCharCount(countEl, usingSample ? SAMPLE_TEXT : input.value, joined);
       if (clearBtn) clearBtn.hidden = input.value.length === 0;
       updateStarState();
     }

@@ -34,6 +34,41 @@
     }
   }
 
+  /**
+   * Say what a styled string costs, in the units a destination will use.
+   *
+   * This is the most-reported surprise with fancy text and it is entirely
+   * invisible: a ten-letter word with an underline is twenty characters, and
+   * one in bold Math letters is twenty UTF-16 units, so a bio that plainly
+   * fits gets refused with no explanation. Leading with what a human counts
+   * and naming the machine's number beside it — only when the two disagree —
+   * is the whole job.
+   *
+   * `plain` is what the visitor typed, `styled` the transformed result.
+   */
+  function renderCharCount(el, plain, styled) {
+    if (!el) return;
+    const count = FancyText.countText(styled);
+    const typed = FancyText.countText(plain);
+    const parts = [
+      '<span class="count-main"><strong>' + count.visible + "</strong> visible " +
+      (count.visible === 1 ? "character" : "characters") + "</span>",
+    ];
+    if (count.counted !== count.visible) {
+      parts.push(
+        '<span class="count-warn">counts as <strong>' + count.counted +
+        "</strong> against a length limit</span>"
+      );
+    }
+    if (typed.counted > 0 && count.counted >= typed.counted * 2) {
+      parts.push(
+        '<span class="count-warn">about ' + Math.round(count.counted / typed.counted) +
+        "× your plain text</span>"
+      );
+    }
+    el.innerHTML = parts.join('<span class="count-sep">·</span>');
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const yearEl = document.getElementById("year");
     if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -65,5 +100,5 @@
     }
   });
 
-  window.Site = { debounce, copyText };
+  window.Site = { debounce, copyText, renderCharCount };
 })();

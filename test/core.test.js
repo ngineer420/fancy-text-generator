@@ -130,4 +130,180 @@ test("applyMixPattern styles each letter and leaves spaces alone", () => {
   assert.strictEqual(out, b("a") + s("b") + " " + b("c") + s("d"));
 });
 
+/* ------------------ overline, support notes, counting, zalgo cap ------------------ */
+
+test("overline attaches U+0305 to every character", () => {
+  const out = t("overline")("abc");
+  assert.strictEqual(out, "a̅b̅c̅");
+  // Codepoint-level check rather than "it got longer": the mark must be the
+  // combining overline, not the spacing macron U+00AF that looks identical.
+  assert.deepStrictEqual(
+    Array.from(out).map((c) => c.codePointAt(0)),
+    [0x61, 0x305, 0x62, 0x305, 0x63, 0x305]
+  );
+  assert.strictEqual(splitGraphemes(out).length, 3, "still three visible characters");
+});
+
+test("every style has a where-this-works note", () => {
+  for (const style of STYLES) {
+    const note = FancyText.supportNote(style.id);
+    assert.ok(note && note.works && note.watch, style.id + " has no support note");
+    assert.ok(note.kind, style.id + " support note has no kind");
+  }
+});
+
+test("support notes are attached by mechanism, not guessed", () => {
+  assert.strictEqual(FancyText.supportNote("bold").kind, "math");
+  assert.strictEqual(FancyText.supportNote("underline").kind, "combining");
+  assert.strictEqual(FancyText.supportNote("overline").kind, "combining");
+  assert.strictEqual(FancyText.supportNote("small-caps").kind, "partial");
+  assert.strictEqual(FancyText.supportNote("fullwidth").kind, "fullwidth");
+  assert.strictEqual(FancyText.supportNote("zalgo-heavy").kind, "zalgo");
+  assert.strictEqual(FancyText.supportNote("regional-indicator").kind, "flags");
+  // An id nobody registered still gets the conservative default rather than
+  // undefined, because the UI renders this unconditionally.
+  assert.strictEqual(FancyText.supportNote("not-a-style").kind, "math");
+});
+
+test("countText separates what you see from what a limit counts", () => {
+  const plain = FancyText.countText("Fancy Text");
+  assert.deepStrictEqual(plain, { visible: 10, counted: 10, utf16: 10 });
+
+  // The whole reason the readout exists: an underline doubles the count and
+  // changes nothing visible.
+  const c = FancyText.countText(t("underline")("Fancy"));
+  assert.strictEqual(c.visible, 5, "still five characters to a human");
+  assert.strictEqual(c.counted, 10, "ten to anything counting code points");
+
+  // Spaces take no mark, so the multiplier is not a flat 2× — which is why
+  // the readout reports the real number rather than computing one.
+  const spaced = FancyText.countText(t("underline")("Fancy Text"));
+  assert.strictEqual(spaced.visible, 10);
+  assert.strictEqual(spaced.counted, 19, "nine marked letters plus an unmarked space");
+
+  // Math Alphanumeric letters are outside the BMP, so UTF-16 counts double
+  // while code points do not — a different limit, tripped a different way.
+  const bold = FancyText.countText(t("bold")("Fancy"));
+  assert.strictEqual(bold.visible, 5);
+  assert.strictEqual(bold.counted, 5);
+  assert.strictEqual(bold.utf16, 10, "surrogate pairs are two UTF-16 units each");
+
+  assert.deepStrictEqual(FancyText.countText(""), { visible: 0, counted: 0, utf16: 0 });
+  assert.deepStrictEqual(FancyText.countText(null), { visible: 0, counted: 0, utf16: 0 });
+});
+
+test("zalgo intensity is capped so it cannot lock the browser", () => {
+  const MAX = FancyText.ZALGO_MAX_MARKS;
+  // The cap has to hold at the top of the slider and beyond it, including
+  // for values no UI should ever send.
+  for (const level of [100, 250, Infinity, "heavy"]) {
+    const out = FancyText.zalgoText("abcdefghij", level);
+    for (const cluster of splitGraphemes(out)) {
+      const marks = Array.from(cluster).length - 1;
+      assert.ok(marks <= MAX, "level " + level + " produced " + marks + " marks (cap " + MAX + ")");
+    }
+  }
+});
+
+test("zalgoRanges maps the slider onto mark counts without exceeding the cap", () => {
+  const MAX = FancyText.ZALGO_MAX_MARKS;
+  for (let pct = 0; pct <= 100; pct += 5) {
+    const r = FancyText.zalgoRanges(pct);
+    assert.strictEqual(r.intensity, pct);
+    for (const key of ["up", "down", "mid"]) {
+      assert.ok(r[key][0] >= 0, pct + "% " + key + " has a negative floor");
+      assert.ok(r[key][0] <= r[key][1], pct + "% " + key + " range is inverted");
+      assert.ok(r[key][1] <= MAX, pct + "% " + key + " exceeds the cap");
+    }
+  }
+  // Zero intensity is genuinely no marks, not "a few".
+  const zero = FancyText.zalgoRanges(0);
+  assert.deepStrictEqual([zero.up, zero.down, zero.mid], [[0, 0], [0, 0], [0, 0]]);
+  assert.strictEqual(FancyText.zalgoText("abc", 0), "abc", "0% leaves the text alone");
+  // Garbage in still produces a usable range rather than NaN counts.
+  assert.strictEqual(FancyText.zalgoRanges("nonsense").intensity, FancyText.ZALGO_LEVELS.medium);
+});
+
+test("the named zalgo levels still sit on the slider scale", () => {
+  for (const [name, pct] of Object.entries(FancyText.ZALGO_LEVELS)) {
+    assert.strictEqual(FancyText.zalgoRanges(name).intensity, pct, name);
+    assert.ok(pct > 0 && pct <= 100, name + " is off the scale");
+  }
+  // Light must stay lighter than heavy, or the tiles lie about themselves.
+  assert.ok(FancyText.zalgoRanges("light").up[1] < FancyText.zalgoRanges("heavy").up[1]);
+});
+
+/* ------------------------- the focused tool pages ------------------------- */
+
+test("every style the tool pages name exists in the registry", () => {
+  // Mirrors the `chain` lists in assets/js/styletool.js. A typo there is a
+  // silently blank card, which is exactly the failure a test should catch.
+  const chains = [
+    ["upside-down"], ["mirror"], ["upside-down", "mirror"], ["upside-down", "underline"],
+    ["strikethrough"], ["underline"], ["double-underline"], ["overline"], ["slashed"],
+    ["strikethrough", "underline"],
+    ["small-caps"], ["superscript"], ["subscript"], ["small-caps", "underline"],
+    ["fullwidth"], ["spaced"], ["fullwidth", "spaced"],
+  ];
+  for (const chain of chains) {
+    for (const id of chain) {
+      assert.ok(STYLE_BY_ID[id], "styletool.js names a style that does not exist: " + id);
+    }
+    const out = FancyText.applyChain(chain, "Fancy Text");
+    assert.ok(out.length > 0, chain.join("+") + " produced nothing");
+  }
+});
+
+test("the documented small-caps and script gaps are the real ones", () => {
+  // The pages promise specific missing letters. If Unicode coverage here ever
+  // changes, the copy is wrong and this fails rather than misleading anyone.
+  const gaps = (id, chars) =>
+    Array.from(chars).filter((c) => t(id)(c) === c).join("");
+  assert.strictEqual(gaps("small-caps", "abcdefghijklmnopqrstuvwxyz"), "qx");
+  assert.strictEqual(gaps("superscript", "abcdefghijklmnopqrstuvwxyz"), "q");
+  assert.strictEqual(gaps("superscript", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"), "CFQSVXYZ");
+  assert.strictEqual(gaps("subscript", "abcdefghijklmnopqrstuvwxyz"), "bcdfgqwyz");
+  assert.strictEqual(
+    gaps("subscript", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "subscript has no capitals at all"
+  );
+});
+
+test("fullwidth maps to the real fullwidth block, not padded letters", () => {
+  const out = t("fullwidth")("Ab1");
+  assert.strictEqual(out, "Ａｂ１");
+  assert.deepStrictEqual(
+    Array.from(out).map((c) => c.codePointAt(0)),
+    [0xff21, 0xff42, 0xff11]
+  );
+  // And it is genuinely different from inserting spaces, which is the claim
+  // the vaporwave page makes.
+  assert.notStrictEqual(t("fullwidth")("ab"), t("spaced")("ab"));
+});
+
+test("upside-down produces the documented turned characters", () => {
+  const out = flipText("fancy text");
+  assert.strictEqual(out, "ʇxǝʇ ʎɔuɐɟ");
+  // Assert the actual codepoints, not just that something came back: these
+  // must be the real turned letters (U+0287 turned t, U+025F dotless j with
+  // stroke standing in for f, …) rather than visually similar substitutes.
+  assert.deepStrictEqual(
+    Array.from(out).map((c) => c.codePointAt(0)),
+    [0x287, 0x78, 0x1dd, 0x287, 0x20, 0x28e, 0x254, 0x75, 0x250, 0x25f]
+  );
+});
+
+test("mirror round-trips, and upside-down deliberately does not", () => {
+  // Mirror is a true involution: reverse twice and you are back.
+  assert.strictEqual(FancyText.mirrorText(FancyText.mirrorText("fancy")), "fancy");
+
+  // Upside-down is not, and should not be claimed to be. The turned glyphs
+  // have no entry pointing back at the plain letters, so a second flip only
+  // restores the characters that happen to be their own turned form. This is
+  // asserted rather than left implicit so nobody "fixes" it into a round-trip
+  // and silently changes what the /flip/ page produces.
+  assert.strictEqual(flipText(flipText("fancy text")), "ɟɐnɔʎ ʇǝxʇ");
+});
+
 console.log("\nAll " + count + " tests passed.");

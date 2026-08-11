@@ -22,7 +22,7 @@
 <!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
      browsers holding a cached copy (GitHub Pages serves max-age=600) can't
      pair a stale asset with fresh HTML. -->
-<link rel="stylesheet" href="/assets/css/styles.css?v=11">
+<link rel="stylesheet" href="/assets/css/styles.css?v=12">
 
 <script type="application/ld+json">
 {
@@ -50,6 +50,11 @@
     </a>
     <div class="header-actions">
       <nav class="site-nav" aria-label="Tools">
+        <a href="/flip/">Flip</a>
+        <a href="/glitch/">Glitch</a>
+        <a href="/strikethrough/">Strike</a>
+        <a href="/small-caps/">Small Caps</a>
+        <a href="/vaporwave/">Vaporwave</a>
         <a href="/combine/">Combiner</a>
         <a href="/mix/">Mixer</a>
       </nav>
@@ -61,7 +66,7 @@
 <main id="main">
   <div class="hero">
     <h1>Fancy Text Generator</h1>
-    <p><span id="style-count">39</span> copy-paste Unicode fonts<span class="dot">•</span>free<span class="dot">•</span>runs 100% in your browser</p>
+    <p><span id="style-count">40</span> copy-paste Unicode fonts<span class="dot">•</span>free<span class="dot">•</span>runs 100% in your browser</p>
   </div>
 
   <div class="control-bar" id="control-bar">
@@ -77,6 +82,8 @@
     </div>
   </div>
 
+  <p class="char-count container-narrow" id="char-count" role="status"></p>
+
   <p class="preview-hint" id="empty-state">Previewing with <strong>“Fancy Text”</strong> — type above to use your own words, then tap any style to copy it.</p>
 
   <div class="tile-grid" id="gallery"></div>
@@ -91,6 +98,31 @@
       <span class="tool-promo-title">Font Mixer</span>
       <span class="tool-promo-sample">𝕱a̶ₙcy Tₑₓₜ</span>
       <span class="tool-promo-desc">Paint a different fancy font onto every letter of the same sentence.</span>
+    </a>
+    <a class="tool-promo" href="/flip/">
+      <span class="tool-promo-title">Upside-Down Text</span>
+      <span class="tool-promo-sample">ʇxǝʇ ʎɔuɐɟ</span>
+      <span class="tool-promo-desc">Flip it over or reverse it into mirror writing, with the two kept honestly apart.</span>
+    </a>
+    <a class="tool-promo" href="/glitch/">
+      <span class="tool-promo-title">Glitch / Zalgo</span>
+      <span class="tool-promo-sample">F̃a͓n͈cͤy͓ T͓eͤx͈t͓</span>
+      <span class="tool-promo-desc">Stack combining marks to whatever intensity you like — capped so it cannot lock the tab.</span>
+    </a>
+    <a class="tool-promo" href="/strikethrough/">
+      <span class="tool-promo-title">Strike &amp; Underline</span>
+      <span class="tool-promo-sample">F̶a̶n̶c̶y̶ T̅e̅x̅t̅</span>
+      <span class="tool-promo-desc">Strikethrough, underline and overline for fields with no formatting buttons.</span>
+    </a>
+    <a class="tool-promo" href="/small-caps/">
+      <span class="tool-promo-title">Small Caps &amp; Scripts</span>
+      <span class="tool-promo-sample">Fᴀɴᴄʏ Tᴇₓₜ</span>
+      <span class="tool-promo-desc">Small caps, superscript and subscript — with a straight answer about the missing letters.</span>
+    </a>
+    <a class="tool-promo" href="/vaporwave/">
+      <span class="tool-promo-title">Vaporwave</span>
+      <span class="tool-promo-sample">Ｆａｎｃｙ Ｔｅｘｔ</span>
+      <span class="tool-promo-desc">Real fullwidth characters, not letters with spaces jammed between them.</span>
     </a>
   </div>
 
@@ -127,6 +159,17 @@
 </main>
 
 <footer class="site-footer">
+  <nav class="footer-tools" aria-label="All tools">
+    <span class="footer-tools-label">Tools</span>
+    <a href="/" aria-current="page">All fonts</a>
+    <a href="/flip/">Flip</a>
+    <a href="/glitch/">Glitch</a>
+    <a href="/strikethrough/">Strike</a>
+    <a href="/small-caps/">Small Caps</a>
+    <a href="/vaporwave/">Vaporwave</a>
+    <a href="/combine/">Combiner</a>
+    <a href="/mix/">Mixer</a>
+  </nav>
   <div class="footer-inner">
     <div>© <span id="year"></span> fontloom.com</div>
     <div class="footer-links">
@@ -138,9 +181,9 @@
 
 <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
 
-<script src="/assets/js/fancytext-core.js?v=3"></script>
-<script src="/assets/js/site.js?v=1"></script>
+<script src="/assets/js/fancytext-core.js?v=4"></script>
+<script src="/assets/js/site.js?v=2"></script>
 <script src="/assets/js/favorites.js?v=2"></script>
-<script src="/assets/js/app.js?v=8"></script>
+<script src="/assets/js/app.js?v=9"></script>
 </body>
 </html>

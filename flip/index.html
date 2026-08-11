@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upside Down Text Generator - Flip and Mirror Your Text | fontloom</title>
+<meta name="description" content="Flip your text upside down (ʇxǝʇ ʎcuɐɟ) or reverse it into mirror writing. Real Unicode characters you can paste into any bio, chat or caption.">
+<link rel="canonical" href="https://fontloom.com/flip/">
+<meta name="theme-color" content="#0c0a12">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Upside Down Text Generator - Flip and Mirror Your Text">
+<meta property="og:description" content="Turn your text upside down or backwards with real Unicode characters, then copy it anywhere.">
+<meta property="og:url" content="https://fontloom.com/flip/">
+<meta property="og:image" content="https://fontloom.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Upside Down Text Generator - Flip and Mirror Your Text">
+<meta name="twitter:description" content="Turn your text upside down or backwards with real Unicode characters, then copy it anywhere.">
+<meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
+
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
+     browsers holding a cached copy (GitHub Pages serves max-age=600) can't
+     pair a stale asset with fresh HTML. -->
+<link rel="stylesheet" href="/assets/css/styles.css?v=12">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Upside-Down Text Generator",
+  "url": "https://fontloom.com/flip/",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free browser-based tool that flips text upside down and reverses it into mirror writing using real Unicode characters."
+}
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="fontloom.com home">
+      <span class="brand-mark">fontloom</span>
+      <span class="brand-tag">fancy text generator</span>
+    </a>
+    <div class="header-actions">
+      <nav class="site-nav" aria-label="Tools">
+        <a href="/flip/" aria-current="page">Flip</a>
+        <a href="/glitch/">Glitch</a>
+        <a href="/strikethrough/">Strike</a>
+        <a href="/small-caps/">Small Caps</a>
+        <a href="/vaporwave/">Vaporwave</a>
+        <a href="/combine/">Combiner</a>
+        <a href="/mix/">Mixer</a>
+      </nav>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="tool-page" data-tool="flip">
+  <div class="hero">
+    <h1>Upside-Down Text</h1>
+    <p>Flip it<span class="dot">•</span>mirror it<span class="dot">•</span>paste it anywhere</p>
+  </div>
+
+  <div class="tool-shell">
+    <div class="input-shell">
+      <label for="tool-input" class="visually-hidden">Your text</label>
+      <input type="text" id="tool-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
+      <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+      </button>
+    </div>
+    <p class="char-count" id="char-count" role="status"></p>
+
+    <div class="tile-grid variant-grid" id="variant-grid"></div>
+
+  </div>
+
+  <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
+
+  <section class="container-narrow explainer">
+    <h2>How does upside-down text actually work?</h2>
+    <p>Nothing is rotated. Unicode happens to contain characters that look like upside-down Latin letters — ɐ is a Latin small letter turned A, ǝ is a turned E, ɥ is a turned H — and this tool swaps each of your letters for its lookalike, then reverses the whole string so the result reads correctly once the page is turned over. That is why it survives copy and paste: it is ordinary text made of unusual characters, not an image or a CSS transform. More on the mechanism in <a href="/articles/how-fancy-text-works.html">how fancy text works</a>.</p>
+    <h2>What is the difference between flipped and mirrored?</h2>
+    <p><strong>Upside-down</strong> substitutes turned glyphs <em>and</em> reverses the order, so it reads normally when you rotate the screen 180°. <strong>Mirror</strong> only reverses the order and swaps the few letters that have a mirrored twin, so it reads correctly in a mirror instead. They look similar in a preview and behave completely differently on a banner or a tattoo mock-up, so both are here side by side.</p>
+    <h2>Will it survive being pasted?</h2>
+    <p>Almost always — these are ordinary Unicode letters, so anywhere plain text goes, they go. The two things to know: some apps apply bidirectional reordering and quietly put your line back the right way round, and a screen reader will read the characters in stored order, which is nonsense to listen to. Fine for a display name, unkind in a paragraph — see <a href="/articles/fancy-text-and-accessibility.html">fancy text and screen readers</a>.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <nav class="footer-tools" aria-label="All tools">
+    <span class="footer-tools-label">Tools</span>
+      <a href="/">All fonts</a>
+      <a href="/flip/" aria-current="page">Flip</a>
+      <a href="/glitch/">Glitch</a>
+      <a href="/strikethrough/">Strike</a>
+      <a href="/small-caps/">Small Caps</a>
+      <a href="/vaporwave/">Vaporwave</a>
+      <a href="/combine/">Combiner</a>
+      <a href="/mix/">Mixer</a>
+  </nav>
+  <div class="footer-inner">
+    <div>© <span id="year"></span> fontloom.com</div>
+    <div class="footer-links">
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+
+<script src="/assets/js/fancytext-core.js?v=4"></script>
+<script src="/assets/js/site.js?v=2"></script>
+<script src="/assets/js/favorites.js?v=2"></script>
+<script src="/assets/js/styletool.js?v=1"></script>
+</body>
+</html>

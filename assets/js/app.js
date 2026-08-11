@@ -26,6 +26,7 @@
     const clearBtn = document.getElementById("clear-btn");
     const gallery = document.getElementById("gallery");
     const emptyState = document.getElementById("empty-state");
+    const countEl = document.getElementById("char-count");
     const styleCountEl = document.getElementById("style-count");
     const pillsEl = document.getElementById("category-pills");
     const liveRegion = document.getElementById("copy-live-region");
@@ -290,6 +291,31 @@
       }
     }
 
+    /**
+     * How much the styles on this page cost, as a range.
+     *
+     * Combining marks and surrogate pairs push a string past a bio limit with
+     * nothing visible to explain it, so the gallery says up front how far the
+     * count can move — the low end is usually plain, the high end is zalgo.
+     */
+    function renderGalleryCount(plain, lightest, heaviest) {
+      if (!countEl) return;
+      const typed = FancyText.countText(plain);
+      const low = FancyText.countText(lightest || plain).counted;
+      const high = FancyText.countText(heaviest || plain).counted;
+      const parts = [
+        '<span class="count-main"><strong>' + typed.visible + "</strong> " +
+        (typed.visible === 1 ? "character" : "characters") + " typed</span>",
+      ];
+      if (high !== low) {
+        parts.push(
+          '<span class="count-warn">counts as <strong>' + low + "–" + high +
+          "</strong> once styled, depending which you pick</span>"
+        );
+      }
+      countEl.innerHTML = parts.join('<span class="count-sep">·</span>');
+    }
+
     function render() {
       const raw = input.value;
       const hasInput = raw.trim().length > 0;
@@ -297,14 +323,23 @@
       emptyState.hidden = hasInput;
       if (clearBtn) clearBtn.hidden = raw.length === 0;
 
+      // The readout reports the range across the gallery, not one style: on a
+      // page showing forty of them, "counts as 95" with no style named reads
+      // as a threat rather than information.
+      let heaviest = "";
+      let lightest = null;
       for (const t of tiles) {
-        t.outputEl.textContent = t.style.transform(text);
+        const out = t.style.transform(text);
+        t.outputEl.textContent = out;
+        if (out.length > heaviest.length) heaviest = out;
+        if (lightest === null || out.length < lightest.length) lightest = out;
         if (t.editEl) {
           // Keep the ✎ link pointing at the editor with whatever the
           // visitor typed (mix URLs always need a concrete text).
           t.editEl.href = t.style.editUrl(hasInput ? raw : "", text);
         }
       }
+      renderGalleryCount(text, lightest, heaviest);
       markClipped();
     }
 
