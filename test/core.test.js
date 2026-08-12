@@ -306,4 +306,58 @@ test("mirror round-trips, and upside-down deliberately does not", () => {
   assert.strictEqual(flipText(flipText("fancy text")), "ɟɐnɔʎ ʇǝxʇ");
 });
 
+/* ---------------------------- style landing pages ---------------------------- */
+/* STYLE_PAGES drives which URLs tools/build_style_pages.py writes, so a typo
+   in it is a 404 on the live site rather than a failing import. */
+
+test("every STYLE_PAGES entry points at a real, deterministic style", () => {
+  for (const page of FancyText.STYLE_PAGES) {
+    const style = STYLE_BY_ID[page.id];
+    assert.ok(style, "STYLE_PAGES references unknown style id: " + page.id);
+    // A page bakes in a character map, so a style whose output changes on
+    // every call cannot have one — the page and the tool on it would disagree
+    // the moment it loaded.
+    assert.ok(!style.random, page.id + " is random and cannot have a generated page");
+    // Two calls, same answer: the build has to be reproducible.
+    assert.strictEqual(style.transform("Fancy Text"), style.transform("Fancy Text"), page.id);
+  }
+});
+
+test("style page slugs are unique, url-safe, and keyword-shaped", () => {
+  const seen = new Set();
+  for (const page of FancyText.STYLE_PAGES) {
+    assert.ok(/^[a-z0-9]+(-[a-z0-9]+)*$/.test(page.slug), "bad slug: " + page.slug);
+    assert.ok(!seen.has(page.slug), "duplicate slug: " + page.slug);
+    seen.add(page.slug);
+    assert.ok(page.slug.endsWith("-generator"), page.slug + " should read as the query");
+  }
+  // The tool pages own these paths already; a style page must not collide.
+  for (const taken of ["combine", "mix", "flip", "glitch", "strikethrough", "small-caps", "vaporwave"]) {
+    assert.ok(!seen.has(taken), "slug collides with an existing tool page: " + taken);
+  }
+});
+
+test("stylePagePath resolves only styles that have a page", () => {
+  assert.strictEqual(FancyText.stylePagePath("bold"), "/bold-text-generator/");
+  assert.strictEqual(FancyText.stylePagePath("zalgo-heavy"), null);
+  assert.strictEqual(FancyText.stylePagePath("nonsense"), null);
+});
+
+test("every style with a page produces a character map worth printing", () => {
+  // The point of these pages is the static A-Z table. A style that left the
+  // whole alphabet untouched would render 62 identical cells and deserve no
+  // page at all, so the build should never be able to produce one silently.
+  for (const page of FancyText.STYLE_PAGES) {
+    const style = STYLE_BY_ID[page.id];
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    const changed = Array.from(letters).filter((ch) => style.transform(ch) !== ch);
+    // Subscript is the floor and the reason the floor is this low: Unicode
+    // has no subscript capitals at all and only seventeen lowercase letters.
+    // Anything thinner than that is a no-op wearing a page.
+    assert.ok(changed.length >= 15,
+      page.id + " only changes " + changed.length + " of 52 letters");
+  }
+});
+
+
 console.log("\nAll " + count + " tests passed.");

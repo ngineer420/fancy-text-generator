@@ -15,8 +15,16 @@ conventions every change must follow.
 - **Ads: AdSense Auto ads only.** One script tag in each page's `<head>`
   (client `ca-pub-7560786263587509`). NEVER add `.ad-slot` divs or manual ad
   units.
+- **Generated files are never hand-edited.** The 32 per-style landing pages
+  (`/bold-text-generator/`, `/cursive-text-generator/`, … — one per entry in
+  `FancyText.STYLE_PAGES`), the marked link-mesh block in `index.html`, and
+  `sitemap.xml` are written by `python3 tools/build_style_pages.py`. Change
+  `tools/style_page_copy.py` or `STYLE_PAGES` and rebuild;
+  `python3 tools/build_style_pages.py --check` fails while anything on disk
+  differs, and must pass before a PR. Every generated file carries a
+  do-not-edit banner as its second line.
 - Tests are plain Node asserts, no frameworks: `node test/core.test.js`,
-  `node test/favorites.test.js`. For UI changes, drive the real page in jsdom
+  `node test/favorites.test.js`, `node test/platform.test.js`. For UI changes, drive the real page in jsdom
   (install jsdom in a temp dir, load the HTML, eval the site scripts, dispatch
   DOMContentLoaded, click things) rather than trusting a visual read of the
   code.
@@ -32,6 +40,19 @@ Eight tools sharing one transform engine (`FancyText` in
 - **Mixer `/mix/`** — a different style per letter (paint, or pattern
   buttons). URL state: `?text=&styles=id1,-,id2` (`-` = plain, one entry per
   grapheme).
+- **32 style landing pages** — one generated page per style that substitutes
+  character for character (`/cursive-text-generator/`, `/bubble-text-generator/`,
+  …). Same `styletool.js` runtime, locked to one style with `data-style` on
+  `<main>`; the page itself bakes in the full A–Z character map as static HTML
+  and the support note, so it is real content with JavaScript off (which is
+  why the locked card omits the note — `staticSupport`).
+- **Four platform pages** — `/instagram-fonts/`, `/discord-fonts/`,
+  `/tiktok-fonts/`, `/twitter-fonts/`. Hand-written, and the only pages that
+  make per-platform claims. The shortlist each publishes comes from
+  `tools/platform_check.js` (Unicode blocks, emoji property, RTL characters,
+  code-point cost against the field limit) and is asserted against the HTML by
+  `test/platform.test.js`. Never write "we tested this on an iPhone" — nobody
+  did, the test forbids it, and the pages say what was actually checked.
 - **Five focused pages** — `/flip/`, `/glitch/`, `/strikethrough/`,
   `/small-caps/`, `/vaporwave/`. One query cluster each, all driven by the
   single `assets/js/styletool.js` runtime off a `data-tool` attribute on

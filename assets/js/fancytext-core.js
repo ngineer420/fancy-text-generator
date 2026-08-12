@@ -620,6 +620,71 @@
     };
   }
 
+  /* ============================ style landing pages ============================ */
+  /* Almost nobody searches "fancy text generator" — they search "cursive text
+     generator", "bubble letters", "gothic font generator". Every style that
+     substitutes character for character therefore gets its own indexable URL,
+     and this is the one place that maps a style id to that URL.
+
+     It is deliberately data-only (id → slug, nothing else): the page copy
+     lives in the generator under tools/, so this table costs every page that
+     loads the engine a couple of hundred bytes rather than ten kilobytes of
+     prose. `tools/build_style_pages.py` reads it — through Node, so the
+     transforms themselves produce the character maps — and it is the single
+     source of truth for which pages exist.
+
+     Styles that reorder or wrap the whole string (mirror, spaced,
+     hearts-between, the ornamental wraps) and the random ones (zalgo) are
+     absent on purpose: a per-character map is meaningless for them, and that
+     map is what makes these pages worth indexing. They keep their homes on
+     /flip/, /vaporwave/ and /glitch/. */
+
+  const STYLE_PAGES = [
+    { id: "bold", slug: "bold-text-generator" },
+    { id: "italic", slug: "italic-text-generator" },
+    { id: "bold-italic", slug: "bold-italic-text-generator" },
+    { id: "script", slug: "cursive-text-generator" },
+    { id: "bold-script", slug: "bold-cursive-text-generator" },
+    { id: "fraktur", slug: "gothic-font-generator" },
+    { id: "bold-fraktur", slug: "bold-gothic-text-generator" },
+    { id: "double-struck", slug: "double-struck-text-generator" },
+    { id: "monospace", slug: "monospace-text-generator" },
+    { id: "sans-serif", slug: "sans-serif-text-generator" },
+    { id: "sans-bold", slug: "sans-serif-bold-text-generator" },
+    { id: "sans-italic", slug: "sans-serif-italic-text-generator" },
+    { id: "sans-bold-italic", slug: "sans-serif-bold-italic-text-generator" },
+    { id: "small-caps", slug: "small-text-generator" },
+    { id: "circled", slug: "bubble-text-generator" },
+    { id: "negative-circled", slug: "black-bubble-text-generator" },
+    { id: "squared", slug: "squared-text-generator" },
+    { id: "negative-squared", slug: "black-squared-text-generator" },
+    { id: "parenthesized", slug: "parenthesized-text-generator" },
+    { id: "regional-indicator", slug: "flag-letters-generator" },
+    { id: "faux-cyrillic", slug: "faux-cyrillic-text-generator" },
+    { id: "greek-style", slug: "greek-style-text-generator" },
+    { id: "currency", slug: "currency-text-generator" },
+    { id: "fullwidth", slug: "wide-text-generator" },
+    { id: "superscript", slug: "superscript-generator" },
+    { id: "subscript", slug: "subscript-generator" },
+    { id: "strikethrough", slug: "strikethrough-text-generator" },
+    { id: "underline", slug: "underline-text-generator" },
+    { id: "double-underline", slug: "double-underline-text-generator" },
+    { id: "slashed", slug: "slashed-text-generator" },
+    { id: "overline", slug: "overline-text-generator" },
+    { id: "upside-down", slug: "upside-down-text-generator" },
+  ];
+
+  const STYLE_PAGE_BY_ID = {};
+  STYLE_PAGES.forEach((p) => {
+    STYLE_PAGE_BY_ID[p.id] = p;
+  });
+
+  /** The landing-page path for a style id, or null if it has no page. */
+  function stylePagePath(styleId) {
+    const page = STYLE_PAGE_BY_ID[styleId];
+    return page ? "/" + page.slug + "/" : null;
+  }
+
   // Gallery presentation order, shared by the homepage and the Combiner's
   // style picker: the styles people actually come looking for (bold, italic,
   // cursive, gothic, bubble, glitch…) land in the first rows.
@@ -738,6 +803,9 @@
   const FancyText = {
     STYLES,
     STYLE_BY_ID,
+    STYLE_PAGES,
+    STYLE_PAGE_BY_ID,
+    stylePagePath,
     TILE_ORDER,
     CATEGORIES,
     COMBO_EXAMPLES,
