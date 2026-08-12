@@ -17,8 +17,9 @@ conventions every change must follow.
   units.
 - **Generated files are never hand-edited.** The 32 per-style landing pages
   (`/bold-text-generator/`, `/cursive-text-generator/`, … — one per entry in
-  `FancyText.STYLE_PAGES`), the marked link-mesh block in `index.html`, and
-  `sitemap.xml` are written by `python3 tools/build_style_pages.py`. Change
+  `FancyText.STYLE_PAGES`), `/styles/`, the marked link-mesh block in
+  `index.html`, and `sitemap.xml` are written by
+  `python3 tools/build_style_pages.py`. Change
   `tools/style_page_copy.py` or `STYLE_PAGES` and rebuild;
   `python3 tools/build_style_pages.py --check` fails while anything on disk
   differs, and must pass before a PR. Every generated file carries a
@@ -59,6 +60,29 @@ Eight tools sharing one transform engine (`FancyText` in
   `<main>`; the shortlist of styles and the copy live in its `TOOLS` table.
   URL state: `?text=` only. Adding a tool means an entry in `TOOLS` and a page
   from the same shell — never a sixth near-identical script.
+
+## Navigation — one toolbar, one data file
+
+The nav is the portfolio toolbar (spec: ngineer420.github.io#13, reference
+implementation: photoshrink#7). There is exactly one definition of it:
+
+- `tools/nav_data.py` holds TOOLS/GROUPS/HUBS. `tools/sync_nav.py` is generic
+  and copied verbatim from photoshrink — do not fork it.
+- Hand-written pages carry a `<!-- nav:start -->…<!-- nav:end -->` region that
+  `python3 tools/sync_nav.py` rewrites; `--check` exits nonzero on drift.
+  `build_style_pages.py` imports `sync_nav.render_nav` and writes the same
+  region into the generated pages, so both `--check`s guard the same markup.
+- The **seven tools** are tier 1 (rail + flat sheet). The **32 style pages**
+  are tier 2: out of the rail and the sheet body, reached by the sheet's one
+  hub link to `/styles/` plus the `.style-switch` chip cluster under the h1 of
+  every style page (its own category's siblings, not all 32).
+- `nav_data.STYLE_COUNT` is asserted against the real catalogue by
+  `build_style_pages.py`, so the "All 32 styles" label cannot drift.
+- `assets/js/toolbar.js` is the toolbar's enhancement script (fades, Escape,
+  click-outside), a separate file because 404, privacy, terms and the articles
+  carry the toolbar but load no other JS.
+- Nothing in the chrome is sticky — a sticky header can overlay an AdSense
+  anchor unit. Header + 45px bar is 96px of chrome on every page.
 
 ## UX rules (hard-won — don't regress these)
 

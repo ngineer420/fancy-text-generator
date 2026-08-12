@@ -23,7 +23,8 @@
 <meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/css/styles.css?v=13">
+<link rel="stylesheet" href="/assets/css/styles.css?v=14">
+<script src="/assets/js/toolbar.js?v=1" defer></script>
 
 <script type="application/ld+json">
 {
@@ -87,24 +88,60 @@
       <span class="brand-tag">fancy text generator</span>
     </a>
     <div class="header-actions">
-      <nav class="site-nav" aria-label="Tools">
-        <a href="/flip/">Flip</a>
-        <a href="/glitch/">Glitch</a>
-        <a href="/strikethrough/">Strike</a>
-        <a href="/small-caps/">Small Caps</a>
-        <a href="/vaporwave/">Vaporwave</a>
-        <a href="/combine/">Combiner</a>
-        <a href="/mix/">Mixer</a>
-      </nav>
       <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">◐</button>
     </div>
   </div>
 </header>
+
+<!-- nav:start -->
+<nav class="toolbar" aria-label="Tools">
+  <details class="tb-menu">
+    <summary class="tb-trigger" aria-label="All 7 tools">
+      <span class="tb-glyph" aria-hidden="true">&#9636;</span>
+      <span class="tb-label">All 7<span class="tb-label-long"> tools</span></span>
+    </summary>
+    <div class="tb-sheet is-flat">
+      <ul>
+        <li><a href="/flip/">Flip Text Upside Down</a></li>
+        <li><a href="/glitch/">Glitch &amp; Zalgo Text</a></li>
+        <li><a href="/strikethrough/">Strikethrough Text</a></li>
+        <li><a href="/small-caps/">Small Caps Text</a></li>
+        <li><a href="/vaporwave/">Vaporwave Text</a></li>
+        <li><a href="/combine/">Style Combiner</a></li>
+        <li><a href="/mix/">Per-Letter Mixer</a></li>
+      </ul>
+      <p class="tb-hub"><a href="/styles/">All 32 styles →</a></p>
+    </div>
+  </details>
+  <div class="tb-scrim"></div>
+  <ul class="tb-rail">
+    <li><a href="/flip/">Flip</a></li>
+    <li><a href="/glitch/">Glitch</a></li>
+    <li><a href="/strikethrough/">Strike</a></li>
+    <li><a href="/small-caps/">Small Caps</a></li>
+    <li><a href="/vaporwave/">Vaporwave</a></li>
+    <li><a href="/combine/">Combiner</a></li>
+    <li><a href="/mix/">Mixer</a></li>
+  </ul>
+</nav>
+<!-- nav:end -->
 <main id="main" class="tool-page" data-tool="style" data-style="upside-down">
   <div class="hero">
     <h1>Upside Down Text Generator</h1>
     <p>Turned lookalikes, reversed, so it reads when you flip the screen</p>
   </div>
+  <nav class="style-switch" aria-labelledby="style-switch-label">
+    <span class="style-switch-label" id="style-switch-label">Effects &amp; Glitch</span>
+    <ul>
+      <li><a class="chip" href="/strikethrough-text-generator/">Strikethrough</a></li>
+      <li><a class="chip" href="/underline-text-generator/">Underline</a></li>
+      <li><a class="chip" href="/double-underline-text-generator/">Double Underline</a></li>
+      <li><a class="chip" href="/slashed-text-generator/">Slashed</a></li>
+      <li><a class="chip" href="/overline-text-generator/">Overline</a></li>
+      <li><a class="chip" href="/upside-down-text-generator/" aria-current="page">Upside-Down / Flip</a></li>
+      <li><a class="chip chip-all" href="/styles/">All 32 styles →</a></li>
+    </ul>
+  </nav>
 
   <div class="tool-shell">
     <div class="input-shell">
