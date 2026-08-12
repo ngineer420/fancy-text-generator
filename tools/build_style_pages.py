@@ -12,6 +12,7 @@ font generator". This writes the page for each of those queries.
 What it writes, all under the repo root:
 
     <slug>/index.html      one per entry in FancyText.STYLE_PAGES
+    styles/index.html      the hub the toolbar's sheet points at
     index.html             the link-mesh block between its BEGIN/END markers
     sitemap.xml            rebuilt from the page list
 
@@ -44,6 +45,8 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
 from style_page_copy import COPY  # noqa: E402
+import nav_data as NAV  # noqa: E402
+import sync_nav  # noqa: E402  — the toolbar renderer, shared with the hand-written pages
 
 SITE = "https://fontloom.com"
 
@@ -52,7 +55,8 @@ SITE = "https://fontloom.com"
 # new one. These are the values the hand-written pages carry; bump both here
 # and there in the same commit whenever the asset changes.
 ASSET_V = {
-    "css": 13,
+    "css": 14,
+    "toolbar": 1,
     "core": 5,
     "site": 2,
     "favorites": 2,
@@ -165,17 +169,25 @@ def head(title, description, url, ld_blocks):
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/css/styles.css?v={css}">
+<script src="/assets/js/toolbar.js?v={toolbar}" defer></script>
 
 {ld}
 
 {ads}
 </head>
 """.format(warning=GENERATED_WARNING, title=esc(title), description=esc(description),
-           url=url, site=SITE, css=ASSET_V["css"], ld=scripts, ads=ADSENSE)
+           url=url, site=SITE, css=ASSET_V["css"], toolbar=ASSET_V["toolbar"],
+           ld=scripts, ads=ADSENSE)
 
 
-def site_header():
-    links = "\n".join('        <a href="%s">%s</a>' % (href, label) for href, label in TOOL_NAV)
+def site_header(url):
+    """Header + the portfolio toolbar, rendered from tools/nav_data.py.
+
+    The bar is written between the same `<!-- nav:start -->` markers the
+    hand-written pages carry, by the same `sync_nav.render_nav`, so there is
+    one definition of the navigation in the repo and either tool's `--check`
+    catches a drifted page.
+    """
     return """<body>
 <a class="skip-link" href="#main">Skip to content</a>
 
@@ -186,14 +198,15 @@ def site_header():
       <span class="brand-tag">fancy text generator</span>
     </a>
     <div class="header-actions">
-      <nav class="site-nav" aria-label="Tools">
-{links}
-      </nav>
       <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">◐</button>
     </div>
   </div>
 </header>
-""".format(links=links)
+
+<!-- nav:start -->
+{nav}
+<!-- nav:end -->
+""".format(nav=sync_nav.render_nav(sync_nav.canon(url)))
 
 
 def site_footer(active_platform=None):
@@ -292,6 +305,35 @@ def support_section(style):
   </section>""".format(name=esc(style["name"]), works=esc(s["works"]), watch=esc(s["watch"]))
 
 
+def style_switch(style, catalogue):
+    """The tier-2 sibling switcher, directly under the h1.
+
+    Portfolio spec #13: a style page is the same styletool runtime with one
+    parameter baked in, so it is tier 2 — out of the rail and the sheet body,
+    and instead a tight cluster of real <a href> siblings inside the tool's own
+    control panel, plus one hub link. Before this the 32 style pages had no
+    sibling link above the fold at all and were dead ends off the header.
+
+    The cluster is the style's own category (3-9 entries), not all 32: a row of
+    thirty-two chips is the homepage link mesh again, not a switcher.
+    """
+    cat = next((c for c in catalogue["categories"] if c["id"] == style["category"]), None)
+    family = [s for s in catalogue["styles"] if s["category"] == style["category"]]
+    title = cat["title"] if cat else "Related styles"
+    out = ['  <nav class="style-switch" aria-labelledby="style-switch-label">',
+           '    <span class="style-switch-label" id="style-switch-label">%s</span>'
+           % esc(title),
+           '    <ul>']
+    for s in family:
+        current = ' aria-current="page"' if s["id"] == style["id"] else ""
+        out.append('      <li><a class="chip" href="/%s/"%s>%s</a></li>'
+                   % (s["slug"], current, esc(s["name"])))
+    out.append('      <li><a class="chip chip-all" href="/styles/">All %d styles →</a></li>'
+               % len(catalogue["styles"]))
+    out += ['    </ul>', '  </nav>']
+    return "\n".join(out)
+
+
 def related_section(style, styles_by_id, catalogue):
     """Siblings from the same category, plus the platform pages."""
     siblings = [s for s in catalogue["styles"]
@@ -349,8 +391,9 @@ def style_page(style, catalogue, styles_by_id):
     body.append("""  <div class="hero">
     <h1>%s</h1>
     <p>%s</p>
-  </div>
-
+  </div>""" % (esc(copy.get("h1") or keyword_heading(style["slug"])), esc(copy["tagline"])))
+    body.append(style_switch(style, catalogue))
+    body.append("""
   <div class="tool-shell">
     <div class="input-shell">
       <label for="tool-input" class="visually-hidden">Your text</label>
@@ -369,8 +412,7 @@ def style_page(style, catalogue, styles_by_id):
   </div>
 
   <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
-""" % (esc(copy.get("h1") or keyword_heading(style["slug"])), esc(copy["tagline"]),
-       esc(catalogue["sample"]), esc(style["sample"])))
+""" % (esc(catalogue["sample"]), esc(style["sample"])))
 
     body.append('  <section class="container-narrow explainer">')
     body.append('    <h2>%s</h2>' % esc(copy["intro_heading"]))
@@ -392,7 +434,68 @@ def style_page(style, catalogue, styles_by_id):
     body.append(related_section(style, styles_by_id, catalogue))
     body.append('</main>')
 
-    return head(title, description, url, [ld_app, ld_faq]) + site_header() + "\n".join(body) + site_footer()
+    return (head(title, description, url, [ld_app, ld_faq])
+            + site_header("/%s/" % style["slug"])
+            + "\n".join(body) + site_footer())
+
+
+def styles_hub(catalogue):
+    """/styles/ — the hub the toolbar's sheet points at.
+
+    The 32 style pages are tier 2, so the chrome gives them exactly one link
+    (portfolio spec #13) and this is where it lands. It is a real page rather
+    than the homepage's `#all-styles` fragment because the in-page switcher on
+    every style page also needs a "see all" destination, and a fragment of a
+    page that mounts the whole live gallery is a poor answer for a visitor who
+    only wants the index.
+    """
+    by_cat = {}
+    for s in catalogue["styles"]:
+        by_cat.setdefault(s["category"], []).append(s)
+
+    url = "%s/styles/" % SITE
+    title = "Every fancy text style, one page each | fontloom"
+    description = ("All %d fancy text styles on fontloom, grouped by what they do — "
+                   "each with its own page, full A–Z character map, and a note on "
+                   "where the result survives being pasted."
+                   % len(catalogue["styles"]))
+    ld = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Every fancy text style",
+        "url": url,
+        "description": description,
+    }
+
+    body = ['<main id="main" class="container-narrow">',
+            '  <div class="hero">',
+            '    <h1>Every style, one page each</h1>',
+            '    <p>%d styles, grouped by what they actually do to your letters.</p>'
+            % len(catalogue["styles"]),
+            '  </div>',
+            '  <p>Each page below has the live generator locked to that one style, the '
+            'full A–Z and 0–9 character map as static text, the letters Unicode simply '
+            'does not have, and a note on where the result survives being pasted. If you '
+            'would rather see every style against your own text at once, the '
+            '<a href="/">homepage gallery</a> does that.</p>']
+    for cat in catalogue["categories"]:
+        entries = by_cat.get(cat["id"])
+        if not entries:
+            continue
+        body.append('  <h2>%s</h2>' % esc(cat["title"]))
+        body.append('  <ul class="style-links">')
+        for s in entries:
+            body.append('    <li><a href="/%s/">%s</a></li>'
+                        % (s["slug"], esc(keyword_label(s["slug"]))))
+        body.append('  </ul>')
+    body.append('  <h2>Fonts for a platform</h2>')
+    body.append('  <ul class="style-links">')
+    for slug, _label, long_label in PLATFORM_PAGES:
+        body.append('    <li><a href="/%s/">%s</a></li>' % (slug, esc(long_label)))
+    body.append('  </ul>')
+    body.append('</main>')
+
+    return head(title, description, url, [ld]) + site_header("/styles/") + "\n".join(body) + site_footer()
 
 
 def homepage_block(catalogue):
@@ -427,7 +530,7 @@ def homepage_block(catalogue):
 
 
 def sitemap(catalogue):
-    rows = [("/", "weekly", "1.0")]
+    rows = [("/", "weekly", "1.0"), ("/styles/", "weekly", "0.8")]
     for slug in ["combine", "mix", "flip", "glitch", "strikethrough", "small-caps", "vaporwave"]:
         rows.append(("/%s/" % slug, "monthly", "0.8"))
     for slug, _l, _ll in PLATFORM_PAGES:
@@ -496,11 +599,17 @@ def main():
     if missing:
         raise SystemExit("no page copy for: %s" % ", ".join(missing))
 
+    # The sheet's hub label is a literal count, so a style added without
+    # touching nav_data.py would ship a lie in the chrome of every page.
+    if NAV.STYLE_SLUGS != [s["slug"] for s in styles]:
+        raise SystemExit("tools/nav_data.py and the catalogue disagree on the style list")
+
     stale = []
     for style in styles:
         page = style_page(style, catalogue, styles_by_id)
         write(os.path.join(ROOT, style["slug"], "index.html"), page, args.check, stale)
 
+    write(os.path.join(ROOT, "styles", "index.html"), styles_hub(catalogue), args.check, stale)
     splice(os.path.join(ROOT, "index.html"), homepage_block(catalogue), args.check, stale)
     write(os.path.join(ROOT, "sitemap.xml"), sitemap(catalogue), args.check, stale)
 
@@ -516,7 +625,7 @@ def main():
         print("generated files are up to date (%d style pages)" % len(styles))
         return 0
 
-    print("wrote %d style pages, the homepage link mesh, and sitemap.xml" % len(styles))
+    print("wrote %d style pages, /styles/, the homepage link mesh, and sitemap.xml" % len(styles))
     return 0
 
 
