@@ -31,7 +31,27 @@ The pure transform engine has a small test suite (plain Node asserts, no depende
 ```
 node test/core.test.js
 node test/favorites.test.js
+node test/platform.test.js
 ```
+
+### Generated pages — never edit these by hand
+
+The thirty-two per-style landing pages (`/bold-text-generator/`,
+`/cursive-text-generator/`, …), the link-mesh block inside `index.html`, and
+`sitemap.xml` are written by a generator. Editing any of them in place is
+silently undone the next time it runs:
+
+```
+python3 tools/build_style_pages.py            # regenerate
+python3 tools/build_style_pages.py --check    # fail if anything is stale
+```
+
+Change the copy in `tools/style_page_copy.py`, or the page list in
+`FancyText.STYLE_PAGES`, and rebuild. Run `--check` before opening a PR.
+
+The four platform pages (`/instagram-fonts/` and friends) *are* hand-written,
+but the shortlist each one publishes is checked by `node tools/platform_check.js`
+and asserted by `test/platform.test.js`.
 
 ## Structure
 
@@ -44,6 +64,11 @@ glitch/index.html              Zalgo/glitch, with a capped intensity slider
 strikethrough/index.html       Strikethrough, underline, overline, slash
 small-caps/index.html          Small caps, superscript, subscript
 vaporwave/index.html           Fullwidth and spaced-out text
+<style-slug>/index.html        GENERATED per-style landing page (32 of them)
+instagram-fonts/index.html     Which styles survive an Instagram bio
+discord-fonts/index.html       Which styles survive Discord, and what markdown does
+tiktok-fonts/index.html        Which styles fit an 80-character TikTok bio
+twitter-fonts/index.html       Which styles survive an X display name
 privacy.html                   Privacy policy (required for ad networks)
 terms.html                     Terms of use
 404.html                       Custom 404 page
@@ -56,8 +81,13 @@ assets/js/app.js               Homepage gallery wiring
 assets/js/combine.js           Font Combiner page wiring
 assets/js/mix.js               Font Mixer page wiring
 assets/js/styletool.js         Shared runtime for the five focused tool pages
+tools/build_style_pages.py     GENERATOR for the per-style pages + sitemap (--check)
+tools/style_page_copy.py       Page copy for those pages (build-time only)
+tools/dump_styles.js           Hands the engine's catalogue + character maps to the build
+tools/platform_check.js        Blocks/emoji/RTL/cost analysis behind the platform pages
 test/core.test.js              Transform engine tests (node test/core.test.js)
 test/favorites.test.js         Favorites store tests (node test/favorites.test.js)
+test/platform.test.js          Holds the platform pages to their own evidence
 CNAME                          GitHub Pages custom domain (fontloom.com)
 ```
 

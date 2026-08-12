@@ -150,10 +150,28 @@
   const CHECK_ICON =
     '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 
+  /* A generated style landing page (/bold-text-generator/ and the rest) is the
+     same runtime locked to one style: it declares `data-style` and gets a
+     single card instead of a shortlist. `staticSupport` tells the card to
+     leave the "where this works" note out, because the page bakes that note
+     — and the whole A-Z character map — into static HTML that is there with
+     JavaScript switched off. Rendering it twice would just say it twice. */
+
+  function lockedConfig(styleId) {
+    const style = STYLE_BY_ID[styleId];
+    if (!style) return null;
+    return {
+      staticSupport: true,
+      variants: [{ id: style.id, name: style.name, chain: [style.id] }],
+    };
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const main = document.querySelector("main[data-tool]");
     if (!main) return;
-    const config = TOOLS[main.dataset.tool];
+    const config = main.dataset.style
+      ? lockedConfig(main.dataset.style)
+      : TOOLS[main.dataset.tool];
     if (!config) return;
 
     const input = document.getElementById("tool-input");
@@ -275,7 +293,8 @@
       copyBtn.innerHTML = COPY_ICON;
 
       foot.append(label, ...(starEl ? [starEl] : []), copyBtn);
-      card.append(output, foot, supportBlock(variant));
+      card.append(output, foot);
+      if (!config.staticSupport) card.append(supportBlock(variant));
 
       const doCopy = wireCopy(card, () => output.textContent, variant.name);
       card.addEventListener("click", doCopy);
