@@ -12,20 +12,25 @@ tier 2 — it never appears in the rail or the sheet body. It gets one hub link 
 the bottom of the sheet plus real <a href> sibling chips inside the tool's own
 control panel, where it is a parameter and not a peer.
 
-Here the seven tools are tier 1 and the style landing pages are tier 2: every
+Here the eight tools are tier 1 and the style landing pages are tier 2: every
 one of them is the same styletool runtime with `data-style` set, which is a
 parameter, not a peer. Their hub is /styles/ and their sibling chips sit under
 the h1 of each style page — see `build_style_pages.py`.
 """
 
-# Noun used in the menu trigger: "All 7 tools".
+# Noun used in the menu trigger: "All 8 tools".
 NOUN = "tools"
 
-# Tier-1 tools, in rail order (rail is capped at 8 — this site has 7).
+# Tier-1 tools, in rail order (rail is capped at 8 — this site has exactly 8).
+# "/" is in the rail because it is itself a tool surface: the homepage is the
+# live gallery where you type once and copy from any of the forty styles, not a
+# landing page about the tools. It is also the tier-1 owner of the style pages,
+# which is what stops the rail rendering unselected on all 32 of them.
 #   label -> rail chip text, <= 18 chars
 #   long  -> anchor text in the sheet and in any footer/in-body list
 #   group -> sheet grouping key, only used once a site passes 8 destinations
 TOOLS = [
+    {"href": "/",               "label": "All fonts",  "long": "All Fonts Gallery",    "group": "gallery", "tier": 1},
     {"href": "/flip/",          "label": "Flip",       "long": "Flip Text Upside Down", "group": "effect", "tier": 1},
     {"href": "/glitch/",        "label": "Glitch",     "long": "Glitch & Zalgo Text",   "group": "effect", "tier": 1},
     {"href": "/strikethrough/", "label": "Strike",     "long": "Strikethrough Text",    "group": "effect", "tier": 1},
@@ -39,6 +44,7 @@ TOOLS = [
 # because group headings are noise at that size) — kept so the arrangement is
 # already decided the day this site gains a ninth tool.
 GROUPS = [
+    ("gallery", "Every style at once"),
     ("effect", "One effect"),
     ("build",  "Build your own"),
 ]
@@ -46,8 +52,38 @@ GROUPS = [
 # One hub link at the bottom of the sheet per tier-2 family. STYLE_COUNT is
 # asserted against the real catalogue by build_style_pages.py, so this label
 # cannot drift as styles are added.
-STYLE_COUNT = 32
+STYLE_SLUGS = [
+    "bold-text-generator", "italic-text-generator",
+    "bold-italic-text-generator", "cursive-text-generator",
+    "bold-cursive-text-generator", "gothic-font-generator",
+    "bold-gothic-text-generator", "double-struck-text-generator",
+    "monospace-text-generator", "sans-serif-text-generator",
+    "sans-serif-bold-text-generator", "sans-serif-italic-text-generator",
+    "sans-serif-bold-italic-text-generator", "small-text-generator",
+    "bubble-text-generator", "black-bubble-text-generator",
+    "squared-text-generator", "black-squared-text-generator",
+    "parenthesized-text-generator", "flag-letters-generator",
+    "faux-cyrillic-text-generator", "greek-style-text-generator",
+    "currency-text-generator", "wide-text-generator", "superscript-generator",
+    "subscript-generator", "strikethrough-text-generator",
+    "underline-text-generator", "double-underline-text-generator",
+    "slashed-text-generator", "overline-text-generator",
+    "upside-down-text-generator",
+]
+STYLE_COUNT = len(STYLE_SLUGS)
 HUBS = [("/styles/", "All %d styles" % STYLE_COUNT)]
+
+# Tier-2: the 32 style landing pages. Declared here so the gallery chip carries
+# aria-current="true" on one (spec #13 errata, defect 4) rather than the rail
+# rendering unselected on the site's whole long tail. Their sibling cluster is
+# emitted by build_style_pages.py under each page's h1, not from a `sizechips`
+# region: the cluster is the style's own category, which is per-page.
+VARIANTS = {
+    "parent": "/",
+    "label": "Style",
+    "aria": "Text style",
+    "items": [{"href": "/%s/" % s, "label": s, "bytes": None} for s in STYLE_SLUGS],
+}
 
 # Long anchor text for a footer crawl list, if the site has one. fontloom
 # already ships two footer <nav>s (Tools and Platforms) written by hand and by

@@ -601,9 +601,8 @@ def main():
 
     # The sheet's hub label is a literal count, so a style added without
     # touching nav_data.py would ship a lie in the chrome of every page.
-    if NAV.STYLE_COUNT != len(styles):
-        raise SystemExit("tools/nav_data.py says STYLE_COUNT = %d, the catalogue has %d"
-                         % (NAV.STYLE_COUNT, len(styles)))
+    if NAV.STYLE_SLUGS != [s["slug"] for s in styles]:
+        raise SystemExit("tools/nav_data.py and the catalogue disagree on the style list")
 
     stale = []
     for style in styles:

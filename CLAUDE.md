@@ -72,11 +72,16 @@ implementation: photoshrink#7). There is exactly one definition of it:
   `python3 tools/sync_nav.py` rewrites; `--check` exits nonzero on drift.
   `build_style_pages.py` imports `sync_nav.render_nav` and writes the same
   region into the generated pages, so both `--check`s guard the same markup.
-- The **seven tools** are tier 1 (rail + flat sheet). The **32 style pages**
-  are tier 2: out of the rail and the sheet body, reached by the sheet's one
-  hub link to `/styles/` plus the `.style-switch` chip cluster under the h1 of
-  every style page (its own category's siblings, not all 32).
-- `nav_data.STYLE_COUNT` is asserted against the real catalogue by
+- The **eight tools** are tier 1 (rail + flat sheet). `/` is one of them: the
+  homepage is itself a tool surface — the live gallery where you type once and
+  copy from any style — not a landing page about the tools. It is also the
+  tier-1 owner of the style pages, which is what stops the rail rendering
+  unselected on all 32 of them.
+- The **32 style pages** are tier 2: out of the rail and the sheet body,
+  reached by the sheet's one hub link to `/styles/` plus the `.style-switch`
+  chip cluster under the h1 of every style page (its own category's siblings,
+  not all 32).
+- `nav_data.STYLE_SLUGS` is asserted against the real catalogue by
   `build_style_pages.py`, so the "All 32 styles" label cannot drift.
 - `assets/js/toolbar.js` is the toolbar's enhancement script (fades, Escape,
   click-outside), a separate file because 404, privacy, terms and the articles
