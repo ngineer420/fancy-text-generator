@@ -1323,6 +1323,200 @@ a.fav-pill:hover { text-decoration: none; }
 }
 
 /* ---------- misc ---------- */
+/* ---------- character pickers: /kaomoji/ and /symbols/ ---------- */
+/* The composer is the headline element on these pages, not the grid. A picker
+   that only copies is a dead end; this one hands the character to the styler,
+   so it sits above the cards, it is what a card click feeds, and it is styled
+   as a panel rather than as a stray input. */
+
+.composer {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 14px 12px;
+}
+.composer-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.composer-hint {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+.composer .char-count { margin-top: 6px; }
+/* Two up on a phone, not one: six stacked preview tiles push the picker — the
+   thing the visitor came for — a whole screen and a half down the page. */
+.composer-out {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 148px), 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+@media (min-width: 700px) {
+  .composer-out { grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
+}
+.composer-out:empty { margin-top: 0; }
+.composer-out .tile { min-height: 84px; border-radius: 12px; padding: 12px 12px 8px; }
+.composer-out .tile-output { font-size: clamp(17px, 1.7vw, 20px); max-height: 96px; }
+.composer-more {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 5px 0;
+  font-size: 12.5px;
+}
+
+.char-filter-row { margin: 20px 0 12px; }
+.char-filter-row .input-field {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.char-filter-count {
+  margin: 6px 0 0;
+  min-height: 18px;
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+
+/* auto-fill, and a track that is allowed to shrink: a kaomoji can be twenty
+   characters wide and a bare 1fr is minmax(auto, 1fr), which refuses to go
+   below its widest content and pushes the whole grid off a phone. */
+.char-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 700px) {
+  .char-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); }
+}
+.char-grid > li { min-width: 0; }
+.char-grid > li[hidden] { display: none; }
+
+.char-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  min-height: 88px;
+  padding: 12px 10px 10px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color .12s ease, transform .12s ease, background .2s ease;
+}
+.char-card:hover { border-color: var(--accent-dim); transform: translateY(-1px); }
+.char-card:active { transform: scale(0.98); }
+.char-card.is-starred { border-color: var(--accent-dim); }
+
+.char-glyph {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  font-size: 17px;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  color: var(--text);
+}
+.char-meta { display: block; text-align: center; min-width: 0; }
+.char-name {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: var(--text-faint);
+  overflow-wrap: anywhere;
+}
+.char-code {
+  display: block;
+  margin-top: 1px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 9.5px;
+  letter-spacing: .02em;
+  color: var(--text-faint);
+  opacity: .7;
+  overflow-wrap: anywhere;
+}
+
+.char-tools {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+.char-card:hover .char-tools,
+.char-card:focus-within .char-tools,
+.char-card.is-starred .char-tools { opacity: 1; }
+.char-copy, .char-star {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-faint);
+  font-size: 13px;
+  line-height: 1;
+}
+.char-copy:hover, .char-star:hover { background: var(--bg-inset); color: var(--accent); }
+.char-copy:focus-visible, .char-star:focus-visible { opacity: 1; }
+.char-star[aria-pressed="true"] { color: var(--accent); }
+
+/* The labelled affordance for the card's own action, so "click to insert" is
+   something the page says rather than something the visitor has to guess. */
+.char-insert {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  font-size: 10px;
+  letter-spacing: .02em;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity .12s ease;
+  pointer-events: none;
+}
+.char-card:hover .char-insert,
+.char-card:focus-visible .char-insert { opacity: 1; }
+
+.char-card.is-copied {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg-raised));
+}
+
+/* Touch: there is no hover, so the two buttons have to be there already. */
+@media (hover: none) {
+  .char-tools { opacity: 1; }
+}
+
+.char-group { margin-top: 28px; }
+.char-group[hidden] { display: none; }
+.char-group h2 { margin: 0 0 2px; font-size: 16px; }
+.char-group-blurb { margin: 0 0 10px; font-size: 12.5px; color: var(--text-dim); }
+.char-group-more { margin: 10px 0 0; font-size: 12.5px; }
+
+.char-page .tool-shell { max-width: 980px; }
+
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;

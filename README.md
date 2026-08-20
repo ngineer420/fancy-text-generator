@@ -2,6 +2,11 @@
 
 A free, ad-supported fancy text generator: type plain text and instantly get 40 stylized Unicode versions of it — bold, italic, script, gothic/fraktur, double-struck, bubble/circled, squared, small caps, superscript/subscript, strikethrough, underline, overline, upside-down, mirrored, and three intensities of zalgo/glitch text — each with a one-click Copy button.
 
+Alongside the fonts there are sixteen character-picker pages — `/kaomoji/` and
+`/symbols/`, each with a page per mood and per kind — where clicking a kaomoji
+or a symbol drops it into the same text box the styler reads, so a visitor who
+arrived for one heart leaves with a styled line rather than a clipboard.
+
 Alongside the full gallery there are seven focused tools, each one query cluster deep: a Combiner, a Mixer, and five single-purpose pages (flip, glitch, strikethrough, small caps, vaporwave). Every one of them carries a **"where this works" note** per style — most of these transforms are stripped or refused somewhere, and finding that out after pasting is the commonest complaint about tools in this category — and a **character-count readout**, because combining marks push a bio past its limit with nothing visible to explain it.
 
 Everything runs client-side — no backend, no build step, no uploads. Deployed as static files on GitHub Pages.
@@ -32,7 +37,14 @@ The pure transform engine has a small test suite (plain Node asserts, no depende
 node test/core.test.js
 node test/favorites.test.js
 node test/platform.test.js
+node test/characters.test.js
 ```
+
+Every character shipped in `assets/js/characters.js` has to render in a font the
+device already has — the site loads no webfont, so a character without one
+arrives as a tofu box. `node tools/check_glyphs.mjs` paints each one in real
+headless Chrome and fails on anything that draws the same bitmap as an
+unassigned code point. Run it after touching that file.
 
 ### Generated pages — never edit these by hand
 
@@ -48,6 +60,19 @@ python3 tools/build_style_pages.py --check    # fail if anything is stale
 
 Change the copy in `tools/style_page_copy.py`, or the page list in
 `FancyText.STYLE_PAGES`, and rebuild. Run `--check` before opening a PR.
+
+The sixteen kaomoji and symbol pages have their own generator, sharing the page
+shell so the chrome has one definition:
+
+```
+python3 tools/build_character_pages.py         # regenerate
+python3 tools/build_character_pages.py --check # fail if anything is stale
+```
+
+Its data is `assets/js/characters.js` and its copy is
+`tools/character_page_copy.py`. It does **not** write `sitemap.xml` —
+`build_style_pages.py` is the only writer of that file and imports the URL list,
+so run both.
 
 The four platform pages (`/instagram-fonts/` and friends) *are* hand-written,
 but the shortlist each one publishes is checked by `node tools/platform_check.js`
@@ -65,6 +90,8 @@ strikethrough/index.html       Strikethrough, underline, overline, slash
 small-caps/index.html          Small caps, superscript, subscript
 vaporwave/index.html           Fullwidth and spaced-out text
 <style-slug>/index.html        GENERATED per-style landing page (32 of them)
+kaomoji/index.html             GENERATED kaomoji hub, plus one page per mood (8)
+symbols/index.html             GENERATED symbol hub, plus one page per kind (6)
 instagram-fonts/index.html     Which styles survive an Instagram bio
 discord-fonts/index.html       Which styles survive Discord, and what markdown does
 tiktok-fonts/index.html        Which styles fit an 80-character TikTok bio
@@ -76,7 +103,9 @@ assets/favicon.svg             Site icon
 assets/css/styles.css          Design system
 assets/js/fancytext-core.js    Pure Unicode transform engine (no DOM)
 assets/js/site.js              Shared chrome: theme toggle, header, copy helper
-assets/js/favorites.js         Local favorites store (starred styles, combos, mixes)
+assets/js/favorites.js         Local favorites store (styles, combos, mixes, chars)
+assets/js/characters.js        Kaomoji and symbol catalogue (build-time data, not shipped)
+assets/js/characters-page.js   Runtime for /kaomoji/ and /symbols/: insert, filter, star
 assets/js/app.js               Homepage gallery wiring
 assets/js/combine.js           Font Combiner page wiring
 assets/js/mix.js               Font Mixer page wiring
@@ -85,9 +114,14 @@ tools/build_style_pages.py     GENERATOR for the per-style pages + sitemap (--ch
 tools/style_page_copy.py       Page copy for those pages (build-time only)
 tools/dump_styles.js           Hands the engine's catalogue + character maps to the build
 tools/platform_check.js        Blocks/emoji/RTL/cost analysis behind the platform pages
+tools/build_character_pages.py GENERATOR for the kaomoji/symbol pages (--check)
+tools/character_page_copy.py   Page copy for those pages (build-time only)
+tools/dump_characters.js       Hands the character catalogue to that build
+tools/check_glyphs.mjs         Fails on any character with no glyph in a system font
 test/core.test.js              Transform engine tests (node test/core.test.js)
 test/favorites.test.js         Favorites store tests (node test/favorites.test.js)
 test/platform.test.js          Holds the platform pages to their own evidence
+test/characters.test.js        Character data + the pages built from it
 CNAME                          GitHub Pages custom domain (fontloom.com)
 ```
 

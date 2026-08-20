@@ -24,8 +24,22 @@ conventions every change must follow.
   `python3 tools/build_style_pages.py --check` fails while anything on disk
   differs, and must pass before a PR. Every generated file carries a
   do-not-edit banner as its second line.
+- **The character pages have their own generator.** `/kaomoji/` and
+  `/symbols/` plus their 14 mood/kind pages come from
+  `python3 tools/build_character_pages.py`, data in `assets/js/characters.js`
+  and copy in `tools/character_page_copy.py`. It shares the page shell by
+  importing `build_style_pages`, and it deliberately does **not** write
+  `sitemap.xml` — that file has one writer, `build_style_pages.py`, which
+  imports `CHARACTER_URLS`. Run both, and both `--check`s.
+- **Nothing goes in `characters.js` that has not been rendered.** The site
+  loads no webfont, so a character the device lacks a glyph for is a tofu box
+  and a picker full of those is worse than a smaller picker.
+  `node tools/check_glyphs.mjs` paints every code point in real headless
+  Chrome and fails on anything matching the bitmap of an unassigned one. It
+  certifies the machine it runs on, which is still the check worth having.
 - Tests are plain Node asserts, no frameworks: `node test/core.test.js`,
-  `node test/favorites.test.js`, `node test/platform.test.js`. For UI changes, drive the real page in jsdom
+  `node test/favorites.test.js`, `node test/platform.test.js`,
+  `node test/characters.test.js`. For UI changes, drive the real page in jsdom
   (install jsdom in a temp dir, load the HTML, eval the site scripts, dispatch
   DOMContentLoaded, click things) rather than trusting a visual read of the
   code.
@@ -54,6 +68,17 @@ Eight tools sharing one transform engine (`FancyText` in
   code-point cost against the field limit) and is asserted against the HTML by
   `test/platform.test.js`. Never write "we tested this on an iPhone" — nobody
   did, the test forbids it, and the pages say what was actually checked.
+- **Sixteen character pickers** — `/kaomoji/` and `/symbols/`, plus a page per
+  mood (happy, sad, angry, love, shrug, cute, table-flip, animals) and per kind
+  (hearts, stars, arrows, check-and-cross, brackets-and-borders, music). The
+  headline element on every one of them is the **composer**, not the grid: a
+  card click inserts its character into the styler input at the cursor and the
+  line restyles, and copying is the secondary action on its own button. A
+  picker that only copies is a dead end — the visitor leaves with a clipboard
+  and never touches the font engine, which is the whole reason these pages are
+  fontloom's rather than generic. Currency, zodiac and dingbats were
+  deliberately cut: currency duplicates `/currency-text-generator/`, the other
+  two were thin. Every surviving symbol page carries 40+ entries, asserted.
 - **Five focused pages** — `/flip/`, `/glitch/`, `/strikethrough/`,
   `/small-caps/`, `/vaporwave/`. One query cluster each, all driven by the
   single `assets/js/styletool.js` runtime off a `data-tool` attribute on
@@ -83,6 +108,10 @@ implementation: photoshrink#7). There is exactly one definition of it:
   not all 32).
 - `nav_data.STYLE_SLUGS` is asserted against the real catalogue by
   `build_style_pages.py`, so the "All 32 styles" label cannot drift.
+- The **16 character pages** are tier 2 as well — the same picker with a
+  different set of characters loaded is a parameter, not a peer — so they take
+  two more `HUBS` entries and their own sibling chips under each h1, and the
+  rail stays at eight tools.
 - `assets/js/toolbar.js` is the toolbar's enhancement script (fades, Escape,
   click-outside), a separate file because 404, privacy, terms and the articles
   carry the toolbar but load no other JS.
@@ -162,4 +191,11 @@ with the letters hidden. Don't offer that combination.
 - Unicode gaps (subscript missing letters, small caps q/x) fall back to plain
   characters — this is expected, not a bug; don't "fix" it.
 - localStorage access always wrapped (private mode falls back to in-memory);
-  the favorites store migrates via one-time flags rather than key bumps.
+  the favorites store migrates via one-time flags rather than key bumps. It
+  now holds four kinds — styles, combos, mixes and `chars` (kaomoji and symbols,
+  stored as the literal string, which is also their identity). A store written
+  before `chars` existed gains the array in place; bumping `KEY` would throw
+  away every favorite anybody has.
+- The homepage accepts `?text=`, because the character pages hand off to it.
+  A link that says "open this in the full generator" and silently drops the
+  line would be worse than no link.
