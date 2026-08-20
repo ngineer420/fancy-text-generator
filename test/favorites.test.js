@@ -108,4 +108,56 @@ test("mixes save with per-letter nulls intact", () => {
   assert.strictEqual(Favs.mixes().length, 0);
 });
 
+test("a store written before chars existed gains the array without losing anything", () => {
+  // Exactly what is sitting in a returning visitor's browser: the key is
+  // present, already migrated past the seeded-combo stage, and has no `chars`
+  // array because that kind did not exist when it was written. Reading it must
+  // not throw and must not reset the store, which a KEY bump would have done.
+  backing.set(
+    "ftg-favorites-v1",
+    JSON.stringify({
+      styles: ["cursive"],
+      combos: [{ id: "z9", name: "Kept", ids: ["fraktur", "underline"] }],
+      mixes: [],
+      unseeded: true,
+    })
+  );
+  assert.deepStrictEqual(Favs.chars(), []);
+  assert.deepStrictEqual(Favs.styleIds(), ["cursive"], "the stars survived");
+  assert.ok(Favs.combos().some((c) => c.name === "Kept"), "the combo survived");
+  assert.ok(JSON.parse(backing.get("ftg-favorites-v1")).chars,
+    "the migrated array was written back, not just returned");
+  backing.set("ftg-favorites-v1", JSON.stringify({ styles: [], combos: [], mixes: [], chars: [], unseeded: true }));
+});
+
+test("characters star by their literal text, backslashes and all", () => {
+  const shrug = "\u00af\\_(\u30c4)_/\u00af";
+  assert.strictEqual(shrug, "¯\\_(ツ)_/¯", "the fixture is the real shrug");
+  assert.strictEqual(Favs.hasChar(shrug), false);
+  assert.strictEqual(Favs.toggleChar(shrug), true);
+  assert.ok(Favs.hasChar(shrug));
+
+  // Round-trips through JSON.stringify/parse in localStorage, which is where a
+  // backslash gets eaten if anything treats the value as an escape sequence.
+  assert.deepStrictEqual(Favs.chars(), [shrug]);
+  assert.strictEqual(Favs.chars()[0].length, 9, "nine characters, not eight");
+
+  // A near-miss must not match: the one-armed shrug is a different string.
+  assert.strictEqual(Favs.hasChar("¯_(ツ)_/¯"), false);
+
+  assert.strictEqual(Favs.toggleChar(shrug), false);
+  assert.strictEqual(Favs.hasChar(shrug), false);
+});
+
+test("chars, styles, combos and mixes are four independent lists", () => {
+  Favs.toggleChar("♥");
+  Favs.toggleStyle("fraktur");
+  assert.deepStrictEqual(Favs.chars(), ["♥"]);
+  assert.deepStrictEqual(Favs.styleIds(), ["fraktur"]);
+  assert.strictEqual(Favs.hasChar("fraktur"), false, "a style id is not a character");
+  assert.strictEqual(Favs.hasStyle("♥"), false, "a character is not a style id");
+  Favs.toggleChar("♥");
+  Favs.toggleStyle("fraktur");
+});
+
 console.log("\nAll " + passed + " tests passed.");

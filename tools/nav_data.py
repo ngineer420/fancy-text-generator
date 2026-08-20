@@ -71,7 +71,18 @@ STYLE_SLUGS = [
     "upside-down-text-generator",
 ]
 STYLE_COUNT = len(STYLE_SLUGS)
-HUBS = [("/styles/", "All %d styles" % STYLE_COUNT)]
+
+# Three tier-2 families, three hub links. The kaomoji and symbol pickers are
+# not a ninth and tenth tool: each one is the same picker-plus-composer with a
+# different set of characters loaded, which is a parameter, so they stay out of
+# the rail and out of the sheet body and are reached by a hub link plus the
+# sibling chips their builder writes under each h1 — exactly the arrangement
+# the 32 style pages already use.
+HUBS = [
+    ("/styles/", "All %d styles" % STYLE_COUNT),
+    ("/kaomoji/", "Kaomoji & text faces"),
+    ("/symbols/", "Text symbols"),
+]
 
 # Tier-2: the 32 style landing pages. Declared here so the gallery chip carries
 # aria-current="true" on one (spec #13 errata, defect 4) rather than the rail

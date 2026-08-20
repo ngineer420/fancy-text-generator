@@ -358,6 +358,13 @@
       });
     }
 
+    // ?text= — the homepage is the destination the rest of the site hands off
+    // to, so it has to accept the handoff. The kaomoji and symbol pages send
+    // the line the visitor built there ("open this in the full generator"),
+    // and a link that silently dropped it would be worse than no link.
+    const handoff = new URLSearchParams(location.search).get("text");
+    if (handoff) input.value = handoff.slice(0, 300);
+
     const debouncedRender = debounce(render, 50);
     input.addEventListener("input", debouncedRender);
     window.addEventListener("resize", debounce(markClipped, 150));
