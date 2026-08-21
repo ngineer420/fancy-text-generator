@@ -931,13 +931,6 @@
     return ex.char + " " + styled + " " + (ex.close || ex.char);
   }
 
-  // The same arrangement with no style run over it — what the tile puts in
-  // the box when its ＋ is pressed, so the other thirty-nine styles still
-  // have plain words to work on.
-  function charExampleText(ex, text) {
-    return applyCharExample({ ...ex, styleId: null }, text);
-  }
-
   // Run a Combiner chain: each style's output feeds the next.
   function applyChain(ids, text) {
     return ids.reduce((t, id) => (STYLE_BY_ID[id] ? STYLE_BY_ID[id].transform(t) : t), text);
@@ -973,7 +966,6 @@
     MIX_EXAMPLES,
     CHAR_EXAMPLES,
     applyCharExample,
-    charExampleText,
     isPictureToken,
     applyChain,
     mixPatternIds,

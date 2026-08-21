@@ -6,10 +6,11 @@ Alongside the fonts there are sixteen character-picker pages — `/kaomoji/` and
 `/symbols/`, each with a page per mood and per kind — where a click copies the
 character and `＋ Add fancy text` opens the generator with it already in the
 box, so a visitor who arrived for one heart can leave with a styled line
-rather than a clipboard. Arriving from the homepage's picker tile carries your
-words along: the strip at the top of the page says what it is holding, every
-card becomes that line with a different character in front of it, and the way
-to change the words is a link back. Those pages style nothing themselves: the
+rather than a clipboard. Arriving from one of the homepage's character tiles
+carries your words along, and the page turns into "which face goes with my
+words": a strip at the top says what it is holding, every card *prints* that
+line beside its own character so you are choosing against something you can
+read, and the way to change the words is a link back. Those pages style nothing themselves: the
 homepage is the only styler on the site, and a face there is simply text in
 the text box, which is why all 40 tiles restyle around it for free. The same
 move works from the other side — the homepage and the Combiner carry an **Add

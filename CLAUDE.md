@@ -75,8 +75,10 @@ Ten tools sharing one transform engine (`FancyText` in
   whole of every one of them is the **grid**: somebody who lands on /kaomoji/
   came for a face, so the filter box and then the faces are the page, and a
   card click **copies**. Styling is a link out — every card's
-  `＋ Add fancy text` goes to `/?text=<char> `. There is no composer here and
-  no styled sample either; see *One styler, and it is the homepage*.
+  `＋ Add fancy text` goes to `/?text=<char> <words>`. Arriving from a
+  homepage character tile, those words are the visitor's and every card
+  prints them beside its face. There is no composer here and no styled sample
+  either; see *One styler, and it is the homepage*.
   Currency, zodiac and dingbats were
   deliberately cut: currency duplicates `/currency-text-generator/`, the other
   two were thin. Every surviving symbol page carries 40+ entries, asserted.
@@ -180,32 +182,22 @@ typed text already in it. Favorites are strictly user-created (starred styles
 pin to the gallery front; combos/mixes are named on save and appear as chips
 on the tool pages).
 
-**Where that pill goes depends on whether there is anywhere to go.** A combo
-opens the Combiner and a mix opens the Mixer, because those are real editors
-this page is not. The four character *pairings* have no such editor — this
-page is already the styler and already carries *Add a face* — so their pill
-is `＋ Add face` / `＋ Add symbol` and it acts **here**: it puts the plain
-arrangement in the box and lets the forty tiles answer. The href says the
-same thing (`/?text=…`) so a middle click and JavaScript-off both work, but
-the click handler cancels it rather than reloading the page to change one
-input. The two picker tiles (`char-kaomoji`, `char-symbols`) keep a real link,
-to `/kaomoji/` and `/symbols/`, because browsing two hundred faces by mood is
-a page and not a control. Only a pill that *leaves* carries a `data-dest`
-colour, so those two are now the only coloured character tiles.
+**A character tile is an example, not a control.** All six go to the same
+place — the picker page, carrying the words and never the character, because
+the character is the one thing that page changes. One release had the four
+pairings act on the homepage instead, putting their arrangement in the box.
+That made them controls, and it duplicated *Add a face*, which is the control
+for changing the face and sits six inches to their right. They are examples
+of what a face and a style look like together; pressing one says "show me the
+faces, for this line".
 
-**Plain, never styled, into the box.** The box holds words for forty styles to
-work on. Putting `(◕‿◕) 𝒽𝒾` in it freezes one style and leaves the other
-thirty-nine with nothing to do — `charExampleText()` is `applyCharExample()`
-with the style dropped for exactly this.
-
-**A second press replaces, it does not stack.** Once one of these tiles has
-run, the box holds a face, so the next press finds one already where it wants
-to go. `applyCharExample()` strips a leading or trailing *picture* — the same
-"less than half letters" test `markable()` uses, exposed as
-`isPictureToken()` — before setting its own character down. Without it the
-gallery showed `(◕‿◕) (◕‿◕) hi (≧▽≦)` and looked unable to read its own
-input. The one token never stripped is the only one: a box holding just a
-face is holding its text.
+**The stacking guard is still load-bearing.** *Add a face* puts a face in the
+box, so these tiles regularly meet text that already has one.
+`applyCharExample()` strips a leading or trailing *picture* — the same "less
+than half letters" test `markable()` uses, exposed as `isPictureToken()` —
+before setting its own character down. Without it the gallery showed
+`(◕‿◕) (◕‿◕) hi (≧▽≦)` and looked unable to read its own input. The one token
+never stripped is the only one: a box holding just a face is holding its text.
 
 **Every tile in the gallery answers to typing** — there is no exception, and
 one was tried. Two tiles briefly showed a fixed row of characters to advertise
@@ -276,22 +268,40 @@ wearing text the visitor had not typed. Don't put them back without first
 having an answer to "what does this say that the ninety-six do not".
 
 **Carrying, and only when carrying is real.** A visitor who arrived from a
-homepage picker tile has a line already, and on this page that line is the
-*constant* while the character is the *variable* — every card is the same
-words with a different face in front of them. That is the whole reason the
-page never needed a text box:
-- the homepage picker tiles link to `/kaomoji/?text=<words>` — the words,
-  never the face, because the face is the one thing this page changes;
-- `characters-page.js` reads `?text=` once and writes it into every link that
-  leaves: the cards, the mood chips, the hop to the other family, the group
+homepage character tile has a line already, and on this page that line is the
+*constant* while the character is the *variable*. So the page stops being
+"pick a face" and becomes **"which face goes with my words"**, and every card
+**prints the combination** rather than the character alone — you choose
+against something you can read instead of imagining it. That is the whole
+reason the page never needed a text box:
+- the homepage character tiles link to `/kaomoji/?text=<words>` — the words,
+  never the face;
+- `characters-page.js` reads `?text=` once and uses it four ways: printed on
+  every card in `.char-glyph-text`, copied with the character (copying less
+  than what is on screen reads as a bug), used to relabel the card's action
+  from `＋ Add fancy text` to `✎ Style text` (same link, different sentence —
+  without a line the press adds one, with a line it styles what is there),
+  and written into every link that leaves — the cards, the mood chips, the hop to the other family, the group
   links on a hub. Losing the line by pressing "Cute" would make the chips a
   trap rather than a filter;
+- the carried words are **dimmer than the character**. On ninety-six cards
+  they are the constant, and giving them equal weight makes the one thing
+  that differs the hardest thing to find. They are clamped to two lines, so a
+  three-hundred-character line cannot turn the grid into a wall of text;
 - the `.char-carry` strip says what is being held and links **back to the
   generator** to change it. It is baked `hidden` and only ever unhidden by
-  the runtime, so a visit with no text makes no claim;
+  the runtime, so a visit with no text makes no claim, shows bare faces, and
+  gets no extra card height;
 - links are built with `encodeURIComponent`, not `URLSearchParams` — the
   latter spells a space `+`, and the site would then write the same line two
   ways on one page.
+
+**A card with no line still hands over words.** With nothing carried, the
+link is `/?text=<char> Fancy Text`, not `/?text=<char> `. A bare face at the
+far end gives forty tiles showing a face and nothing else — nothing to see
+the styles on, which is the whole reason to have gone. `SAMPLE_TEXT` in
+`build_character_pages.py` must match the one in `app.js`;
+`test/characters.test.js` checks that it does.
 
 Nothing is stored. The line lives in the URL for exactly as long as the
 visitor is inside the picker.

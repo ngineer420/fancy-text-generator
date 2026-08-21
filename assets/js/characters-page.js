@@ -21,11 +21,15 @@
 
    What it does do is carry. A visitor who arrived from a homepage tile has
    a line already, and on this page that line is the constant and the
-   character is the variable — every card is the same words with a different
-   face in front of them. So `?text=` is read once and written into every
-   link that leaves: the cards, the mood chips, the other family. No text box
-   is needed to hold it, because nothing here edits it; changing it is a link
-   back to the generator, which is where text is edited.
+   character is the variable — so the page becomes "which face goes with my
+   words", and every card SHOWS the combination rather than the character
+   alone. You are picking against something you can see.
+
+   `?text=` is read once and used three ways: printed on every card beside
+   its character, copied with it, and written into every link that leaves —
+   the cards, the mood chips, the other family. No text box is needed to hold
+   it, because nothing here edits it; changing it is a link back to the
+   generator, which is where text is edited.
 
    Load after fancytext-core.js, site.js and favorites.js. */
 
@@ -50,6 +54,16 @@
     if (!cards.length) return;
 
     const noun = main.dataset.charKind === "symbols" ? "symbols" : "kaomoji";
+
+    /* The line the visitor brought with them, if they brought one. It is
+       never edited here and never stored — the URL holds it for exactly as
+       long as they are inside the picker. */
+    const carried = (new URLSearchParams(location.search).get("text") || "").slice(0, MAX_LEN);
+
+    // What a card is actually offering: its character, plus that line.
+    function lineFor(char) {
+      return carried ? char + " " + carried : char;
+    }
 
     function announce(message) {
       if (liveRegion) liveRegion.textContent = message;
@@ -80,7 +94,10 @@
       // Copying is what the whole card does, because copying a face is what
       // the visit is for. Styling one is the other thing this page offers
       // and it has its own control — a link out to the generator.
-      const doCopy = wireCopy(card, () => ch, name);
+      // Copy what the card shows. With a line carried that is the whole
+      // combination, because the combination is what the card is offering
+      // and copying less than what is on screen reads as a bug.
+      const doCopy = wireCopy(card, () => lineFor(ch), name);
       card.addEventListener("click", (evt) => {
         // Both real controls on the card have to be able to answer for
         // themselves: the star is a button, "Style it" is a link, and either
@@ -172,11 +189,6 @@
 
     /* ---------- carry ---------- */
 
-    /* The line the visitor brought with them, if they brought one. It is
-       never edited here and never stored — it exists only as the text half
-       of every link off this page. */
-    const carried = (new URLSearchParams(location.search).get("text") || "").slice(0, MAX_LEN);
-
     function applyCarry() {
       if (!carried) return;
 
@@ -188,12 +200,29 @@
       if (back) back.href = "/?text=" + encodeURIComponent(carried);
       if (strip) strip.hidden = false;
 
-      // Every card is now that line with this character in front of it.
+      /* Every card becomes that line with this character in front of it —
+         on the card as well as in its link. Printing it is the point: the
+         page is now a chooser for the combination, and a grid of bare faces
+         would make you imagine the result instead of reading it. */
       for (const card of cards) {
+        const ch = card.dataset.char;
+        const slot = card.querySelector(".char-glyph-text");
+        if (slot) slot.textContent = " " + carried;
+        card.setAttribute("aria-label", "Copy " + lineFor(ch));
+        /* And it stops offering to add text, because the text is already
+           here. Same link, different sentence: without a line the press adds
+           one, with a line the press styles it. The pencil is the same mark
+           the homepage tiles use for "this opens an editor". */
         const link = card.querySelector(".char-insert");
         if (!link) continue;
-        link.href = "/?text=" + encodeURIComponent(card.dataset.char + " " + carried);
+        link.href = "/?text=" + encodeURIComponent(lineFor(ch));
+        link.innerHTML = '<span aria-hidden="true">\u270E</span> Style text';
+        link.title = "Style this line in the full generator";
+        link.setAttribute("aria-label",
+          "Style your text with " + card.querySelector(".char-name").textContent +
+          " in the full generator");
       }
+      main.classList.add("is-carrying");
 
       /* And the browse controls keep it. Losing the line by clicking "Cute"
          would make the mood chips a trap rather than a filter. Every link
