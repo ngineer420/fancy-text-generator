@@ -40,6 +40,10 @@
   const Favs = window.Favs;
 
   const MAX_LEN = 300;
+  // What a card's link hands over when the visitor has no line of their own.
+  // Must match SAMPLE_TEXT in app.js and in build_character_pages.py;
+  // test/characters.test.js checks that all three agree.
+  const SAMPLE_TEXT = "Fancy Text";
 
   document.addEventListener("DOMContentLoaded", () => {
     const main = document.querySelector("main.char-page");
@@ -53,12 +57,17 @@
     const groups = [...main.querySelectorAll(".char-group")];
     if (!cards.length) return;
 
-    const noun = main.dataset.charKind === "symbols" ? "symbols" : "kaomoji";
+    const symbols = main.dataset.charKind === "symbols";
+    const noun = symbols ? "symbols" : "kaomoji";
+    const one = symbols ? "symbol" : "kaomoji";
 
-    /* The line the visitor brought with them, if they brought one. It is
-       never edited here and never stored — the URL holds it for exactly as
-       long as they are inside the picker. */
-    const carried = (new URLSearchParams(location.search).get("text") || "").slice(0, MAX_LEN);
+    /* The line this page is holding. It arrives in `?text=` from a homepage
+       character tile, and is editable here — not because this page styles
+       anything, but because it is the page's own state and sending somebody
+       back to the generator to change one word costs them their place in the
+       grid. Never stored; the URL holds it for exactly as long as they are
+       inside the picker. */
+    let carried = (new URLSearchParams(location.search).get("text") || "").slice(0, MAX_LEN);
 
     // What a card is actually offering: its character, plus that line.
     function lineFor(char) {
@@ -189,53 +198,125 @@
 
     /* ---------- carry ---------- */
 
-    function applyCarry() {
-      if (!carried) return;
+    const CLEAR_ICON =
+      '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">' +
+      '<path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12' +
+      ' 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>';
 
-      const strip = document.getElementById("char-carry");
-      const shown = document.getElementById("char-carry-text");
-      const back = document.getElementById("char-carry-edit");
-      if (shown) shown.textContent = "“" + carried + "”";
-      // Back to the only place that edits text, with the line intact.
-      if (back) back.href = "/?text=" + encodeURIComponent(carried);
-      if (strip) strip.hidden = false;
+    /* The strip is built here rather than baked, for the same reason
+       charinsert.js builds its own button: with JavaScript off none of this
+       works, and an input that silently does nothing is worse than no input.
 
-      /* Every card becomes that line with this character in front of it —
-         on the card as well as in its link. Printing it is the point: the
-         page is now a chooser for the combination, and a grid of bare faces
-         would make you imagine the result instead of reading it. */
-      for (const card of cards) {
-        const ch = card.dataset.char;
-        const slot = card.querySelector(".char-glyph-text");
-        if (slot) slot.textContent = " " + carried;
-        card.setAttribute("aria-label", "Copy " + lineFor(ch));
-        /* And it stops offering to add text, because the text is already
-           here. Same link, different sentence: without a line the press adds
-           one, with a line the press styles it. The pencil is the same mark
-           the homepage tiles use for "this opens an editor". */
-        const link = card.querySelector(".char-insert");
-        if (!link) continue;
-        link.href = "/?text=" + encodeURIComponent(lineFor(ch));
+       It replaced a line that read "Change the text or style it →" and went
+       back to the generator. Both halves of that were wrong — changing was
+       all it actually did, and every card already offers to style. Editing
+       the line here keeps you where you are choosing. */
+    function buildStrip() {
+      const shell = main.querySelector(".tool-shell");
+      const filterRow = main.querySelector(".char-filter-row");
+      if (!shell || !filterRow) return null;
+
+      const wrap = document.createElement("div");
+      wrap.className = "char-carry";
+
+      const label = document.createElement("label");
+      label.className = "char-carry-label";
+      label.setAttribute("for", "char-carry-input");
+      label.textContent = "Your text";
+
+      const box = document.createElement("div");
+      box.className = "input-shell char-carry-shell";
+
+      const field = document.createElement("input");
+      field.type = "text";
+      field.id = "char-carry-input";
+      field.className = "input-field";
+      field.maxLength = MAX_LEN;
+      field.autocomplete = "off";
+      field.spellcheck = false;
+      field.placeholder = "Type to see it beside every " + one + "…";
+
+      const clear = document.createElement("button");
+      clear.type = "button";
+      clear.className = "clear-btn";
+      clear.setAttribute("aria-label", "Clear text");
+      clear.innerHTML = CLEAR_ICON;
+      clear.hidden = true;
+
+      box.append(field, clear);
+      wrap.append(label, box);
+      shell.insertBefore(wrap, filterRow);
+      return { field, clear };
+    }
+
+    function relabel(card, has) {
+      const link = card.querySelector(".char-insert");
+      if (!link) return;
+      const name = card.querySelector(".char-name").textContent;
+      /* Same link, different sentence: with no line the press adds one, with
+         a line it styles what is there. The pencil is the mark the homepage
+         tiles use for "this opens an editor". */
+      if (has) {
         link.innerHTML = '<span aria-hidden="true">\u270E</span> Style text';
         link.title = "Style this line in the full generator";
         link.setAttribute("aria-label",
-          "Style your text with " + card.querySelector(".char-name").textContent +
-          " in the full generator");
+          "Style your text with " + name + " in the full generator");
+      } else {
+        link.innerHTML = '<span aria-hidden="true">+</span> Add fancy text';
+        link.title = "Open the generator with this one in the box";
+        link.setAttribute("aria-label",
+          "Add fancy text to " + name + " in the full generator");
       }
-      main.classList.add("is-carrying");
+    }
 
-      /* And the browse controls keep it. Losing the line by clicking "Cute"
+    function writeUrl() {
+      // The line lives in the URL and nowhere else, which is what lets a
+      // mood chip carry it and a shared address arrive holding it.
+      history.replaceState(null, "", location.pathname +
+        (carried ? "?text=" + encodeURIComponent(carried) : ""));
+    }
+
+    let carrying = null; // last applied state, so labels are rewritten once
+
+    function syncCarry() {
+      const has = carried.length > 0;
+
+      /* Every card becomes that line with this character in front of it — on
+         the card as well as in its link. Printing it is the point: the page
+         is a chooser for the combination, and a grid of bare faces would
+         make you imagine the result instead of reading it. */
+      for (const card of cards) {
+        const ch = card.dataset.char;
+        const slot = card.querySelector(".char-glyph-text");
+        if (slot) slot.textContent = has ? " " + carried : "";
+        card.setAttribute("aria-label", "Copy " + lineFor(ch));
+        const link = card.querySelector(".char-insert");
+        // With no line of their own, the visitor still needs something at
+        // the far end to see the styles on.
+        if (link) {
+          link.href = "/?text=" +
+            encodeURIComponent(has ? ch + " " + carried : ch + " " + SAMPLE_TEXT);
+        }
+      }
+
+      if (carrying !== has) {
+        carrying = has;
+        for (const card of cards) relabel(card, has);
+        main.classList.toggle("is-carrying", has);
+      }
+
+      /* And the browse controls keep it. Losing the line by pressing "Cute"
          would make the mood chips a trap rather than a filter. Every link
          from here into another picker page gets it; links out of the family
-         (the generator, /styles/, the Combiner) already point somewhere that
-         reads `?text=` on its own terms and are left alone. */
+         (the generator, /styles/, the Combiner) already read `?text=` on
+         their own terms and are left alone. */
       for (const a of main.querySelectorAll('a[href^="/kaomoji/"], a[href^="/symbols/"]')) {
         if (a.classList.contains("char-insert")) continue;
         // Built by hand rather than through URLSearchParams, which spells a
         // space "+". Both decode the same but the site would then be writing
         // the line two ways in two places on one page.
         const path = a.getAttribute("href").split(/[?#]/)[0];
-        a.setAttribute("href", path + "?text=" + encodeURIComponent(carried));
+        a.setAttribute("href", path + (has ? "?text=" + encodeURIComponent(carried) : ""));
       }
     }
 
@@ -243,6 +324,29 @@
 
     syncStars();
     pinStarred();
-    applyCarry();
+
+    const strip = buildStrip();
+    if (strip) {
+      strip.field.value = carried;
+      strip.clear.hidden = !carried;
+      strip.field.addEventListener("input", debounce(() => {
+        carried = strip.field.value.slice(0, MAX_LEN);
+        strip.clear.hidden = !carried;
+        syncCarry();
+        writeUrl();
+      }, 60));
+      strip.field.addEventListener("keydown", (evt) => {
+        if (evt.key === "Enter") evt.preventDefault();
+      });
+      strip.clear.addEventListener("click", () => {
+        strip.field.value = "";
+        carried = "";
+        strip.clear.hidden = true;
+        strip.field.focus();
+        syncCarry();
+        writeUrl();
+      });
+    }
+    syncCarry();
   });
 })();
