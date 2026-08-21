@@ -25,20 +25,19 @@
 
   var PANEL_ID = "charpick-panel";
 
-  // What the panel says about styling a face. This is not a disclaimer, it
-  // is the answer to the question the button raises: alphabet styles map
-  // A-Z and leave everything else alone, which is exactly why a kaomoji
-  // survives them intact. Combining marks are drawn to the width of the
-  // base character, and the characters a face is built from are mostly
-  // fullwidth, so an underline over one paints a bar across the face.
+  // What the panel says about styling a face. Not a disclaimer — the answer
+  // to the question the button raises. Alphabet styles map A-Z and leave
+  // everything else alone, and the engine keeps combining marks off the
+  // brackets a face is assembled from, so a face comes through every style
+  // intact and only the words around it change.
   var TABS = [
     {
       id: "faces",
       label: "Faces",
       groupsOf: function (C) { return C.KAOMOJI; },
-      note: "A face is ordinary characters, so bold, script and gothic pass " +
-            "straight over it and style only your words. Underline, " +
-            "strikethrough and slash draw across it instead.",
+      note: "A face is ordinary characters, so every style passes straight " +
+            "over it and changes only your words — including underline and " +
+            "strikethrough, which stop at the edge of the face.",
       more: { href: "/kaomoji/", text: "All kaomoji, by mood" },
     },
     {
@@ -51,7 +50,7 @@
     },
   ];
 
-  var CATALOGUE_SRC = "/assets/js/characters.js?v=1";
+  var CATALOGUE_SRC = "/assets/js/characters.js?v=2";
 
   // Fetch the catalogue once, on demand. Resolves to window.Characters, or
   // rejects if the script will not load — the caller degrades to a link.

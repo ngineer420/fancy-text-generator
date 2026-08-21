@@ -342,14 +342,59 @@
       .join("");
   }
 
+  // Characters a combining mark must never be drawn on, because it is drawn
+  // to the width of its base and these are wider than it: CJK, kana, Hangul,
+  // fullwidth Latin and the halfwidth katakana punctuation that kaomoji are
+  // built from. The mark meets itself end to end and paints a solid bar over
+  // the character. This is the same rule as "combining marks and fullwidth do
+  // not mix", applied per character instead of per style.
+  const WIDE_BASE =
+    /[\u1100-\u115F\u2E80-\u303E\u3041-\u33FF\u3400-\u4DBF\u4E00-\u9FFF\uA000-\uA4CF\uAC00-\uD7A3\uF900-\uFAFF\uFE30-\uFE4F\uFF00-\uFF9F\uFFE0-\uFFE6]/;
+
+  // Letters and digits, across the alphabets this engine can produce —
+  // including the Math Alphanumeric planes, so a mark still lands on text
+  // that has already been through a substitution style.
+  const MARKABLE = /[\p{L}\p{N}]/u;
+
+  /**
+   * Which graphemes in a string a combining mark should be drawn on.
+   *
+   * A mark belongs on a letter. Drawn on the brackets and arithmetic a
+   * kaomoji is assembled from, it turns `(=^･ω･^=)` into a row of black
+   * bars — so punctuation only earns a mark where it sits *between* marked
+   * characters, which is what keeps a strike running unbroken through
+   * "isn't" and "3.14" and a sentence's commas while leaving a face alone.
+   * End of string counts as the right-hand neighbour, so trailing "!" is
+   * struck along with the word it follows.
+   */
+  function markable(graphemes) {
+    const solid = graphemes.map((g) => !WIDE_BASE.test(g) && MARKABLE.test(g));
+    return graphemes.map((g, i) => {
+      if (g === " " || WIDE_BASE.test(g)) return false;
+      if (solid[i]) return true;
+      let before = false;
+      for (let j = i - 1; j >= 0; j--) {
+        if (graphemes[j] === " ") continue;
+        before = solid[j];
+        break;
+      }
+      if (!before) return false;
+      for (let j = i + 1; j < graphemes.length; j++) {
+        if (graphemes[j] === " ") continue;
+        return solid[j];
+      }
+      return true; // nothing but spaces to the right: end of the run
+    });
+  }
+
   // Combining-mark effects (strikethrough, underline, …): one mark appended
   // per grapheme cluster, so an already-styled letter gets exactly one mark
   // instead of one per code point.
   function appendCombiningMark(mark) {
     return function (str) {
-      return splitGraphemes(str)
-        .map((g) => (g === " " ? g : g + mark))
-        .join("");
+      const graphemes = splitGraphemes(str);
+      const wanted = markable(graphemes);
+      return graphemes.map((g, i) => (wanted[i] ? g + mark : g)).join("");
     };
   }
 

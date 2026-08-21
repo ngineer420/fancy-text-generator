@@ -24,7 +24,7 @@
 <meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/css/styles.css?v=21">
+<link rel="stylesheet" href="/assets/css/styles.css?v=25">
 <script src="/assets/js/toolbar.js?v=1" defer></script>
 
 <script type="application/ld+json">
@@ -161,25 +161,6 @@
     </ul>
   </nav>
   <div class="tool-shell">
-    <section class="composer" aria-labelledby="composer-label">
-      <p class="composer-label" id="composer-label">Your text</p>
-      <div class="input-shell">
-        <label for="tool-input" class="visually-hidden">Your text</label>
-        <input type="text" id="tool-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
-        <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
-          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
-        </button>
-      </div>
-      <p class="composer-hint">Click any symbol below and it drops into the box at your cursor. Everything you type is styled around it.</p>
-      <p class="char-count" id="char-count" role="status"></p>
-      <div class="composer-out" id="composer-out">
-        <noscript>
-          <p class="noscript-note">The live styling needs JavaScript. The 49 symbols below are plain text either way — select one and copy it.</p>
-        </noscript>
-      </div>
-      <a class="composer-more" id="composer-more" href="/">Open this in the full generator — all 40 styles &rarr;</a>
-    </section>
-
     <div class="char-filter-row">
       <label for="char-filter" class="visually-hidden">Filter symbols</label>
       <input type="search" id="char-filter" class="input-field" placeholder="Filter 49 symbols — try a word like chevron…" autocomplete="off">
@@ -188,692 +169,738 @@
 
       <ul class="char-grid">
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="→" data-keys="rightwards arrow arrow right next forward" aria-label="Insert Rightwards arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="→" data-keys="rightwards arrow arrow right next forward" aria-label="Copy Rightwards arrow">
             <span class="char-glyph">→</span>
             <span class="char-meta">
               <span class="char-name">Rightwards arrow</span>
               <span class="char-code">U+2192</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Rightwards arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Rightwards arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Rightwards arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="←" data-keys="leftwards arrow arrow left back previous" aria-label="Insert Leftwards arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="←" data-keys="leftwards arrow arrow left back previous" aria-label="Copy Leftwards arrow">
             <span class="char-glyph">←</span>
             <span class="char-meta">
               <span class="char-name">Leftwards arrow</span>
               <span class="char-code">U+2190</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Leftwards arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Leftwards arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Leftwards arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↑" data-keys="upwards arrow arrow up above" aria-label="Insert Upwards arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↑" data-keys="upwards arrow arrow up above" aria-label="Copy Upwards arrow">
             <span class="char-glyph">↑</span>
             <span class="char-meta">
               <span class="char-name">Upwards arrow</span>
               <span class="char-code">U+2191</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Upwards arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Upwards arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Upwards arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↓" data-keys="downwards arrow arrow down below" aria-label="Insert Downwards arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↓" data-keys="downwards arrow arrow down below" aria-label="Copy Downwards arrow">
             <span class="char-glyph">↓</span>
             <span class="char-meta">
               <span class="char-name">Downwards arrow</span>
               <span class="char-code">U+2193</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Downwards arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Downwards arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Downwards arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↔" data-keys="left right arrow arrow both horizontal swap" aria-label="Insert Left right arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↔" data-keys="left right arrow arrow both horizontal swap" aria-label="Copy Left right arrow">
             <span class="char-glyph">↔</span>
             <span class="char-meta">
               <span class="char-name">Left right arrow</span>
               <span class="char-code">U+2194</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Left right arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Left right arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Left right arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
+        <li class="char-styled-cell">
+          <a class="char-styled" href="/?text=%E2%86%95%20Fancy%20Text" data-styled-char="↕" data-styled-style="fraktur">
+            <span class="char-styled-out">↕ 𝔉𝔞𝔫𝔠𝔶 𝔗𝔢𝔵𝔱</span>
+            <span class="char-styled-meta">
+              <span class="char-styled-name">Up down arrow in Fraktur / Gothic</span>
+              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
+            </span>
+          </a>
+        </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↕" data-keys="up down arrow arrow both vertical" aria-label="Insert Up down arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↕" data-keys="up down arrow arrow both vertical" aria-label="Copy Up down arrow">
             <span class="char-glyph">↕</span>
             <span class="char-meta">
               <span class="char-name">Up down arrow</span>
               <span class="char-code">U+2195</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Up down arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Up down arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Up down arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↖" data-keys="north west arrow arrow diagonal up left" aria-label="Insert North west arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↖" data-keys="north west arrow arrow diagonal up left" aria-label="Copy North west arrow">
             <span class="char-glyph">↖</span>
             <span class="char-meta">
               <span class="char-name">North west arrow</span>
               <span class="char-code">U+2196</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy North west arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save North west arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add North west arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↗" data-keys="north east arrow arrow diagonal up right rise" aria-label="Insert North east arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↗" data-keys="north east arrow arrow diagonal up right rise" aria-label="Copy North east arrow">
             <span class="char-glyph">↗</span>
             <span class="char-meta">
               <span class="char-name">North east arrow</span>
               <span class="char-code">U+2197</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy North east arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save North east arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add North east arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↘" data-keys="south east arrow arrow diagonal down right fall" aria-label="Insert South east arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↘" data-keys="south east arrow arrow diagonal down right fall" aria-label="Copy South east arrow">
             <span class="char-glyph">↘</span>
             <span class="char-meta">
               <span class="char-name">South east arrow</span>
               <span class="char-code">U+2198</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy South east arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save South east arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add South east arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↙" data-keys="south west arrow arrow diagonal down left" aria-label="Insert South west arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↙" data-keys="south west arrow arrow diagonal down left" aria-label="Copy South west arrow">
             <span class="char-glyph">↙</span>
             <span class="char-meta">
               <span class="char-name">South west arrow</span>
               <span class="char-code">U+2199</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy South west arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save South west arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add South west arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⇒" data-keys="rightwards double arrow arrow double implies right" aria-label="Insert Rightwards double arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⇒" data-keys="rightwards double arrow arrow double implies right" aria-label="Copy Rightwards double arrow">
             <span class="char-glyph">⇒</span>
             <span class="char-meta">
               <span class="char-name">Rightwards double arrow</span>
               <span class="char-code">U+21D2</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Rightwards double arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Rightwards double arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Rightwards double arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⇐" data-keys="leftwards double arrow arrow double left" aria-label="Insert Leftwards double arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⇐" data-keys="leftwards double arrow arrow double left" aria-label="Copy Leftwards double arrow">
             <span class="char-glyph">⇐</span>
             <span class="char-meta">
               <span class="char-name">Leftwards double arrow</span>
               <span class="char-code">U+21D0</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Leftwards double arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Leftwards double arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Leftwards double arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⇑" data-keys="upwards double arrow arrow double up" aria-label="Insert Upwards double arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⇑" data-keys="upwards double arrow arrow double up" aria-label="Copy Upwards double arrow">
             <span class="char-glyph">⇑</span>
             <span class="char-meta">
               <span class="char-name">Upwards double arrow</span>
               <span class="char-code">U+21D1</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Upwards double arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Upwards double arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Upwards double arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⇓" data-keys="downwards double arrow arrow double down" aria-label="Insert Downwards double arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⇓" data-keys="downwards double arrow arrow double down" aria-label="Copy Downwards double arrow">
             <span class="char-glyph">⇓</span>
             <span class="char-meta">
               <span class="char-name">Downwards double arrow</span>
               <span class="char-code">U+21D3</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Downwards double arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Downwards double arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Downwards double arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⇔" data-keys="left right double arrow arrow double equivalent" aria-label="Insert Left right double arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⇔" data-keys="left right double arrow arrow double equivalent" aria-label="Copy Left right double arrow">
             <span class="char-glyph">⇔</span>
             <span class="char-meta">
               <span class="char-name">Left right double arrow</span>
               <span class="char-code">U+21D4</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Left right double arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Left right double arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Left right double arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⇕" data-keys="up down double arrow arrow double vertical" aria-label="Insert Up down double arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⇕" data-keys="up down double arrow arrow double vertical" aria-label="Copy Up down double arrow">
             <span class="char-glyph">⇕</span>
             <span class="char-meta">
               <span class="char-name">Up down double arrow</span>
               <span class="char-code">U+21D5</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Up down double arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Up down double arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Up down double arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➔" data-keys="heavy wide-headed arrow arrow heavy right bold" aria-label="Insert Heavy wide-headed arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➔" data-keys="heavy wide-headed arrow arrow heavy right bold" aria-label="Copy Heavy wide-headed arrow">
             <span class="char-glyph">➔</span>
             <span class="char-meta">
               <span class="char-name">Heavy wide-headed arrow</span>
               <span class="char-code">U+2794</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy wide-headed arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy wide-headed arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy wide-headed arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
+        <li class="char-styled-cell">
+          <a class="char-styled" href="/?text=%E2%9E%9C%20Fancy%20Text" data-styled-char="➜" data-styled-style="double-struck">
+            <span class="char-styled-out">➜ 𝔽𝕒𝕟𝕔𝕪 𝕋𝕖𝕩𝕥</span>
+            <span class="char-styled-meta">
+              <span class="char-styled-name">Heavy round-tipped arrow in Double-Struck</span>
+              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
+            </span>
+          </a>
+        </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➜" data-keys="heavy round-tipped arrow arrow round right bold" aria-label="Insert Heavy round-tipped arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➜" data-keys="heavy round-tipped arrow arrow round right bold" aria-label="Copy Heavy round-tipped arrow">
             <span class="char-glyph">➜</span>
             <span class="char-meta">
               <span class="char-name">Heavy round-tipped arrow</span>
               <span class="char-code">U+279C</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy round-tipped arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy round-tipped arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy round-tipped arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➙" data-keys="heavy rightwards arrow arrow heavy right" aria-label="Insert Heavy rightwards arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➙" data-keys="heavy rightwards arrow arrow heavy right" aria-label="Copy Heavy rightwards arrow">
             <span class="char-glyph">➙</span>
             <span class="char-meta">
               <span class="char-name">Heavy rightwards arrow</span>
               <span class="char-code">U+2799</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy rightwards arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy rightwards arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy rightwards arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➛" data-keys="drafting point arrow arrow drafting right" aria-label="Insert Drafting point arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➛" data-keys="drafting point arrow arrow drafting right" aria-label="Copy Drafting point arrow">
             <span class="char-glyph">➛</span>
             <span class="char-meta">
               <span class="char-name">Drafting point arrow</span>
               <span class="char-code">U+279B</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Drafting point arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Drafting point arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Drafting point arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➝" data-keys="triangle-headed arrow arrow triangle right thin" aria-label="Insert Triangle-headed arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➝" data-keys="triangle-headed arrow arrow triangle right thin" aria-label="Copy Triangle-headed arrow">
             <span class="char-glyph">➝</span>
             <span class="char-meta">
               <span class="char-name">Triangle-headed arrow</span>
               <span class="char-code">U+279D</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Triangle-headed arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Triangle-headed arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Triangle-headed arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➞" data-keys="heavy triangle-headed arrow arrow triangle heavy" aria-label="Insert Heavy triangle-headed arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➞" data-keys="heavy triangle-headed arrow arrow triangle heavy" aria-label="Copy Heavy triangle-headed arrow">
             <span class="char-glyph">➞</span>
             <span class="char-meta">
               <span class="char-name">Heavy triangle-headed arrow</span>
               <span class="char-code">U+279E</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy triangle-headed arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy triangle-headed arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy triangle-headed arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➟" data-keys="dashed triangle-headed arrow arrow dashed right" aria-label="Insert Dashed triangle-headed arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➟" data-keys="dashed triangle-headed arrow arrow dashed right" aria-label="Copy Dashed triangle-headed arrow">
             <span class="char-glyph">➟</span>
             <span class="char-meta">
               <span class="char-name">Dashed triangle-headed arrow</span>
               <span class="char-code">U+279F</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Dashed triangle-headed arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Dashed triangle-headed arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Dashed triangle-headed arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➠" data-keys="heavy dashed arrow arrow dashed heavy" aria-label="Insert Heavy dashed arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➠" data-keys="heavy dashed arrow arrow dashed heavy" aria-label="Copy Heavy dashed arrow">
             <span class="char-glyph">➠</span>
             <span class="char-meta">
               <span class="char-name">Heavy dashed arrow</span>
               <span class="char-code">U+27A0</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy dashed arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy dashed arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy dashed arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➡" data-keys="black rightwards arrow arrow black right solid" aria-label="Insert Black rightwards arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➡" data-keys="black rightwards arrow arrow black right solid" aria-label="Copy Black rightwards arrow">
             <span class="char-glyph">➡</span>
             <span class="char-meta">
               <span class="char-name">Black rightwards arrow</span>
               <span class="char-code">U+27A1</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black rightwards arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black rightwards arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black rightwards arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➢" data-keys="three-d top-lighted arrowhead arrowhead 3d bullet" aria-label="Insert Three-D top-lighted arrowhead into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➢" data-keys="three-d top-lighted arrowhead arrowhead 3d bullet" aria-label="Copy Three-D top-lighted arrowhead">
             <span class="char-glyph">➢</span>
             <span class="char-meta">
               <span class="char-name">Three-D top-lighted arrowhead</span>
               <span class="char-code">U+27A2</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Three-D top-lighted arrowhead">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Three-D top-lighted arrowhead to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Three-D top-lighted arrowhead to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➣" data-keys="three-d bottom-lighted arrowhead arrowhead 3d bullet" aria-label="Insert Three-D bottom-lighted arrowhead into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➣" data-keys="three-d bottom-lighted arrowhead arrowhead 3d bullet" aria-label="Copy Three-D bottom-lighted arrowhead">
             <span class="char-glyph">➣</span>
             <span class="char-meta">
               <span class="char-name">Three-D bottom-lighted arrowhead</span>
               <span class="char-code">U+27A3</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Three-D bottom-lighted arrowhead">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Three-D bottom-lighted arrowhead to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Three-D bottom-lighted arrowhead to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➤" data-keys="black rightwards arrowhead arrowhead black bullet play" aria-label="Insert Black rightwards arrowhead into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➤" data-keys="black rightwards arrowhead arrowhead black bullet play" aria-label="Copy Black rightwards arrowhead">
             <span class="char-glyph">➤</span>
             <span class="char-meta">
               <span class="char-name">Black rightwards arrowhead</span>
               <span class="char-code">U+27A4</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black rightwards arrowhead">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black rightwards arrowhead to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black rightwards arrowhead to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➥" data-keys="heavy black curved arrow arrow curved reply" aria-label="Insert Heavy black curved arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➥" data-keys="heavy black curved arrow arrow curved reply" aria-label="Copy Heavy black curved arrow">
             <span class="char-glyph">➥</span>
             <span class="char-meta">
               <span class="char-name">Heavy black curved arrow</span>
               <span class="char-code">U+27A5</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy black curved arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy black curved arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy black curved arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
+        <li class="char-styled-cell">
+          <a class="char-styled" href="/?text=%E2%9E%A6%20Fancy%20Text" data-styled-char="➦" data-styled-style="small-caps">
+            <span class="char-styled-out">➦ Fᴀɴᴄʏ Tᴇxᴛ</span>
+            <span class="char-styled-meta">
+              <span class="char-styled-name">Heavy black curved up arrow in Small Caps</span>
+              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
+            </span>
+          </a>
+        </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➦" data-keys="heavy black curved up arrow arrow curved up" aria-label="Insert Heavy black curved up arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➦" data-keys="heavy black curved up arrow arrow curved up" aria-label="Copy Heavy black curved up arrow">
             <span class="char-glyph">➦</span>
             <span class="char-meta">
               <span class="char-name">Heavy black curved up arrow</span>
               <span class="char-code">U+27A6</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy black curved up arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy black curved up arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy black curved up arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⟶" data-keys="long rightwards arrow arrow long right" aria-label="Insert Long rightwards arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⟶" data-keys="long rightwards arrow arrow long right" aria-label="Copy Long rightwards arrow">
             <span class="char-glyph">⟶</span>
             <span class="char-meta">
               <span class="char-name">Long rightwards arrow</span>
               <span class="char-code">U+27F6</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Long rightwards arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Long rightwards arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Long rightwards arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⟵" data-keys="long leftwards arrow arrow long left" aria-label="Insert Long leftwards arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⟵" data-keys="long leftwards arrow arrow long left" aria-label="Copy Long leftwards arrow">
             <span class="char-glyph">⟵</span>
             <span class="char-meta">
               <span class="char-name">Long leftwards arrow</span>
               <span class="char-code">U+27F5</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Long leftwards arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Long leftwards arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Long leftwards arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⟷" data-keys="long left right arrow arrow long both" aria-label="Insert Long left right arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⟷" data-keys="long left right arrow arrow long both" aria-label="Copy Long left right arrow">
             <span class="char-glyph">⟷</span>
             <span class="char-meta">
               <span class="char-name">Long left right arrow</span>
               <span class="char-code">U+27F7</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Long left right arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Long left right arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Long left right arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↩" data-keys="leftwards arrow with hook arrow hook return reply" aria-label="Insert Leftwards arrow with hook into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↩" data-keys="leftwards arrow with hook arrow hook return reply" aria-label="Copy Leftwards arrow with hook">
             <span class="char-glyph">↩</span>
             <span class="char-meta">
               <span class="char-name">Leftwards arrow with hook</span>
               <span class="char-code">U+21A9</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Leftwards arrow with hook">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Leftwards arrow with hook to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Leftwards arrow with hook to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↪" data-keys="rightwards arrow with hook arrow hook forward" aria-label="Insert Rightwards arrow with hook into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↪" data-keys="rightwards arrow with hook arrow hook forward" aria-label="Copy Rightwards arrow with hook">
             <span class="char-glyph">↪</span>
             <span class="char-meta">
               <span class="char-name">Rightwards arrow with hook</span>
               <span class="char-code">U+21AA</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Rightwards arrow with hook">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Rightwards arrow with hook to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Rightwards arrow with hook to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↺" data-keys="anticlockwise open circle arrow arrow undo circle refresh" aria-label="Insert Anticlockwise open circle arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↺" data-keys="anticlockwise open circle arrow arrow undo circle refresh" aria-label="Copy Anticlockwise open circle arrow">
             <span class="char-glyph">↺</span>
             <span class="char-meta">
               <span class="char-name">Anticlockwise open circle arrow</span>
               <span class="char-code">U+21BA</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Anticlockwise open circle arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Anticlockwise open circle arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Anticlockwise open circle arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="↻" data-keys="clockwise open circle arrow arrow redo circle refresh" aria-label="Insert Clockwise open circle arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="↻" data-keys="clockwise open circle arrow arrow redo circle refresh" aria-label="Copy Clockwise open circle arrow">
             <span class="char-glyph">↻</span>
             <span class="char-meta">
               <span class="char-name">Clockwise open circle arrow</span>
               <span class="char-code">U+21BB</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Clockwise open circle arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Clockwise open circle arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Clockwise open circle arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⤴" data-keys="arrow pointing up then right arrow up curve" aria-label="Insert Arrow pointing up then right into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⤴" data-keys="arrow pointing up then right arrow up curve" aria-label="Copy Arrow pointing up then right">
             <span class="char-glyph">⤴</span>
             <span class="char-meta">
               <span class="char-name">Arrow pointing up then right</span>
               <span class="char-code">U+2934</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Arrow pointing up then right">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Arrow pointing up then right to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Arrow pointing up then right to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⤵" data-keys="arrow pointing down then right arrow down curve" aria-label="Insert Arrow pointing down then right into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⤵" data-keys="arrow pointing down then right arrow down curve" aria-label="Copy Arrow pointing down then right">
             <span class="char-glyph">⤵</span>
             <span class="char-meta">
               <span class="char-name">Arrow pointing down then right</span>
               <span class="char-code">U+2935</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Arrow pointing down then right">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Arrow pointing down then right to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Arrow pointing down then right to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⇢" data-keys="rightwards dashed arrow arrow dashed right" aria-label="Insert Rightwards dashed arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⇢" data-keys="rightwards dashed arrow arrow dashed right" aria-label="Copy Rightwards dashed arrow">
             <span class="char-glyph">⇢</span>
             <span class="char-meta">
               <span class="char-name">Rightwards dashed arrow</span>
               <span class="char-code">U+21E2</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Rightwards dashed arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Rightwards dashed arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Rightwards dashed arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⇠" data-keys="leftwards dashed arrow arrow dashed left" aria-label="Insert Leftwards dashed arrow into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⇠" data-keys="leftwards dashed arrow arrow dashed left" aria-label="Copy Leftwards dashed arrow">
             <span class="char-glyph">⇠</span>
             <span class="char-meta">
               <span class="char-name">Leftwards dashed arrow</span>
               <span class="char-code">U+21E0</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Leftwards dashed arrow">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Leftwards dashed arrow to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Leftwards dashed arrow to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="▶" data-keys="black right-pointing triangle triangle play right arrow" aria-label="Insert Black right-pointing triangle into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="▶" data-keys="black right-pointing triangle triangle play right arrow" aria-label="Copy Black right-pointing triangle">
             <span class="char-glyph">▶</span>
             <span class="char-meta">
               <span class="char-name">Black right-pointing triangle</span>
               <span class="char-code">U+25B6</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black right-pointing triangle">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black right-pointing triangle to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black right-pointing triangle to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="◀" data-keys="black left-pointing triangle triangle left back" aria-label="Insert Black left-pointing triangle into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="◀" data-keys="black left-pointing triangle triangle left back" aria-label="Copy Black left-pointing triangle">
             <span class="char-glyph">◀</span>
             <span class="char-meta">
               <span class="char-name">Black left-pointing triangle</span>
               <span class="char-code">U+25C0</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black left-pointing triangle">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black left-pointing triangle to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black left-pointing triangle to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="▲" data-keys="black up-pointing triangle triangle up increase" aria-label="Insert Black up-pointing triangle into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="▲" data-keys="black up-pointing triangle triangle up increase" aria-label="Copy Black up-pointing triangle">
             <span class="char-glyph">▲</span>
             <span class="char-meta">
               <span class="char-name">Black up-pointing triangle</span>
               <span class="char-code">U+25B2</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black up-pointing triangle">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black up-pointing triangle to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black up-pointing triangle to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="▼" data-keys="black down-pointing triangle triangle down decrease" aria-label="Insert Black down-pointing triangle into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="▼" data-keys="black down-pointing triangle triangle down decrease" aria-label="Copy Black down-pointing triangle">
             <span class="char-glyph">▼</span>
             <span class="char-meta">
               <span class="char-name">Black down-pointing triangle</span>
               <span class="char-code">U+25BC</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black down-pointing triangle">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black down-pointing triangle to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black down-pointing triangle to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="»" data-keys="right double angle quote chevron right next breadcrumb" aria-label="Insert Right double angle quote into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="»" data-keys="right double angle quote chevron right next breadcrumb" aria-label="Copy Right double angle quote">
             <span class="char-glyph">»</span>
             <span class="char-meta">
               <span class="char-name">Right double angle quote</span>
               <span class="char-code">U+00BB</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Right double angle quote">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Right double angle quote to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Right double angle quote to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="«" data-keys="left double angle quote chevron left back" aria-label="Insert Left double angle quote into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="«" data-keys="left double angle quote chevron left back" aria-label="Copy Left double angle quote">
             <span class="char-glyph">«</span>
             <span class="char-meta">
               <span class="char-name">Left double angle quote</span>
               <span class="char-code">U+00AB</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Left double angle quote">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Left double angle quote to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Left double angle quote to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="›" data-keys="right single angle quote chevron right small breadcrumb" aria-label="Insert Right single angle quote into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="›" data-keys="right single angle quote chevron right small breadcrumb" aria-label="Copy Right single angle quote">
             <span class="char-glyph">›</span>
             <span class="char-meta">
               <span class="char-name">Right single angle quote</span>
               <span class="char-code">U+203A</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Right single angle quote">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Right single angle quote to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Right single angle quote to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="‹" data-keys="left single angle quote chevron left small" aria-label="Insert Left single angle quote into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="‹" data-keys="left single angle quote chevron left small" aria-label="Copy Left single angle quote">
             <span class="char-glyph">‹</span>
             <span class="char-meta">
               <span class="char-name">Left single angle quote</span>
               <span class="char-code">U+2039</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Left single angle quote">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Left single angle quote to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Left single angle quote to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
       </ul>
+  <section class="composer" id="composer" aria-labelledby="composer-label">
+    <h2 class="composer-label" id="composer-label">Style the text around your symbol</h2>
+    <div class="input-shell">
+      <label for="tool-input" class="visually-hidden">Your text</label>
+      <input type="text" id="tool-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
+      <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+      </button>
+    </div>
+    <p class="composer-hint">Type here, then use the <strong>+</strong> on any symbol above to drop it in at your cursor. Everything you type is styled around it.</p>
+    <p class="char-count" id="char-count" role="status"></p>
+    <div class="composer-out" id="composer-out">
+      <noscript>
+        <p class="noscript-note">The live styling needs JavaScript. The 49 symbols above are plain text either way — select one and copy it.</p>
+      </noscript>
+    </div>
+    <a class="composer-more" id="composer-more" href="/">Open this in the full generator — all 40 styles &rarr;</a>
+  </section>
+
   </div>
 
   <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
@@ -944,9 +971,9 @@
 
 <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
 
-<script src="/assets/js/fancytext-core.js?v=6"></script>
+<script src="/assets/js/fancytext-core.js?v=7"></script>
 <script src="/assets/js/site.js?v=2"></script>
 <script src="/assets/js/favorites.js?v=3"></script>
-<script src="/assets/js/characters-page.js?v=1"></script>
+<script src="/assets/js/characters-page.js?v=3"></script>
 </body>
 </html>

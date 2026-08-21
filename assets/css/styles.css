@@ -16,22 +16,15 @@
   --grad: linear-gradient(100deg, #ff6ec4, #c77dff 48%, #5db8ff);
   --focus: #7cc6ff;
 
-  /* One hue per gallery category, keyed by [data-cat] on the tile. These
-     colour the banner's rule and tint only — never the text on it — so a
-     hue can be chosen for how well it separates from its neighbours
-     rather than for its contrast against a label, and the same nine
-     values work in both themes. The two brand-gradient ends are reserved
-     for the example families, which are the lead-ins into the other
-     tools and are meant to catch the eye first. */
-  --cat-bold-italic: #4f8cff;
-  --cat-cursive-gothic: #7a5cf0;
-  --cat-circled-boxed: #12a594;
-  --cat-symbol-alphabets: #d9822b;
-  --cat-small-wide: #3f9e4d;
-  --cat-effects-glitch: #e5484d;
-  --cat-decorated: #c8a12b;
-  --cat-combos: #c77dff;
-  --cat-chars: #ff6ec4;
+  /* Colour on a gallery tile means one thing: this card has a way into
+     another tool, and this is which one. Three destinations, three hues,
+     and they are the three stops of the brand gradient — so the coloured
+     cards read as a set rather than as a legend. Every other tile stays
+     black on white, which is what lets these ones carry any weight at
+     all: forty tinted cards is a swatch book, six is a signpost. */
+  --dest-combine: #c77dff;
+  --dest-mix: #5db8ff;
+  --dest-kaomoji: #ff6ec4;
   --radius: 8px;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
     sans-serif;
@@ -53,16 +46,10 @@
   --accent-contrast: #ffffff;
   --grad: linear-gradient(100deg, #d6249f, #8e2de2 48%, #2b7fff);
   --focus: #0a6cbf;
-  /* Same nine hues, darkened where a light band would wash them out. */
-  --cat-bold-italic: #2f6fe0;
-  --cat-cursive-gothic: #6141d8;
-  --cat-circled-boxed: #0d8375;
-  --cat-symbol-alphabets: #b3651c;
-  --cat-small-wide: #2f7d3b;
-  --cat-effects-glitch: #c62f35;
-  --cat-decorated: #9c7a12;
-  --cat-combos: #8e2de2;
-  --cat-chars: #d6249f;
+  /* The same three, darkened so they read on a light band. */
+  --dest-combine: #8e2de2;
+  --dest-mix: #2b7fff;
+  --dest-kaomoji: #d6249f;
 }
 
 @media (prefers-color-scheme: light) {
@@ -79,15 +66,9 @@
     --accent-dim: #7423b8;
     --accent-contrast: #ffffff;
     --focus: #0a6cbf;
-    --cat-bold-italic: #2f6fe0;
-    --cat-cursive-gothic: #6141d8;
-    --cat-circled-boxed: #0d8375;
-    --cat-symbol-alphabets: #b3651c;
-    --cat-small-wide: #2f7d3b;
-    --cat-effects-glitch: #c62f35;
-    --cat-decorated: #9c7a12;
-    --cat-combos: #8e2de2;
-    --cat-chars: #d6249f;
+    --dest-combine: #8e2de2;
+    --dest-mix: #2b7fff;
+    --dest-kaomoji: #d6249f;
   }
 }
 
@@ -567,7 +548,13 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   background: var(--bg-raised);
   border: 1px solid var(--border-soft);
   border-radius: 14px;
-  padding: 14px 14px 10px;
+  /* The banner is full-bleed, so it cancels this padding with a negative
+     margin. Both read the same two variables, which is what stops a tile
+     with different padding (the composer's previews) from having its
+     banner hang 2px off each edge. */
+  --tile-pad-x: 14px;
+  --tile-pad-b: 10px;
+  padding: 14px var(--tile-pad-x) var(--tile-pad-b);
   cursor: pointer;
   min-height: 96px;
   transition: border-color .12s ease, transform .12s ease, box-shadow .15s ease, background .2s ease;
@@ -602,53 +589,55 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
 /* the style name: a quiet footnote, not a headline */
 /* The banner. Full-bleed to the card's edges rather than inset in its
    padding, so it reads as a labelled strip belonging to the tile instead
-   of a caption floating under the sample. Its hue comes from the tile's
-   [data-cat]; --cat falls back to the border colour so a tile with no
-   category (or a stylesheet that has not caught up with a new one) is
-   plain rather than broken. */
+   of a caption floating under the sample.
+
+   Plain by default — no tint, no coloured rule. Only a tile with a way
+   into another tool takes a colour, and --dest says which tool. The
+   fallback keeps a tile with no destination monochrome rather than
+   guessing a hue for it. */
 .tile-foot {
-  --cat: var(--border);
+  --dest: var(--border);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  min-height: 20px;
-  margin: 2px -14px -10px;
-  padding: 7px 12px 8px;
-  border-top: 2px solid color-mix(in srgb, var(--cat) 62%, transparent);
+  /* Room for two lines of label on EVERY tile, used or not. This one
+     declaration is what makes the grid rows line up: the banner stops
+     being the reason two neighbours differ in height. */
+  min-height: 44px;
+  margin: 2px calc(-1 * var(--tile-pad-x)) calc(-1 * var(--tile-pad-b));
+  padding: 6px 12px;
+  border-top: 1px solid var(--border-soft);
   border-radius: 0 0 13px 13px;
-  background: color-mix(in srgb, var(--cat) 12%, var(--bg-inset));
+  background: var(--bg-inset);
 }
-.tile[data-cat="bold-italic"] .tile-foot { --cat: var(--cat-bold-italic); }
-.tile[data-cat="cursive-gothic"] .tile-foot { --cat: var(--cat-cursive-gothic); }
-.tile[data-cat="circled-boxed"] .tile-foot { --cat: var(--cat-circled-boxed); }
-.tile[data-cat="symbol-alphabets"] .tile-foot { --cat: var(--cat-symbol-alphabets); }
-.tile[data-cat="small-wide"] .tile-foot { --cat: var(--cat-small-wide); }
-.tile[data-cat="effects-glitch"] .tile-foot { --cat: var(--cat-effects-glitch); }
-.tile[data-cat="decorated"] .tile-foot { --cat: var(--cat-decorated); }
-.tile[data-cat="combos"] .tile-foot { --cat: var(--cat-combos); }
-.tile[data-cat="chars"] .tile-foot { --cat: var(--cat-chars); }
+.tile-example .tile-foot {
+  border-top: 2px solid color-mix(in srgb, var(--dest) 55%, transparent);
+  background: color-mix(in srgb, var(--dest) 9%, var(--bg-inset));
+}
+.tile[data-dest="combine"] .tile-foot { --dest: var(--dest-combine); }
+.tile[data-dest="mix"] .tile-foot { --dest: var(--dest-mix); }
+.tile[data-dest="kaomoji"] .tile-foot { --dest: var(--dest-kaomoji); }
 
-.tile-foot-label { position: relative; min-width: 0; flex: 1 1 auto; }
+.tile-foot-label {
+  position: relative;
+  min-width: 0;
+  flex: 1 1 auto;
+  align-self: center;
+}
 .tile-name {
-  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   font-size: 10px;
   font-weight: 700;
+  line-height: 1.35;
   text-transform: uppercase;
   letter-spacing: .07em;
-  color: var(--text-dim);
-  /* Wraps to a second line instead of ellipsing. The names that used to
-     be cut ("GOTHIC × DOUBLE-STR…") are exactly the ones that say what
-     the tile is. */
-  overflow-wrap: anywhere;
-  transition: opacity .12s ease;
-}
-.tile-recipe {
-  display: block;
-  margin-top: 2px;
-  font-size: 10.5px;
-  line-height: 1.35;
   color: var(--text-faint);
+  /* Wraps to a second line instead of ellipsing on the first. The names
+     that used to be cut ("GOTHIC × DOUBLE-STR…") are exactly the ones
+     that say what the tile is; two lines fits every one of them. */
   overflow-wrap: anywhere;
   transition: opacity .12s ease;
 }
@@ -686,7 +675,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   transition: opacity .12s ease, color .12s ease, background .12s ease;
 }
 .tile:hover .copy-icon-btn { opacity: 1; color: var(--accent); }
-.copy-icon-btn:hover { background: color-mix(in srgb, var(--cat, var(--border)) 22%, transparent); }
+.copy-icon-btn:hover { background: color-mix(in srgb, var(--dest, var(--border)) 22%, transparent); }
 .copy-icon-btn:focus-visible { opacity: 1; }
 
 .tile.is-copied {
@@ -694,8 +683,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   background: color-mix(in srgb, var(--accent) 8%, var(--bg-raised));
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent);
 }
-.tile.is-copied .tile-name,
-.tile.is-copied .tile-recipe { opacity: 0; }
+.tile.is-copied .tile-name { opacity: 0; }
 .tile.is-copied .tile-copied { opacity: 1; transform: translateY(0); }
 
 /* ---------- about / explainer section ---------- */
@@ -955,7 +943,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   transition: opacity .12s ease, color .12s ease, background .12s ease;
 }
 .tile:hover .tile-star { opacity: 1; }
-.tile-star:hover { background: color-mix(in srgb, var(--cat) 22%, transparent); color: var(--accent); }
+.tile-star:hover { background: color-mix(in srgb, var(--dest) 22%, transparent); color: var(--accent); }
 .tile-star[aria-pressed="true"] { opacity: 1; color: var(--accent); }
 .tile-star:focus-visible { opacity: 1; }
 
@@ -1011,58 +999,26 @@ a.fav-pill:hover { text-decoration: none; }
   background: transparent;
 }
 
-/* homepage example tiles (combo, mix, kaomoji pairing): a small tag marks
-   which kind it is, the banner spells the recipe out, and the Edit pill
-   opens it in the tool that made it. The label stacks — name with its tag
-   over the recipe — so neither competes for one line's worth of room. */
-.tile-example .tile-name { min-width: 0; }
-.tile-example .tile-foot {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas:
-    "label copy"
-    "edit  edit";
-  align-items: start;
-  row-gap: 7px;
-  column-gap: 8px;
-}
-.tile-example .tile-foot-label { grid-area: label; }
-.tile-example .copy-icon-btn { grid-area: copy; }
-.tile-example .tile-edit { grid-area: edit; justify-content: center; }
+/* The way into the Combiner, the Mixer or the kaomoji picker — the reason
+   an example tile is in the gallery at all, and until recently a
+   55%-opacity pencil glyph that only reached full opacity on :hover, i.e.
+   never on a phone.
 
-/* Sits inside .tile-name so it wraps with the name instead of being
-   pushed off the end of the line. */
-.tile-tag {
-  display: inline-block;
-  vertical-align: 1px;
-  margin-left: 6px;
-  font-size: 9.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  color: var(--cat);
-  background: color-mix(in srgb, var(--cat) 16%, transparent);
-  border: 1px solid color-mix(in srgb, var(--cat) 45%, transparent);
-  border-radius: 999px;
-  padding: 1px 6px;
-}
-
-/* The way into the Combiner, the Mixer and the kaomoji picker. It is the
-   reason an example tile exists, so it is a labelled pill in the banner's
-   own hue and legible with no hover — it used to be a 55%-opacity pencil
-   glyph that only reached full opacity on :hover, which on a phone is
-   never. */
+   It names its destination instead of saying "Edit". That is the same
+   fact the banner's colour carries, said in words: a card is a combo or a
+   mix or a face whether or not you can tell #c77dff from #5db8ff. */
 .tile-edit {
   flex: none;
+  align-self: center;
   display: inline-flex;
   align-items: center;
   gap: 4px;
   min-height: 24px;
-  padding: 3px 9px;
-  border: 1px solid color-mix(in srgb, var(--cat) 55%, transparent);
+  padding: 4px 9px;
+  border: 1px solid color-mix(in srgb, var(--dest) 50%, transparent);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--cat) 14%, transparent);
-  color: color-mix(in srgb, var(--cat) 55%, var(--text));
+  background: color-mix(in srgb, var(--dest) 14%, transparent);
+  color: color-mix(in srgb, var(--dest) 55%, var(--text));
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: .03em;
@@ -1072,8 +1028,8 @@ a.fav-pill:hover { text-decoration: none; }
   transition: background .12s ease, border-color .12s ease, color .12s ease;
 }
 .tile-edit:hover {
-  background: color-mix(in srgb, var(--cat) 28%, transparent);
-  border-color: var(--cat);
+  background: color-mix(in srgb, var(--dest) 26%, transparent);
+  border-color: var(--dest);
   color: var(--text);
   text-decoration: none;
 }
@@ -1495,7 +1451,13 @@ a.fav-pill:hover { text-decoration: none; }
   .composer-out { grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
 }
 .composer-out:empty { margin-top: 0; }
-.composer-out .tile { min-height: 84px; border-radius: 12px; padding: 12px 12px 8px; }
+.composer-out .tile {
+  --tile-pad-x: 12px;
+  --tile-pad-b: 8px;
+  min-height: 84px;
+  border-radius: 12px;
+}
+.composer-out .tile-foot { min-height: 34px; border-radius: 0 0 11px 11px; }
 .composer-out .tile-output { font-size: clamp(17px, 1.7vw, 20px); max-height: 96px; }
 .composer-more {
   display: inline-block;
@@ -1526,6 +1488,10 @@ a.fav-pill:hover { text-decoration: none; }
    below its widest content and pushes the whole grid off a phone. */
 .char-grid {
   display: grid;
+  /* Dense, because a styled card is two columns wide and the column count
+     is responsive: without it the wide card wraps to its own row and leaves
+     a hole wherever the arithmetic does not work out. */
+  grid-auto-flow: row dense;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
   gap: 8px;
   margin: 0;
@@ -1600,7 +1566,7 @@ a.fav-pill:hover { text-decoration: none; }
 .char-card:hover .char-tools,
 .char-card:focus-within .char-tools,
 .char-card.is-starred .char-tools { opacity: 1; }
-.char-copy, .char-star {
+.char-star {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1614,25 +1580,137 @@ a.fav-pill:hover { text-decoration: none; }
   font-size: 13px;
   line-height: 1;
 }
-.char-copy:hover, .char-star:hover { background: var(--bg-inset); color: var(--accent); }
-.char-copy:focus-visible, .char-star:focus-visible { opacity: 1; }
+.char-star:hover { background: var(--bg-inset); color: var(--accent); }
+.char-star:focus-visible { opacity: 1; }
 .char-star[aria-pressed="true"] { color: var(--accent); }
 
 /* The labelled affordance for the card's own action, so "click to insert" is
    something the page says rather than something the visitor has to guess. */
+/* "+ Style it" — the other thing this page offers, on its own button now
+   that the whole card copies. Always present rather than revealed on
+   hover: on a phone there is no hover, and this is the link between a
+   picker and the font engine. */
 .char-insert {
-  position: absolute;
-  left: 6px;
-  bottom: 6px;
-  font-size: 10px;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  margin-top: 2px;
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-faint);
+  font-size: 10.5px;
+  font-weight: 700;
   letter-spacing: .02em;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.char-insert:hover {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent);
+}
+.char-insert:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+/* The card copies on click, so it says so when it has. */
+.char-copied {
+  position: absolute;
+  inset: auto 0 8px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
   color: var(--accent);
   opacity: 0;
   transition: opacity .12s ease;
   pointer-events: none;
 }
-.char-card:hover .char-insert,
-.char-card:focus-visible .char-insert { opacity: 1; }
+.char-card.is-copied .char-copied { opacity: 1; }
+.char-card.is-copied .char-insert { opacity: 0; }
+
+/* A styled card among the plain ones: the advertisement for the styler,
+   in the grid rather than above it. A link, not a picker card — it goes
+   somewhere, and it looks like it does. */
+.char-styled-cell { grid-column: span 2; min-width: 0; }
+.char-styled {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+  min-height: 88px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--dest-kaomoji) 38%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--dest-kaomoji) 9%, var(--bg-raised));
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color .12s ease, transform .12s ease, background .2s ease;
+}
+.char-styled:hover {
+  border-color: var(--dest-kaomoji);
+  background: color-mix(in srgb, var(--dest-kaomoji) 15%, var(--bg-raised));
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.char-styled:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.char-styled-out {
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.char-styled-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.char-styled-name {
+  min-width: 0;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-faint);
+  overflow-wrap: anywhere;
+}
+.char-styled-go {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border: 1px solid color-mix(in srgb, var(--dest-kaomoji) 50%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dest-kaomoji) 14%, transparent);
+  color: color-mix(in srgb, var(--dest-kaomoji) 55%, var(--text));
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+.char-styled:hover .char-styled-go {
+  background: color-mix(in srgb, var(--dest-kaomoji) 26%, transparent);
+  border-color: var(--dest-kaomoji);
+  color: var(--text);
+}
+
+/* The composer answering an insert from a card that scrolled it into view. */
+.composer.is-flash {
+  animation: composer-flash .9s ease;
+}
+@keyframes composer-flash {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  25% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .composer.is-flash { animation: none; }
+}
 
 .char-card.is-copied {
   border-color: var(--accent);

@@ -24,7 +24,7 @@
 <meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/css/styles.css?v=21">
+<link rel="stylesheet" href="/assets/css/styles.css?v=25">
 <script src="/assets/js/toolbar.js?v=1" defer></script>
 
 <script type="application/ld+json">
@@ -163,25 +163,6 @@
     </ul>
   </nav>
   <div class="tool-shell">
-    <section class="composer" aria-labelledby="composer-label">
-      <p class="composer-label" id="composer-label">Your text</p>
-      <div class="input-shell">
-        <label for="tool-input" class="visually-hidden">Your text</label>
-        <input type="text" id="tool-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
-        <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
-          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
-        </button>
-      </div>
-      <p class="composer-hint">Click any kaomoji below and it drops into the box at your cursor. Everything you type is styled around it.</p>
-      <p class="char-count" id="char-count" role="status"></p>
-      <div class="composer-out" id="composer-out">
-        <noscript>
-          <p class="noscript-note">The live styling needs JavaScript. The 26 kaomoji below are plain text either way — select one and copy it.</p>
-        </noscript>
-      </div>
-      <a class="composer-more" id="composer-more" href="/">Open this in the full generator — all 40 styles &rarr;</a>
-    </section>
-
     <div class="char-filter-row">
       <label for="char-filter" class="visually-hidden">Filter kaomoji</label>
       <input type="search" id="char-filter" class="input-field" placeholder="Filter 26 kaomoji — try a word like tears…" autocomplete="off">
@@ -190,344 +171,381 @@
 
       <ul class="char-grid">
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(╥﹏╥)" data-keys="streaming tears cry tears sob sad" aria-label="Insert Streaming tears into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(╥﹏╥)" data-keys="streaming tears cry tears sob sad" aria-label="Copy Streaming tears">
             <span class="char-glyph">(╥﹏╥)</span>
             <span class="char-meta">
               <span class="char-name">Streaming tears</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Streaming tears">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Streaming tears to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Streaming tears to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="ಥ_ಥ" data-keys="full-face tears cry tears weep sad" aria-label="Insert Full-face tears into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="ಥ_ಥ" data-keys="full-face tears cry tears weep sad" aria-label="Copy Full-face tears">
             <span class="char-glyph">ಥ_ಥ</span>
             <span class="char-meta">
               <span class="char-name">Full-face tears</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Full-face tears">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Full-face tears to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Full-face tears to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(T_T)" data-keys="classic crying cry tears classic sad" aria-label="Insert Classic crying into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(T_T)" data-keys="classic crying cry tears classic sad" aria-label="Copy Classic crying">
             <span class="char-glyph">(T_T)</span>
             <span class="char-meta">
               <span class="char-name">Classic crying</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Classic crying">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Classic crying to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Classic crying to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(;_;)" data-keys="quiet tears cry quiet sad tear" aria-label="Insert Quiet tears into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(;_;)" data-keys="quiet tears cry quiet sad tear" aria-label="Copy Quiet tears">
             <span class="char-glyph">(;_;)</span>
             <span class="char-meta">
               <span class="char-name">Quiet tears</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Quiet tears">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Quiet tears to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Quiet tears to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(._.)" data-keys="downcast downcast blank sad quiet" aria-label="Insert Downcast into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(._.)" data-keys="downcast downcast blank sad quiet" aria-label="Copy Downcast">
             <span class="char-glyph">(._.)</span>
             <span class="char-meta">
               <span class="char-name">Downcast</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Downcast">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Downcast to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Downcast to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
+        <li class="char-styled-cell">
+          <a class="char-styled" href="/?text=%28%C2%B4%EF%BC%9B%CF%89%EF%BC%9B%60%29%20Fancy%20Text" data-styled-char="(´；ω；`)" data-styled-style="bold">
+            <span class="char-styled-out">(´；ω；`) 𝐅𝐚𝐧𝐜𝐲 𝐓𝐞𝐱𝐭</span>
+            <span class="char-styled-meta">
+              <span class="char-styled-name">Sobbing in Bold</span>
+              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
+            </span>
+          </a>
+        </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(´；ω；`)" data-keys="sobbing sob cry tears upset" aria-label="Insert Sobbing into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(´；ω；`)" data-keys="sobbing sob cry tears upset" aria-label="Copy Sobbing">
             <span class="char-glyph">(´；ω；`)</span>
             <span class="char-meta">
               <span class="char-name">Sobbing</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Sobbing">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Sobbing to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Sobbing to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(╯︵╰,)" data-keys="turned away crying cry turn away hurt" aria-label="Insert Turned away crying into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(╯︵╰,)" data-keys="turned away crying cry turn away hurt" aria-label="Copy Turned away crying">
             <span class="char-glyph">(╯︵╰,)</span>
             <span class="char-meta">
               <span class="char-name">Turned away crying</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Turned away crying">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Turned away crying to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Turned away crying to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(ㄒoㄒ)" data-keys="bawling bawl cry loud wail" aria-label="Insert Bawling into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(ㄒoㄒ)" data-keys="bawling bawl cry loud wail" aria-label="Copy Bawling">
             <span class="char-glyph">(ㄒoㄒ)</span>
             <span class="char-meta">
               <span class="char-name">Bawling</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Bawling">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Bawling to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Bawling to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(个_个)" data-keys="head down head down defeated sad" aria-label="Insert Head down into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(个_个)" data-keys="head down head down defeated sad" aria-label="Copy Head down">
             <span class="char-glyph">(个_个)</span>
             <span class="char-meta">
               <span class="char-name">Head down</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Head down">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Head down to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Head down to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(◞‸◟)" data-keys="looking down sadly down glum sad sulk" aria-label="Insert Looking down sadly into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(◞‸◟)" data-keys="looking down sadly down glum sad sulk" aria-label="Copy Looking down sadly">
             <span class="char-glyph">(◞‸◟)</span>
             <span class="char-meta">
               <span class="char-name">Looking down sadly</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Looking down sadly">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Looking down sadly to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Looking down sadly to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(´-ω-`)" data-keys="weary sigh sigh weary tired sad" aria-label="Insert Weary sigh into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(´-ω-`)" data-keys="weary sigh sigh weary tired sad" aria-label="Copy Weary sigh">
             <span class="char-glyph">(´-ω-`)</span>
             <span class="char-meta">
               <span class="char-name">Weary sigh</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Weary sigh">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Weary sigh to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Weary sigh to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="( ˘︹˘ )" data-keys="frowning frown unhappy sad" aria-label="Insert Frowning into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="( ˘︹˘ )" data-keys="frowning frown unhappy sad" aria-label="Copy Frowning">
             <span class="char-glyph">( ˘︹˘ )</span>
             <span class="char-meta">
               <span class="char-name">Frowning</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Frowning">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Frowning to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Frowning to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(´；д；`)" data-keys="wailing wail cry loud distress" aria-label="Insert Wailing into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(´；д；`)" data-keys="wailing wail cry loud distress" aria-label="Copy Wailing">
             <span class="char-glyph">(´；д；`)</span>
             <span class="char-meta">
               <span class="char-name">Wailing</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Wailing">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Wailing to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Wailing to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(μ_μ)" data-keys="sulking sulk mope sad quiet" aria-label="Insert Sulking into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(μ_μ)" data-keys="sulking sulk mope sad quiet" aria-label="Copy Sulking">
             <span class="char-glyph">(μ_μ)</span>
             <span class="char-meta">
               <span class="char-name">Sulking</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Sulking">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Sulking to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Sulking to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(ﾉД`)" data-keys="face in hands cry hands despair" aria-label="Insert Face in hands into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(ﾉД`)" data-keys="face in hands cry hands despair" aria-label="Copy Face in hands">
             <span class="char-glyph">(ﾉД`)</span>
             <span class="char-meta">
               <span class="char-name">Face in hands</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Face in hands">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Face in hands to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Face in hands to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(ノ_&lt;。)" data-keys="wiping the eyes wipe cry tears sniff" aria-label="Insert Wiping the eyes into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(ノ_&lt;。)" data-keys="wiping the eyes wipe cry tears sniff" aria-label="Copy Wiping the eyes">
             <span class="char-glyph">(ノ_&lt;。)</span>
             <span class="char-meta">
               <span class="char-name">Wiping the eyes</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Wiping the eyes">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Wiping the eyes to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Wiping the eyes to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(◕︵◕)" data-keys="big sad eyes sad eyes hurt puppy" aria-label="Insert Big sad eyes into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(◕︵◕)" data-keys="big sad eyes sad eyes hurt puppy" aria-label="Copy Big sad eyes">
             <span class="char-glyph">(◕︵◕)</span>
             <span class="char-meta">
               <span class="char-name">Big sad eyes</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Big sad eyes">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Big sad eyes to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Big sad eyes to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
+        <li class="char-styled-cell">
+          <a class="char-styled" href="/?text=%28%EF%BC%9E%EF%B9%8F%EF%BC%9C%29%20Fancy%20Text" data-styled-char="(＞﹏＜)" data-styled-style="fraktur">
+            <span class="char-styled-out">(＞﹏＜) 𝔉𝔞𝔫𝔠𝔶 𝔗𝔢𝔵𝔱</span>
+            <span class="char-styled-meta">
+              <span class="char-styled-name">Screwed shut in Fraktur / Gothic</span>
+              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
+            </span>
+          </a>
+        </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(＞﹏＜)" data-keys="screwed shut pain wince upset hurt" aria-label="Insert Screwed shut into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(＞﹏＜)" data-keys="screwed shut pain wince upset hurt" aria-label="Copy Screwed shut">
             <span class="char-glyph">(＞﹏＜)</span>
             <span class="char-meta">
               <span class="char-name">Screwed shut</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Screwed shut">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Screwed shut to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Screwed shut to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(-_-;)" data-keys="awkward gloom awkward gloom sweat resigned" aria-label="Insert Awkward gloom into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(-_-;)" data-keys="awkward gloom awkward gloom sweat resigned" aria-label="Copy Awkward gloom">
             <span class="char-glyph">(-_-;)</span>
             <span class="char-meta">
               <span class="char-name">Awkward gloom</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Awkward gloom">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Awkward gloom to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Awkward gloom to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(´_｀)" data-keys="blank sadness blank empty sad flat" aria-label="Insert Blank sadness into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(´_｀)" data-keys="blank sadness blank empty sad flat" aria-label="Copy Blank sadness">
             <span class="char-glyph">(´_｀)</span>
             <span class="char-meta">
               <span class="char-name">Blank sadness</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Blank sadness">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Blank sadness to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Blank sadness to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(╯_╰)" data-keys="downturned downturned sad glum" aria-label="Insert Downturned into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(╯_╰)" data-keys="downturned downturned sad glum" aria-label="Copy Downturned">
             <span class="char-glyph">(╯_╰)</span>
             <span class="char-meta">
               <span class="char-name">Downturned</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Downturned">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Downturned to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Downturned to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(っ- ‸ - ς)" data-keys="curled up sad curled small sad alone" aria-label="Insert Curled up sad into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(っ- ‸ - ς)" data-keys="curled up sad curled small sad alone" aria-label="Copy Curled up sad">
             <span class="char-glyph">(っ- ‸ - ς)</span>
             <span class="char-meta">
               <span class="char-name">Curled up sad</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Curled up sad">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Curled up sad to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Curled up sad to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(ᵕ̣̣̣̣̣̣﹏ᵕ̣̣̣̣̣̣)" data-keys="welling up cry welling tears about to cry" aria-label="Insert Welling up into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(ᵕ̣̣̣̣̣̣﹏ᵕ̣̣̣̣̣̣)" data-keys="welling up cry welling tears about to cry" aria-label="Copy Welling up">
             <span class="char-glyph">(ᵕ̣̣̣̣̣̣﹏ᵕ̣̣̣̣̣̣)</span>
             <span class="char-meta">
               <span class="char-name">Welling up</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Welling up">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Welling up to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Welling up to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="。゜゜(´Ｏ`) ゜゜。" data-keys="crying out loud cry loud tears wail" aria-label="Insert Crying out loud into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="。゜゜(´Ｏ`) ゜゜。" data-keys="crying out loud cry loud tears wail" aria-label="Copy Crying out loud">
             <span class="char-glyph">。゜゜(´Ｏ`) ゜゜。</span>
             <span class="char-meta">
               <span class="char-name">Crying out loud</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Crying out loud">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Crying out loud to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Crying out loud to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(⌣_⌣”)" data-keys="quietly defeated defeated resigned sigh" aria-label="Insert Quietly defeated into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(⌣_⌣”)" data-keys="quietly defeated defeated resigned sigh" aria-label="Copy Quietly defeated">
             <span class="char-glyph">(⌣_⌣”)</span>
             <span class="char-meta">
               <span class="char-name">Quietly defeated</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Quietly defeated">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Quietly defeated to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Quietly defeated to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="(๑´•.̫ • `๑)" data-keys="trying to be brave brave sad cute soft" aria-label="Insert Trying to be brave into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="(๑´•.̫ • `๑)" data-keys="trying to be brave brave sad cute soft" aria-label="Copy Trying to be brave">
             <span class="char-glyph">(๑´•.̫ • `๑)</span>
             <span class="char-meta">
               <span class="char-name">Trying to be brave</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Trying to be brave">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Trying to be brave to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Trying to be brave to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
       </ul>
+  <section class="composer" id="composer" aria-labelledby="composer-label">
+    <h2 class="composer-label" id="composer-label">Style the text around your kaomoji</h2>
+    <div class="input-shell">
+      <label for="tool-input" class="visually-hidden">Your text</label>
+      <input type="text" id="tool-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
+      <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+      </button>
+    </div>
+    <p class="composer-hint">Type here, then use the <strong>+</strong> on any kaomoji above to drop it in at your cursor. Everything you type is styled around it.</p>
+    <p class="char-count" id="char-count" role="status"></p>
+    <div class="composer-out" id="composer-out">
+      <noscript>
+        <p class="noscript-note">The live styling needs JavaScript. The 26 kaomoji above are plain text either way — select one and copy it.</p>
+      </noscript>
+    </div>
+    <a class="composer-more" id="composer-more" href="/">Open this in the full generator — all 40 styles &rarr;</a>
+  </section>
+
   </div>
 
   <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
@@ -600,9 +618,9 @@
 
 <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
 
-<script src="/assets/js/fancytext-core.js?v=6"></script>
+<script src="/assets/js/fancytext-core.js?v=7"></script>
 <script src="/assets/js/site.js?v=2"></script>
 <script src="/assets/js/favorites.js?v=3"></script>
-<script src="/assets/js/characters-page.js?v=1"></script>
+<script src="/assets/js/characters-page.js?v=3"></script>
 </body>
 </html>

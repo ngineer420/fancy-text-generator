@@ -30,10 +30,12 @@
   const SAMPLE_TEXT = "Fancy Text";
   const MAX_LEN = 300;
 
-  /* The styles the composer previews. Six substitution alphabets, no combining
-     marks: an underline or strikethrough is drawn to the width of its base
-     character, and on the fullwidth characters a kaomoji is built from the
-     marks meet end to end and paint a bar straight through the face. */
+  /* The styles the composer previews. Six substitution alphabets, chosen so
+     the row shows six visibly different answers rather than six weights of
+     the same one. Combining-mark styles are left out for the same reason,
+     not for safety — the engine now keeps a mark off the brackets a face is
+     built from, so an underline here would be correct but nearly invisible
+     beside the alphabets. */
   const PREVIEW = ["script", "bold", "fraktur", "double-struck", "circled", "small-caps"];
 
   const COPY_ICON =
@@ -138,6 +140,28 @@
       previews.push({ style, output });
     }
 
+    /* The styled cards mixed into the grid. Each is a static advert with
+       JavaScript off — a real face in a real style, linking into the full
+       gallery — and follows whatever the visitor types once it is on. The
+       href always carries the PLAIN line: the destination is a styler, and
+       every alphabet style no-ops on text that has already been through
+       one, so handing off a finished string would show forty identical
+       previews. */
+    const styledCellsList = [...document.querySelectorAll(".char-styled-cell")];
+    const styledCells = [...document.querySelectorAll(".char-styled")].map((el) => ({
+      el,
+      out: el.querySelector(".char-styled-out"),
+      char: el.dataset.styledChar,
+      style: FancyText.STYLE_BY_ID[el.dataset.styledStyle],
+    })).filter((c) => c.out && c.char && c.style);
+
+    function renderStyled(words) {
+      for (const c of styledCells) {
+        c.out.textContent = c.char + " " + c.style.transform(words);
+        c.el.href = "/?text=" + encodeURIComponent(c.char + " " + words);
+      }
+    }
+
     function render() {
       const text = sourceText();
       let longest = text;
@@ -149,6 +173,25 @@
       renderCharCount(countEl, text, longest);
       if (clearBtn) clearBtn.hidden = !input.value;
       if (moreLink) moreLink.href = "/?text=" + encodeURIComponent(text);
+      // The styled cards advertise the styler with the visitor's own words
+      // once there are any, and with the sample until then.
+      renderStyled(sourceText());
+    }
+
+    /* Bring the composer into view when a card sends a character to it.
+       It sits below the grid now, so an insert with no visible effect
+       would read as a dead button. */
+    function revealComposer() {
+      const composer = document.getElementById("composer");
+      if (!composer) return;
+      const box = composer.getBoundingClientRect();
+      const off = box.top < 0 || box.bottom > (window.innerHeight || 0);
+      if (off) composer.scrollIntoView({ behavior: "smooth", block: "center" });
+      composer.classList.remove("is-flash");
+      void composer.offsetWidth;
+      composer.classList.add("is-flash");
+      clearTimeout(composer._flash);
+      composer._flash = setTimeout(() => composer.classList.remove("is-flash"), 900);
     }
 
     /* ---------- URL state, matching the other tool pages ---------- */
@@ -191,28 +234,34 @@
       const ch = card.dataset.char;
       const name = card.querySelector(".char-name").textContent;
 
-      const doInsert = () => {
-        insert(ch);
-        announce(name + " added to your text");
-      };
-
+      // Copying is what the whole card does, because copying a face is what
+      // the visit is for. Building a styled line around it is the other
+      // thing this page offers and it has its own button — the reverse of
+      // the arrangement this page shipped with, which answered "what does
+      // this page do" with the wrong one of the two.
+      const doCopy = wireCopy(card, () => ch, name);
       card.addEventListener("click", (evt) => {
         if (evt.target.closest("button")) return;
-        doInsert();
+        doCopy();
       });
       card.addEventListener("keydown", (evt) => {
         if (evt.target !== card) return;
         if (evt.key === "Enter" || evt.key === " ") {
           evt.preventDefault();
-          doInsert();
+          doCopy();
         }
       });
 
-      const copyBtn = card.querySelector(".char-copy");
-      if (copyBtn) {
-        const doCopy = wireCopy(card, () => ch, name);
-        copyBtn.innerHTML = COPY_ICON;
-        copyBtn.addEventListener("click", doCopy);
+      const insertBtn = card.querySelector(".char-insert");
+      if (insertBtn) {
+        insertBtn.addEventListener("click", (evt) => {
+          evt.stopPropagation();
+          insert(ch);
+          announce(name + " added to your text");
+          // The composer is below the grid now, so an insert that gave no
+          // sign of itself would read as a dead button.
+          revealComposer();
+        });
       }
 
       const starBtn = card.querySelector(".char-star");
@@ -263,6 +312,11 @@
         card.parentElement.hidden = !hit;
         if (hit) shown++;
       }
+
+      // The styled cards are adverts, not results. Leaving them in a filtered
+      // grid would put them beside a count that does not include them and
+      // among characters they have nothing to do with.
+      for (const cell of styledCellsList) cell.hidden = terms.length > 0;
 
       // A hub is sectioned by group; a section with nothing left in it is a
       // heading over a gap, so it goes too.

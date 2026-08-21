@@ -3,9 +3,11 @@
 A free, ad-supported fancy text generator: type plain text and instantly get 40 stylized Unicode versions of it — bold, italic, script, gothic/fraktur, double-struck, bubble/circled, squared, small caps, superscript/subscript, strikethrough, underline, overline, upside-down, mirrored, and three intensities of zalgo/glitch text — each with a one-click Copy button.
 
 Alongside the fonts there are sixteen character-picker pages — `/kaomoji/` and
-`/symbols/`, each with a page per mood and per kind — where clicking a kaomoji
-or a symbol drops it into the same text box the styler reads, so a visitor who
-arrived for one heart leaves with a styled line rather than a clipboard. The
+`/symbols/`, each with a page per mood and per kind — where a click copies the
+character and a `+ Style it` button drops it into the same text box the styler
+reads, so a visitor who arrived for one heart can leave with a styled line
+rather than a clipboard. A handful of styled cards sit among the plain ones in
+every grid, each linking into the full gallery with that line loaded. The
 same move works from the other side: the homepage and the Combiner carry an
 **Add a face** button beside their input, so a line that is already the shape
 you want can take a face without a trip to another page.
@@ -20,7 +22,7 @@ Most styles are implemented using the standard "Unicode Mathematical Alphanumeri
 
 Other styles (small caps, circled, squared, fullwidth, superscript, subscript) use their own scattered Unicode ranges via explicit lookup tables. Where a style has incomplete A–Z coverage (subscript and superscript are missing several letters; small caps has no dedicated glyph for q or x), unmapped characters gracefully fall back to the plain character instead of producing blank or broken output.
 
-A few "effect" styles aren't simple character substitution: strikethrough/underline append a combining character after each glyph, upside-down/mirror use a substitution table plus string reversal, and zalgo/glitch text randomly stacks combining diacritical marks above/below/through each character at three intensities.
+A few "effect" styles aren't simple character substitution: strikethrough/underline append a combining character after each glyph, upside-down/mirror use a substitution table plus string reversal, and zalgo/glitch text randomly stacks combining diacritical marks above/below/through each character at three intensities. A combining mark is drawn to the width of its base, so it is not appended to every character: letters and digits always take one, punctuation takes one only where it sits between them, and wide or fullwidth bases never do. That keeps a strike running unbroken through "isn't" and "3.14" while leaving a kaomoji like `(=^･ω･^=)` untouched instead of painting a row of black bars over it.
 
 ## Local development
 
