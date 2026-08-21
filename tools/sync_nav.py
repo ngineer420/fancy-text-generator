@@ -23,6 +23,15 @@ The current page is identified by canonicalising the file's own path
 in nav_data, which is what lets both members of a flat-file/directory twin pair
 be stamped with `aria-current="page"` from one list.
 
+Two optional keys in nav_data tune the render without forking this file, and
+both default to the shape every site had before they existed:
+
+    RAIL_MAX  -- how many tier-1 tools the rail shows (default 8). Raise it
+                 only where the rail's own horizontal scroll and edge fades
+                 can carry the extra chips.
+    VARIANTS  -- one dict, or a list of them, so a site with more than one
+                 tier-2 family can mark each family's tier-1 owner.
+
 `--check` is worth running before deploy: a second agent hand-editing one page
 between sweeps is how these repos drift.
 """
@@ -95,17 +104,26 @@ def anchor(href, text, current, extra="", owns=()):
 # column 0; apply_regions() re-indents it to match the marker.
 # --------------------------------------------------------------------------
 
-def owned_urls(tool_href):
-    """Tier-2 URLs that belong to this tier-1 tool."""
+def variant_families():
+    """Every tier-2 family, as a list. One dict and a list of dicts both work."""
     v = getattr(D, "VARIANTS", None)
-    if not v or canon(v.get("parent", "")) != canon(tool_href):
-        return ()
-    return tuple(canon(i["href"]) for i in v["items"])
+    if not v:
+        return []
+    return list(v) if isinstance(v, (list, tuple)) else [v]
+
+
+def owned_urls(tool_href):
+    """Tier-2 URLs that belong to this tier-1 tool, across every family."""
+    owned = []
+    for v in variant_families():
+        if canon(v.get("parent", "")) == canon(tool_href):
+            owned += [canon(i["href"]) for i in v["items"]]
+    return tuple(owned)
 
 
 def render_nav(url):
     tier1 = [t for t in D.TOOLS if t["tier"] == 1]
-    rail = tier1[:8]
+    rail = tier1[: getattr(D, "RAIL_MAX", 8)]
     count = len(tier1)
 
     out = []
@@ -160,9 +178,10 @@ def render_nav(url):
 
 def render_sizechips(url):
     """Tier-2 sibling chips: real links, inside the tool's own control panel."""
-    v = getattr(D, "VARIANTS", None)
-    if not v:
+    families = variant_families()
+    if not families:
         return ""
+    v = families[0]
     label_id = "size-chips-label"
     out = ['<nav class="size-chips" aria-label="%s">' % esc(v["aria"]),
            '  <span class="size-chips-label" id="%s">%s</span>' % (label_id, esc(v["label"])),

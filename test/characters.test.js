@@ -231,20 +231,80 @@ test("every character URL is in the sitemap exactly once", () => {
   }
 });
 
-test("the hubs and the toolbar agree that these pages exist", () => {
+test("both hubs are tier-1 tools, in the rail on every page", () => {
   const navData = read("tools/nav_data.py");
-  assert.ok(navData.includes('("/kaomoji/"'), "no kaomoji hub in nav_data.py");
-  assert.ok(navData.includes('("/symbols/"'), "no symbols hub in nav_data.py");
-  for (const page of ["kaomoji/index.html", "symbols/index.html", "index.html"]) {
-    const html = read(page);
-    assert.ok(html.includes('class="tb-hub"'), page + " has no hub links in the toolbar");
-    assert.ok(html.includes('href="/kaomoji/"') && html.includes('href="/symbols/"'),
-      page + " does not link both hubs");
+  for (const href of ['"/kaomoji/"', '"/symbols/"']) {
+    assert.ok(navData.includes('{"href": ' + href), href + " is not a tier-1 tool in nav_data.py");
   }
-  // The current page is marked, on its own hub link and nowhere else.
+  // The rail is the point of the promotion: a hub link at the foot of the
+  // sheet is what these pages had, and it is not discoverable.
+  for (const page of ["kaomoji/index.html", "symbols/index.html", "index.html",
+                      "combine/index.html", "bold-text-generator/index.html"]) {
+    const html = read(page);
+    const rail = html.split('<ul class="tb-rail">')[1];
+    assert.ok(rail, page + " has no toolbar rail");
+    const chips = rail.split("</ul>")[0];
+    assert.ok(chips.includes('href="/kaomoji/"'), page + " has no Kaomoji chip in the rail");
+    assert.ok(chips.includes('href="/symbols/"'), page + " has no Symbols chip in the rail");
+  }
+  // The current page is marked on its own chip.
   const kaomoji = read("kaomoji/index.html");
   assert.ok(kaomoji.includes('<a href="/kaomoji/" aria-current="page">'),
     "the kaomoji hub does not mark itself current in the toolbar");
+  // A mood page is tier 2 under it, so the chip is "the current item in this
+  // set" rather than a link to the page you are on.
+  const happy = read("kaomoji/happy/index.html");
+  assert.ok(happy.includes('<a href="/kaomoji/" aria-current="true">'),
+    "a mood page does not mark the Kaomoji chip as its family's current item");
+  const happyBar = happy.split("<!-- nav:start -->")[1].split("<!-- nav:end -->")[0];
+  assert.ok(!happyBar.includes('aria-current="page"'),
+    "a mood page claims a toolbar link points at the page you are on");
+  // Its own sibling chip, outside the toolbar, is the one that does.
+  assert.ok(happy.includes('href="/kaomoji/happy/" aria-current="page"'),
+    "a mood page does not mark itself current in its sibling chips");
+});
+
+test("the homepage introduces the pickers where they can be seen", () => {
+  const home = read("index.html");
+  // A promo card each, in the row of tool cards under the gallery.
+  for (const href of ["/kaomoji/", "/symbols/"]) {
+    assert.ok(home.includes('<a class="tool-promo" href="' + href + '">'),
+      "no homepage tool-promo card for " + href);
+  }
+  // And the inserter, which is the only way to get a face into a line
+  // without leaving the page you are styling on.
+  for (const page of ["index.html", "combine/index.html"]) {
+    const html = read(page);
+    assert.ok(html.includes("data-char-insert"),
+      page + " does not opt into the character inserter");
+    assert.ok(html.includes("charinsert.js"),
+      page + " does not load charinsert.js");
+    assert.ok(!html.includes('src="/assets/js/characters.js'),
+      page + " loads the catalogue eagerly; charinsert.js fetches it on first open");
+  }
+});
+
+test("every character example on the homepage is a real catalogue character", () => {
+  const core = require(path.join(ROOT, "assets/js/fancytext-core.js"));
+  const known = new Set();
+  for (const [, groups] of FAMILIES) {
+    for (const group of groups) for (const item of group.items) known.add(item.char);
+  }
+  assert.ok(core.CHAR_EXAMPLES.length >= 4, "too few character examples to introduce the pickers");
+  for (const ex of core.CHAR_EXAMPLES) {
+    // Nothing goes in front of a visitor that check_glyphs.mjs has not
+    // painted, and the catalogue is what it paints.
+    assert.ok(known.has(ex.char),
+      ex.id + " uses " + JSON.stringify(ex.char) + ", which is not in characters.js");
+    assert.ok(core.STYLE_BY_ID[ex.styleId], ex.id + " names a style that does not exist");
+    // Combining marks are drawn to the width of the base character, and a
+    // face is mostly fullwidth ones, so they paint a bar across it.
+    assert.ok(!/strikethrough|underline|slashed|overline|zalgo/.test(ex.styleId),
+      ex.id + " pairs a face with " + ex.styleId + ", which draws across it");
+    const out = core.applyCharExample(ex, "Fancy Text");
+    assert.ok(out.includes(ex.char), ex.id + " drops its own character");
+    assert.ok(out !== "Fancy Text", ex.id + " leaves the text untouched");
+  }
 });
 
 console.log("\nAll " + passed + " tests passed.");

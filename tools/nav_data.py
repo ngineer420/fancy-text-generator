@@ -12,23 +12,30 @@ tier 2 — it never appears in the rail or the sheet body. It gets one hub link 
 the bottom of the sheet plus real <a href> sibling chips inside the tool's own
 control panel, where it is a parameter and not a peer.
 
-Here the eight tools are tier 1 and the style landing pages are tier 2: every
-one of them is the same styletool runtime with `data-style` set, which is a
-parameter, not a peer. Their hub is /styles/ and their sibling chips sit under
-the h1 of each style page — see `build_style_pages.py`.
+Here ten tools are tier 1. The style landing pages are tier 2: every one of
+them is the same styletool runtime with `data-style` set, which is a parameter,
+not a peer. Their hub is /styles/ and their sibling chips sit under the h1 of
+each style page — see `build_style_pages.py`.
+
+/kaomoji/ and /symbols/ are tier 1 because the test is the question a page
+answers, and theirs is "give me a face to put beside my words", not "restyle my
+words". Nothing on either page is the style engine with a parameter changed —
+they are a character catalogue wired into a composer, on their own runtime
+(`characters-page.js`). What is a parameter is the *set* loaded into that
+picker, so the fourteen mood and kind pages stay tier 2 under them.
 """
 
-# Noun used in the menu trigger: "All 8 tools".
+# Noun used in the menu trigger: "All 10 tools".
 NOUN = "tools"
 
-# Tier-1 tools, in rail order (rail is capped at 8 — this site has exactly 8).
+# Tier-1 tools, in rail order (the rail shows RAIL_MAX of them — see below).
 # "/" is in the rail because it is itself a tool surface: the homepage is the
 # live gallery where you type once and copy from any of the forty styles, not a
 # landing page about the tools. It is also the tier-1 owner of the style pages,
 # which is what stops the rail rendering unselected on all 32 of them.
 #   label -> rail chip text, <= 18 chars
 #   long  -> anchor text in the sheet and in any footer/in-body list
-#   group -> sheet grouping key, only used once a site passes 8 destinations
+#   group -> sheet grouping key, in use here: this site is past 8 destinations
 TOOLS = [
     {"href": "/",               "label": "All fonts",  "long": "All Fonts Gallery",    "group": "gallery", "tier": 1},
     {"href": "/flip/",          "label": "Flip",       "long": "Flip Text Upside Down", "group": "effect", "tier": 1},
@@ -38,20 +45,29 @@ TOOLS = [
     {"href": "/vaporwave/",     "label": "Vaporwave",  "long": "Vaporwave Text",        "group": "effect", "tier": 1},
     {"href": "/combine/",       "label": "Combiner",   "long": "Style Combiner",        "group": "build",  "tier": 1},
     {"href": "/mix/",           "label": "Mixer",      "long": "Per-Letter Mixer",      "group": "build",  "tier": 1},
+    {"href": "/kaomoji/",       "label": "Kaomoji",    "long": "Kaomoji & Text Faces",  "group": "chars",  "tier": 1},
+    {"href": "/symbols/",       "label": "Symbols",    "long": "Text Symbols",          "group": "chars",  "tier": 1},
 ]
 
-# Sheet groups, in order. Unused at <= 8 destinations (the sheet renders flat,
-# because group headings are noise at that size) — kept so the arrangement is
-# already decided the day this site gains a ninth tool.
+# The rail shows all ten rather than the default eight. It is a scroller with
+# edge fades already, so the two extra chips cost a short swipe on a phone and
+# nothing at all on a desktop — where a hub link buried under the fold of the
+# sheet cost the whole feature.
+RAIL_MAX = 10
+
+# Sheet groups, in order. Live now: past eight destinations the sheet stops
+# rendering flat and groups instead, because a ten-item unlabelled list is a
+# list you read rather than scan.
 GROUPS = [
     ("gallery", "Every style at once"),
     ("effect", "One effect"),
     ("build",  "Build your own"),
+    ("chars",  "Characters to put beside them"),
 ]
 
-# One hub link at the bottom of the sheet per tier-2 family. STYLE_COUNT is
-# asserted against the real catalogue by build_style_pages.py, so this label
-# cannot drift as styles are added.
+# Slugs of the 32 style landing pages. STYLE_COUNT is asserted against the real
+# catalogue by build_style_pages.py, so the sheet's hub label cannot drift as
+# styles are added.
 STYLE_SLUGS = [
     "bold-text-generator", "italic-text-generator",
     "bold-italic-text-generator", "cursive-text-generator",
@@ -72,29 +88,53 @@ STYLE_SLUGS = [
 ]
 STYLE_COUNT = len(STYLE_SLUGS)
 
-# Three tier-2 families, three hub links. The kaomoji and symbol pickers are
-# not a ninth and tenth tool: each one is the same picker-plus-composer with a
-# different set of characters loaded, which is a parameter, so they stay out of
-# the rail and out of the sheet body and are reached by a hub link plus the
-# sibling chips their builder writes under each h1 — exactly the arrangement
-# the 32 style pages already use.
-HUBS = [
-    ("/styles/", "All %d styles" % STYLE_COUNT),
-    ("/kaomoji/", "Kaomoji & text faces"),
-    ("/symbols/", "Text symbols"),
+# Slugs of the tier-2 pages under each character hub — the mood and kind pages,
+# which really are the same picker with a different set loaded. Asserted against
+# the real catalogue by build_character_pages.py so these cannot drift.
+KAOMOJI_MOODS = [
+    "happy", "sad", "angry", "love", "shrug", "cute", "table-flip", "animals",
+]
+SYMBOL_KINDS = [
+    "hearts", "stars", "arrows", "check-and-cross", "brackets-and-borders",
+    "music",
 ]
 
-# Tier-2: the 32 style landing pages. Declared here so the gallery chip carries
-# aria-current="true" on one (spec #13 errata, defect 4) rather than the rail
-# rendering unselected on the site's whole long tail. Their sibling cluster is
-# emitted by build_style_pages.py under each page's h1, not from a `sizechips`
-# region: the cluster is the style's own category, which is per-page.
-VARIANTS = {
-    "parent": "/",
-    "label": "Style",
-    "aria": "Text style",
-    "items": [{"href": "/%s/" % s, "label": s, "bytes": None} for s in STYLE_SLUGS],
-}
+# One hub link, for the one tier-2 family whose owner cannot carry it in the
+# rail: the 32 style pages, whose owner is the homepage. The character families
+# need no hub link now that their owners are rail chips.
+HUBS = [
+    ("/styles/", "All %d styles" % STYLE_COUNT),
+]
+
+# Tier-2 families. Declared here so the owning rail chip carries
+# aria-current="true" on each family's pages (spec #13 errata, defect 4) rather
+# than the rail rendering unselected across the site's whole long tail. Every
+# sibling cluster is emitted by the builders under each page's h1, not from a
+# `sizechips` region: a cluster is the page's own category, which is per-page.
+#
+# A list, not one dict, because this site has three such families. sync_nav
+# accepts either; the first entry is the one `render_sizechips` would use, and
+# fontloom renders no sizechips region at all.
+VARIANTS = [
+    {
+        "parent": "/",
+        "label": "Style",
+        "aria": "Text style",
+        "items": [{"href": "/%s/" % s, "label": s, "bytes": None} for s in STYLE_SLUGS],
+    },
+    {
+        "parent": "/kaomoji/",
+        "label": "Mood",
+        "aria": "Kaomoji mood",
+        "items": [{"href": "/kaomoji/%s/" % s, "label": s, "bytes": None} for s in KAOMOJI_MOODS],
+    },
+    {
+        "parent": "/symbols/",
+        "label": "Kind",
+        "aria": "Symbol kind",
+        "items": [{"href": "/symbols/%s/" % s, "label": s, "bytes": None} for s in SYMBOL_KINDS],
+    },
+]
 
 # Long anchor text for a footer crawl list, if the site has one. fontloom
 # already ships two footer <nav>s (Tools and Platforms) written by hand and by

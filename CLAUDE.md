@@ -46,7 +46,7 @@ conventions every change must follow.
 
 ## Product shape
 
-Eight tools sharing one transform engine (`FancyText` in
+Ten tools sharing one transform engine (`FancyText` in
 `assets/js/fancytext-core.js`, requirable from Node):
 
 - **Homepage `/`** — flat gallery of all 40 styles; type once, copy anywhere.
@@ -68,9 +68,10 @@ Eight tools sharing one transform engine (`FancyText` in
   code-point cost against the field limit) and is asserted against the HTML by
   `test/platform.test.js`. Never write "we tested this on an iPhone" — nobody
   did, the test forbids it, and the pages say what was actually checked.
-- **Sixteen character pickers** — `/kaomoji/` and `/symbols/`, plus a page per
-  mood (happy, sad, angry, love, shrug, cute, table-flip, animals) and per kind
-  (hearts, stars, arrows, check-and-cross, brackets-and-borders, music). The
+- **Sixteen character pickers** — `/kaomoji/` and `/symbols/` (tier-1 tools in
+  their own right — see *Navigation*), plus a page per mood (happy, sad,
+  angry, love, shrug, cute, table-flip, animals) and per kind (hearts, stars,
+  arrows, check-and-cross, brackets-and-borders, music). The
   headline element on every one of them is the **composer**, not the grid: a
   card click inserts its character into the styler input at the cursor and the
   line restyles, and copying is the secondary action on its own button. A
@@ -79,6 +80,19 @@ Eight tools sharing one transform engine (`FancyText` in
   fontloom's rather than generic. Currency, zodiac and dingbats were
   deliberately cut: currency duplicates `/currency-text-generator/`, the other
   two were thin. Every surviving symbol page carries 40+ entries, asserted.
+  `characters.js` is a build-time data file: `build_character_pages.py` bakes
+  the grids into the HTML, so those pages never fetch it. The one thing that
+  does is `charinsert.js`, on demand.
+- **The character inserter** — `assets/js/charinsert.js`, on `/` and
+  `/combine/` only. Opt in with `data-char-insert` on the `.input-shell`; it
+  builds the button, the tabbed panel and the grid itself, so JavaScript off
+  leaves no dead control. It fetches `characters.js` (~12kB gzipped) the first
+  time the panel opens rather than on page load, and integrates with its host
+  page through exactly one line — it dispatches a bubbling `input` event after
+  inserting at the cursor, and knows nothing else about what the page does
+  with the text. **Not on `/mix/`**: the Mixer paints one style per grapheme
+  and a kaomoji is a dozen of them, so a face would fill its paint strip with
+  a dozen cells nobody wants to paint.
 - **Five focused pages** — `/flip/`, `/glitch/`, `/strikethrough/`,
   `/small-caps/`, `/vaporwave/`. One query cluster each, all driven by the
   single `assets/js/styletool.js` runtime off a `data-tool` attribute on
@@ -92,12 +106,17 @@ The nav is the portfolio toolbar (spec: ngineer420.github.io#13, reference
 implementation: photoshrink#7). There is exactly one definition of it:
 
 - `tools/nav_data.py` holds TOOLS/GROUPS/HUBS. `tools/sync_nav.py` is generic
-  and copied verbatim from photoshrink — do not fork it.
+  and copied verbatim from photoshrink — do not fork it. Two optional keys let
+  a site tune it instead: `RAIL_MAX` (default 8) is how many tier-1 chips the
+  rail shows, and `VARIANTS` may be one dict or a list of them, for a site
+  with more than one tier-2 family. Both default to the old behaviour, so the
+  file still copies verbatim — but a site that already took a copy needs a
+  fresh one before it can use either key.
 - Hand-written pages carry a `<!-- nav:start -->…<!-- nav:end -->` region that
   `python3 tools/sync_nav.py` rewrites; `--check` exits nonzero on drift.
   `build_style_pages.py` imports `sync_nav.render_nav` and writes the same
   region into the generated pages, so both `--check`s guard the same markup.
-- The **eight tools** are tier 1 (rail + flat sheet). `/` is one of them: the
+- The **ten tools** are tier 1 (rail + grouped sheet). `/` is one of them: the
   homepage is itself a tool surface — the live gallery where you type once and
   copy from any style — not a landing page about the tools. It is also the
   tier-1 owner of the style pages, which is what stops the rail rendering
@@ -108,10 +127,18 @@ implementation: photoshrink#7). There is exactly one definition of it:
   not all 32).
 - `nav_data.STYLE_SLUGS` is asserted against the real catalogue by
   `build_style_pages.py`, so the "All 32 styles" label cannot drift.
-- The **16 character pages** are tier 2 as well — the same picker with a
-  different set of characters loaded is a parameter, not a peer — so they take
-  two more `HUBS` entries and their own sibling chips under each h1, and the
-  rail stays at eight tools.
+- `/kaomoji/` and `/symbols/` are **tier 1**, with `RAIL_MAX = 10`. The tier
+  test is the question a page answers, and theirs is "give me a face to put
+  beside my words" — not "restyle my words". Neither is the style runtime with
+  a parameter changed; they are a character catalogue wired into a composer on
+  their own script. They spent one release as `HUBS` entries at the foot of
+  the sheet and were, in practice, undiscoverable.
+- The **14 mood and kind pages** under them are tier 2 — *that* is where the
+  parameter is, the set loaded into the same picker — so they get sibling
+  chips under each h1 and a `VARIANTS` family each, which is what marks their
+  owner's rail chip `aria-current="true"`. `nav_data.KAOMOJI_MOODS` and
+  `SYMBOL_KINDS` are asserted against the catalogue by
+  `build_character_pages.py`, the same guard `STYLE_SLUGS` has.
 - `assets/js/toolbar.js` is the toolbar's enhancement script (fades, Escape,
   click-outside), a separate file because 404, privacy, terms and the articles
   carry the toolbar but load no other JS.
@@ -141,13 +168,36 @@ an unlabeled header strip.
 
 ### Introduce features with examples, not defaults
 No seeded "default favorites". Preset recipes live in core
-(`COMBO_EXAMPLES` / `MIX_EXAMPLES`) and render on the homepage as ordinary
-gallery tiles **mixed in beside their ingredient styles** (never a pinned
-strip above the gallery). Each is copyable, tagged `combo`/`mix`, filterable
-via the homepage-only "Combos & Mixes" pill, and carries an ✎ link into its
-editor with the visitor's typed text. Favorites are strictly user-created
-(starred styles pin to the gallery front; combos/mixes are named on save and
-appear as chips on the tool pages).
+(`COMBO_EXAMPLES` / `MIX_EXAMPLES` / `CHAR_EXAMPLES`) and render on the
+homepage as ordinary gallery tiles **mixed in beside their ingredient styles**
+(never a pinned strip above the gallery). Each is copyable, tagged
+`combo`/`mix`/`face`, filterable via the homepage-only "Combos & Mixes" and
+"Faces & Symbols" pills, and carries an Edit link into its editor with the
+visitor's typed text. Favorites are strictly user-created (starred styles pin
+to the gallery front; combos/mixes are named on save and appear as chips on
+the tool pages).
+
+A `CHAR_EXAMPLES` entry sets one catalogue character around text run through
+one style. Its `styleId` must be a substitution alphabet — combining marks
+paint a bar across a face, for the reason under *Combining marks and fullwidth
+do not mix* — and its `char` must be in `characters.js`, so the glyph has
+actually been through `check_glyphs.mjs`. Both are asserted by
+`test/characters.test.js`.
+
+### The tile banner carries the details; the copy doesn't
+Every gallery tile ends in a full-bleed banner tinted by its category
+(`data-cat` on the tile, one `--cat-*` token per category in the stylesheet;
+the two brand-gradient ends are reserved for the example families). Three
+rules it exists to enforce:
+- **The name wraps, it never ellipses.** The names that used to be cut —
+  "GOTHIC × DOUBLE-STR…" — are exactly the ones that say what the tile is.
+- **An example spells its recipe out** on a second line, but only where that
+  says something the name does not: a mix called "Circled × Squared" made of
+  Circled and Squared gets no second line. `addsToName()` in `app.js` decides,
+  comparing with the joiners stripped.
+- **The way into the tool is a labelled pill on its own row**, not a glyph. It
+  was a 55%-opacity ✎ that only reached full opacity on `:hover` — i.e. never,
+  on a phone — and it is the entire reason an example tile is in the gallery.
 
 ### Combo quality bar
 A preset combo must (a) render cleanly and (b) look **obviously** combined.

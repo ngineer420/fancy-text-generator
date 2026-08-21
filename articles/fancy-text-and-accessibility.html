@@ -7,7 +7,7 @@
 <meta name="description" content="What fancy Unicode text sounds like in VoiceOver and other screen readers, why it breaks search and translation, and simple rules for using styled text without shutting anyone out.">
 <link rel="canonical" href="https://fontloom.com/articles/fancy-text-and-accessibility.html">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/css/styles.css?v=15">
+<link rel="stylesheet" href="/assets/css/styles.css?v=21">
 <script src="/assets/js/toolbar.js?v=1" defer></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
@@ -25,24 +25,34 @@
 <!-- nav:start -->
 <nav class="toolbar" aria-label="Tools">
   <details class="tb-menu">
-    <summary class="tb-trigger" aria-label="All 8 tools">
+    <summary class="tb-trigger" aria-label="All 10 tools">
       <span class="tb-glyph" aria-hidden="true">&#9636;</span>
-      <span class="tb-label">All 8<span class="tb-label-long"> tools</span></span>
+      <span class="tb-label">All 10<span class="tb-label-long"> tools</span></span>
     </summary>
-    <div class="tb-sheet is-flat">
-      <ul>
+    <div class="tb-sheet">
+      <p class="tb-grouplabel" id="tb-g1">Every style at once</p>
+      <ul aria-labelledby="tb-g1">
         <li><a href="/">All Fonts Gallery</a></li>
+      </ul>
+      <p class="tb-grouplabel" id="tb-g2">One effect</p>
+      <ul aria-labelledby="tb-g2">
         <li><a href="/flip/">Flip Text Upside Down</a></li>
         <li><a href="/glitch/">Glitch &amp; Zalgo Text</a></li>
         <li><a href="/strikethrough/">Strikethrough Text</a></li>
         <li><a href="/small-caps/">Small Caps Text</a></li>
         <li><a href="/vaporwave/">Vaporwave Text</a></li>
+      </ul>
+      <p class="tb-grouplabel" id="tb-g3">Build your own</p>
+      <ul aria-labelledby="tb-g3">
         <li><a href="/combine/">Style Combiner</a></li>
         <li><a href="/mix/">Per-Letter Mixer</a></li>
       </ul>
+      <p class="tb-grouplabel" id="tb-g4">Characters to put beside them</p>
+      <ul aria-labelledby="tb-g4">
+        <li><a href="/kaomoji/">Kaomoji &amp; Text Faces</a></li>
+        <li><a href="/symbols/">Text Symbols</a></li>
+      </ul>
       <p class="tb-hub"><a href="/styles/">All 32 styles →</a></p>
-      <p class="tb-hub"><a href="/kaomoji/">Kaomoji &amp; text faces →</a></p>
-      <p class="tb-hub"><a href="/symbols/">Text symbols →</a></p>
     </div>
   </details>
   <div class="tb-scrim"></div>
@@ -55,6 +65,8 @@
     <li><a href="/vaporwave/">Vaporwave</a></li>
     <li><a href="/combine/">Combiner</a></li>
     <li><a href="/mix/">Mixer</a></li>
+    <li><a href="/kaomoji/">Kaomoji</a></li>
+    <li><a href="/symbols/">Symbols</a></li>
   </ul>
 </nav>
 <!-- nav:end -->

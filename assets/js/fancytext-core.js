@@ -777,6 +777,40 @@
     { id: "mix-caps-super", name: "Small Caps × Superscript", styleIds: ["small-caps", "superscript"] },
   ];
 
+  // ---------------------------------------------------------------
+  // Character examples: a kaomoji or a symbol set around text that is
+  // itself styled. These introduce /kaomoji/ and /symbols/ the same way
+  // the combo and mix examples introduce their tools — as ordinary
+  // gallery tiles beside the styles they are made of, not a banner.
+  //
+  // `styleId` is always a substitution alphabet. The combining-mark
+  // styles draw their mark to the width of the base character, and the
+  // characters a kaomoji is built from are mostly fullwidth, so an
+  // underline or a strikethrough over one paints a solid bar across the
+  // face — the same rule the character pages' PREVIEW_STYLES follow.
+  // ---------------------------------------------------------------
+
+  const CHAR_EXAMPLES = [
+    { id: "char-smile-script", name: "Smiling Script", char: "(◕‿◕)", styleId: "script", place: "before" },
+    { id: "char-shrug-bold", name: "Shrug in Bold", char: "¯\\_(ツ)_/¯", styleId: "bold", place: "after" },
+    { id: "char-love-fraktur", name: "Loved Gothic", char: "♡", styleId: "fraktur", place: "wrap" },
+    { id: "char-stars-double", name: "Starry Double-Struck", char: "✦", styleId: "double-struck", place: "wrap" },
+    { id: "char-cat-smallcaps", name: "Cat Small Caps", char: "(=^･ω･^=)", styleId: "small-caps", place: "before" },
+    { id: "char-arrow-mono", name: "Pointed Monospace", char: "➤", styleId: "monospace", place: "before" },
+  ];
+
+  // Set a character around text run through one style. `wrap` puts it on
+  // both sides; `before`/`after` put it on one, which is what a kaomoji
+  // wants — a face reads as a face at one end of a line and as a pair of
+  // mismatched brackets at both.
+  function applyCharExample(ex, text) {
+    const style = STYLE_BY_ID[ex.styleId];
+    const styled = style ? style.transform(text) : text;
+    if (ex.place === "before") return ex.char + " " + styled;
+    if (ex.place === "after") return styled + " " + ex.char;
+    return ex.char + " " + styled + " " + ex.char;
+  }
+
   // Run a Combiner chain: each style's output feeds the next.
   function applyChain(ids, text) {
     return ids.reduce((t, id) => (STYLE_BY_ID[id] ? STYLE_BY_ID[id].transform(t) : t), text);
@@ -810,6 +844,8 @@
     CATEGORIES,
     COMBO_EXAMPLES,
     MIX_EXAMPLES,
+    CHAR_EXAMPLES,
+    applyCharExample,
     applyChain,
     mixPatternIds,
     applyMixPattern,
