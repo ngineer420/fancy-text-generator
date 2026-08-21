@@ -863,57 +863,36 @@
   // these tiles exist to show.
   // ---------------------------------------------------------------
 
-  // Samplers: a tile whose sample IS the characters, rather than the
-  // visitor's text with one set beside it. Every font style is a literal
-  // no-op on 186 of the 198 kaomoji — none of them contain a letter to
-  // substitute — so a tile that styled a face would show the same face
-  // forty times. This advertises the pickers by showing what is in them,
-  // which is the one thing a gallery of fonts cannot say by transforming
-  // anything. It is the only kind of tile that ignores what you type.
-  const CHAR_SAMPLERS = [
-    {
-      id: "sampler-kaomoji",
-      name: "Kaomoji",
-      chars: ["(◕‿◕)", "(≧▽≦)", "(´∀｀)"],
-      hub: "/kaomoji/",
-      hubLabel: "Faces",
-      toolName: "kaomoji picker",
-      // Asserted against the catalogue by test/characters.test.js, so the
-      // number in the tooltip cannot drift as faces are added.
-      total: 198,
-    },
-    {
-      id: "sampler-symbols",
-      name: "Text Symbols",
-      chars: ["♥", "★", "➤", "✓", "♪", "「", "」"],
-      hub: "/symbols/",
-      hubLabel: "Symbols",
-      toolName: "symbol picker",
-      total: 278,
-    },
-  ];
-
-  function samplerText(sampler) {
-    return sampler.chars.join(" ");
-  }
-
+  // The first two are the pickers' own tiles: no font style, two different
+  // characters, one at each end. They advertise /kaomoji/ and /symbols/ the
+  // way every other tile advertises its style — by doing it to the text you
+  // typed. An earlier version showed a row of faces and ignored the input,
+  // which stood out as the only tile in the gallery that did not answer to
+  // typing, and reads as broken rather than as a sampler.
+  //
+  // They carry no `styleId` because there is nothing useful to apply: 186 of
+  // the 198 kaomoji contain no letter at all, so every font style is a
+  // literal no-op on the face itself. What varies is the characters.
   const CHAR_EXAMPLES = [
+    { id: "char-kaomoji", name: "Kaomoji", char: "(◕‿◕)", close: "(≧▽≦)", styleId: null, place: "wrap", hub: "/kaomoji/" },
+    { id: "char-symbols", name: "Text Symbols", char: "「", close: "」", styleId: null, place: "wrap", hub: "/symbols/" },
     { id: "char-smile-script", name: "Smiling Script", char: "(◕‿◕)", styleId: "script", place: "before" },
     { id: "char-shrug-bold", name: "Shrug in Bold", char: "¯\\_(ツ)_/¯", styleId: "bold", place: "after" },
     { id: "char-love-fraktur", name: "Loved Gothic", char: "♡", styleId: "fraktur", place: "wrap" },
     { id: "char-cat-smallcaps", name: "Cat Small Caps", char: "(=^･ω･^=)", styleId: "small-caps", place: "before" },
   ];
 
-  // Set a character around text run through one style. `wrap` puts it on
-  // both sides; `before`/`after` put it on one, which is what a kaomoji
-  // wants — a face reads as a face at one end of a line and as a pair of
-  // mismatched brackets at both.
+  // Set a character around text, optionally run through one style first.
+  // `wrap` puts one at each end — `close` where the two ends differ, which
+  // is what a pair of brackets and a pair of faces both want; `before` and
+  // `after` put it on one end, which is what a single kaomoji wants, since
+  // one face reads as a face and two read as mismatched brackets.
   function applyCharExample(ex, text) {
     const style = STYLE_BY_ID[ex.styleId];
     const styled = style ? style.transform(text) : text;
     if (ex.place === "before") return ex.char + " " + styled;
     if (ex.place === "after") return styled + " " + ex.char;
-    return ex.char + " " + styled + " " + ex.char;
+    return ex.char + " " + styled + " " + (ex.close || ex.char);
   }
 
   // Run a Combiner chain: each style's output feeds the next.
@@ -950,8 +929,6 @@
     COMBO_EXAMPLES,
     MIX_EXAMPLES,
     CHAR_EXAMPLES,
-    CHAR_SAMPLERS,
-    samplerText,
     applyCharExample,
     applyChain,
     mixPatternIds,

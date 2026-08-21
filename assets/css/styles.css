@@ -610,9 +610,12 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   border-radius: 0 0 13px 13px;
   background: var(--bg-inset);
 }
+/* The categorisation is the rule along the top of the banner, and nothing
+   else. A tinted banner and a filled pill on top of it turned a quiet
+   "this one goes somewhere" into the loudest thing in the grid; the rule
+   alone still groups the cards at a glance without any of them shouting. */
 .tile-example .tile-foot {
-  border-top: 2px solid color-mix(in srgb, var(--dest) 55%, transparent);
-  background: color-mix(in srgb, var(--dest) 9%, var(--bg-inset));
+  border-top: 2px solid color-mix(in srgb, var(--dest) 60%, transparent);
 }
 .tile[data-dest="combine"] .tile-foot { --dest: var(--dest-combine); }
 .tile[data-dest="mix"] .tile-foot { --dest: var(--dest-mix); }
@@ -1014,11 +1017,11 @@ a.fav-pill:hover { text-decoration: none; }
   align-items: center;
   gap: 4px;
   min-height: 24px;
-  padding: 4px 9px;
-  border: 1px solid color-mix(in srgb, var(--dest) 50%, transparent);
+  padding: 4px 8px;
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--dest) 14%, transparent);
-  color: color-mix(in srgb, var(--dest) 55%, var(--text));
+  background: transparent;
+  color: color-mix(in srgb, var(--dest) 72%, var(--text-dim));
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: .03em;
@@ -1028,8 +1031,8 @@ a.fav-pill:hover { text-decoration: none; }
   transition: background .12s ease, border-color .12s ease, color .12s ease;
 }
 .tile-edit:hover {
-  background: color-mix(in srgb, var(--dest) 26%, transparent);
-  border-color: var(--dest);
+  background: color-mix(in srgb, var(--dest) 16%, transparent);
+  border-color: color-mix(in srgb, var(--dest) 45%, transparent);
   color: var(--text);
   text-decoration: none;
 }
@@ -1644,16 +1647,17 @@ a.fav-pill:hover { text-decoration: none; }
   height: 100%;
   min-height: 88px;
   padding: 12px;
-  border: 1px solid color-mix(in srgb, var(--dest-chars) 38%, transparent);
+  border: 1px solid var(--border-soft);
+  border-top: 2px solid color-mix(in srgb, var(--dest-chars) 60%, transparent);
   border-radius: 12px;
-  background: color-mix(in srgb, var(--dest-chars) 9%, var(--bg-raised));
+  background: var(--bg-raised);
   color: var(--text);
   text-decoration: none;
   transition: border-color .12s ease, transform .12s ease, background .2s ease;
 }
 .char-styled:hover {
-  border-color: var(--dest-chars);
-  background: color-mix(in srgb, var(--dest-chars) 15%, var(--bg-raised));
+  border-color: color-mix(in srgb, var(--dest-chars) 45%, transparent);
+  border-top-color: var(--dest-chars);
   transform: translateY(-1px);
   text-decoration: none;
 }
@@ -1684,19 +1688,18 @@ a.fav-pill:hover { text-decoration: none; }
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 9px;
-  border: 1px solid color-mix(in srgb, var(--dest-chars) 50%, transparent);
+  padding: 4px 8px;
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--dest-chars) 14%, transparent);
-  color: color-mix(in srgb, var(--dest-chars) 55%, var(--text));
+  color: color-mix(in srgb, var(--dest-chars) 72%, var(--text-dim));
   font-size: 10.5px;
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
 }
 .char-styled:hover .char-styled-go {
-  background: color-mix(in srgb, var(--dest-chars) 26%, transparent);
-  border-color: var(--dest-chars);
+  background: color-mix(in srgb, var(--dest-chars) 16%, transparent);
+  border-color: color-mix(in srgb, var(--dest-chars) 45%, transparent);
   color: var(--text);
 }
 

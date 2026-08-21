@@ -284,28 +284,21 @@ test("the homepage introduces the pickers where they can be seen", () => {
   }
 });
 
-test("the sampler tiles show real characters and count them honestly", () => {
+test("each picker has a tile that opens it, and it transforms like any other", () => {
   const core = require(path.join(ROOT, "assets/js/fancytext-core.js"));
-  const known = new Set();
-  const counts = { "/kaomoji/": 0, "/symbols/": 0 };
-  for (const [family, groups] of FAMILIES) {
-    const hub = "/" + family + "/";
-    for (const group of groups) for (const item of group.items) {
-      known.add(item.char);
-      counts[hub]++;
-    }
-  }
-  assert.strictEqual(core.CHAR_SAMPLERS.length, 2, "expected one sampler per picker");
-  for (const sm of core.CHAR_SAMPLERS) {
-    assert.strictEqual(sm.total, counts[sm.hub],
-      sm.id + " claims " + sm.total + " characters; the catalogue has " + counts[sm.hub]);
-    for (const ch of sm.chars) {
-      assert.ok(known.has(ch),
-        sm.id + " shows " + JSON.stringify(ch) + ", which is not in characters.js");
-    }
-    // It is the one tile that ignores what you type; it must at least say
-    // the same thing whatever you type.
-    assert.strictEqual(core.samplerText(sm), sm.chars.join(" "));
+  assert.strictEqual(core.CHAR_SAMPLERS, undefined,
+    "the sampler concept is gone: a tile that ignores what you type is the only one in the gallery that does");
+  for (const hub of ["/kaomoji/", "/symbols/"]) {
+    const ex = core.CHAR_EXAMPLES.find((e) => e.hub === hub);
+    assert.ok(ex, "no homepage tile opens " + hub);
+    // It has to answer to typing, like every other tile in the gallery.
+    const a = core.applyCharExample(ex, "one");
+    const b = core.applyCharExample(ex, "two");
+    assert.notStrictEqual(a, b, ex.id + " ignores the text it is given");
+    assert.ok(a.includes("one"), ex.id + " drops the text it is given");
+    // Two different characters, one at each end: these tiles are about the
+    // characters, so showing two beats showing the same one twice.
+    assert.ok(ex.close && ex.close !== ex.char, ex.id + " uses the same character at both ends");
   }
 });
 
@@ -321,11 +314,17 @@ test("every character example on the homepage is a real catalogue character", ()
     // painted, and the catalogue is what it paints.
     assert.ok(known.has(ex.char),
       ex.id + " uses " + JSON.stringify(ex.char) + ", which is not in characters.js");
-    assert.ok(core.STYLE_BY_ID[ex.styleId], ex.id + " names a style that does not exist");
-    // Combining marks are drawn to the width of the base character, and a
-    // face is mostly fullwidth ones, so they paint a bar across it.
-    assert.ok(!/strikethrough|underline|slashed|overline|zalgo/.test(ex.styleId),
-      ex.id + " pairs a face with " + ex.styleId + ", which draws across it");
+    // The two picker tiles carry no style on purpose: 186 of the 198
+    // kaomoji contain no letter, so a font style is a no-op on the face.
+    if (ex.styleId !== null) {
+      assert.ok(core.STYLE_BY_ID[ex.styleId], ex.id + " names a style that does not exist");
+      // An overlay is safe on a face now, but it would demonstrate the
+      // mark rather than the pairing these tiles exist to show.
+      assert.ok(!/strikethrough|underline|slashed|overline|zalgo/.test(ex.styleId),
+        ex.id + " pairs a face with " + ex.styleId + ", which shows the mark and not the pairing");
+    }
+    if (ex.close) assert.ok(known.has(ex.close),
+      ex.id + " closes with " + JSON.stringify(ex.close) + ", which is not in characters.js");
     const out = core.applyCharExample(ex, "Fancy Text");
     assert.ok(out.includes(ex.char), ex.id + " drops its own character");
     assert.ok(out !== "Fancy Text", ex.id + " leaves the text untouched");

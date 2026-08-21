@@ -7,7 +7,8 @@ Alongside the fonts there are sixteen character-picker pages — `/kaomoji/` and
 character and a `+ Style it` button drops it into the same text box the styler
 reads, so a visitor who arrived for one heart can leave with a styled line
 rather than a clipboard. A handful of styled cards sit among the plain ones in
-every grid, each linking into the full gallery with that line loaded. The
+every grid, each linking into the full gallery with that line loaded, and the
+homepage carries a tile for each picker. The
 same move works from the other side: the homepage and the Combiner carry an
 **Add a face** button beside their input, so a line that is already the shape
 you want can take a face without a trip to another page.

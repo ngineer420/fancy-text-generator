@@ -59,9 +59,9 @@ SITE = "https://fontloom.com"
 # new one. These are the values the hand-written pages carry; bump both here
 # and there in the same commit whenever the asset changes.
 ASSET_V = {
-    "css": 26,
+    "css": 27,
     "toolbar": 1,
-    "core": 10,
+    "core": 11,
     "site": 2,
     "favorites": 3,
     "styletool": 2,
