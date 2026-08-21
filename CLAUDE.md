@@ -178,16 +178,16 @@ visitor's typed text. Favorites are strictly user-created (starred styles pin
 to the gallery front; combos/mixes are named on save and appear as chips on
 the tool pages).
 
-`CHAR_SAMPLERS` is the exception to "a tile transforms your text": a sampler's
-sample **is** the characters, and it ignores the input. It has to. Every font
-style is a literal no-op on 186 of the 198 kaomoji — they contain no letter to
-substitute — so a tile that styled a face would show the same face forty
-times, and of the twelve that do contain one, most would have a single eye
-bolded (`＼(^𝐨^)／`) which reads as a rendering fault. Showing what is *in* the
-picker is the one thing a gallery of fonts cannot say by transforming
-anything. Its `total` is asserted against the catalogue, and it is placed
-early in `EXAMPLE_AFTER` because an advertisement below the fold is a
-footnote.
+**Every tile in the gallery answers to typing** — there is no exception, and
+one was tried. Two tiles briefly showed a fixed row of characters to advertise
+the pickers; they were the only ones in a fifty-tile grid that held still while
+you typed, and that reads as broken rather than as a sampler. The pickers get
+an ordinary example tile each instead (`char-kaomoji`, `char-symbols`): no
+`styleId`, two different characters, one at each end. They carry no style
+because there is nothing useful to apply — 186 of the 198 kaomoji contain no
+letter at all, so every font style is a literal no-op on the face, and of the
+twelve that do, most would get a single eye bolded (`＼(^𝐨^)／`), which reads as
+a rendering fault. What varies on those tiles is the characters.
 
 A `CHAR_EXAMPLES` entry sets one catalogue character around text run through
 one style. Its `styleId` must be a substitution alphabet — combining marks
@@ -198,13 +198,16 @@ actually been through `check_glyphs.mjs`. Both are asserted by
 
 ### The tile banner: one height, and colour that means one thing
 Every gallery tile ends in a full-bleed banner. Three rules:
-- **Colour means "this card goes somewhere", and says where.** Only a tile
-  with an Edit is tinted, keyed by `data-dest` to one of three
-  `--dest-*` tokens — Combiner, Mixer, kaomoji picker — which are the three
-  stops of the brand gradient. Forty tinted cards is a swatch book; six is a
-  signpost. Categories are **not** colour-coded; that was tried and it drowned
-  the signal. The pill names its destination as well as wearing its colour,
-  so a combo is still distinguishable from a mix in monochrome.
+- **Colour means "this card goes somewhere", and says where — quietly.** Only
+  a tile with an Edit carries any, keyed by `data-dest` to one of three
+  `--dest-*` tokens (Combiner, Mixer, the character pickers), which are the
+  three stops of the brand gradient. It is a **2px rule along the top of the
+  banner and the pill's text, and nothing else**: no tinted banner, no filled
+  pill. Two rounds of this were too loud — first every category tinted, then
+  the destination tinted plus a filled pill — and the lesson each time was
+  that the signal needs less, not a different hue. Categories are **not**
+  colour-coded. The pill names its destination as well as wearing it, so a
+  combo is distinguishable from a mix in monochrome.
 - **Every banner is the same height** — `min-height: 44px`, two lines of
   label, used or not, and `.tile-name` is line-clamped to two. The banner is
   what made neighbouring cards differ in height when examples grew a tag row

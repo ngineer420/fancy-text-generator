@@ -98,40 +98,25 @@
             FancyText.mixPatternIds(ex.styleIds, text).map((id) => id || "-").join(",")
           ),
       })),
-      // Samplers first: the tile whose sample IS the characters. It is the
-      // only tile in the gallery that ignores what you type, because there
-      // is nothing to transform — every font style is a no-op on 186 of the
-      // 198 kaomoji, so a tile that styled one would show it forty times
-      // unchanged. It advertises the picker by showing what is in it.
-      FancyText.CHAR_SAMPLERS.map((sm) => ({
-        id: sm.id,
-        name: sm.name,
-        dest: "chars",
-        destLabel: sm.hubLabel,
-        toolName: sm.toolName,
-        category: CHAR_CATEGORY,
-        sampler: true,
-        recipe: sm.total + " in the picker, and they style like any other text",
-        transform: () => FancyText.samplerText(sm),
-        // Carries the visitor's line if there is one, so the picker opens
-        // with something to build on rather than an empty box.
-        editUrl: (typed) => sm.hub + (typed ? "?text=" + encodeURIComponent(typed) : ""),
-      })),
       FancyText.CHAR_EXAMPLES.map((ex) => ({
         id: ex.id,
         name: ex.name,
         dest: "chars",
-        destLabel: "Faces",
-        toolName: "Kaomoji picker",
+        // The two picker tiles carry no style, so they name the picker they
+        // open; the pairings all open the kaomoji one.
+        destLabel: ex.hub === "/symbols/" ? "Symbols" : "Faces",
+        toolName: ex.hub === "/symbols/" ? "symbol picker" : "kaomoji picker",
         category: CHAR_CATEGORY,
-        recipe: ex.char + " + " + styleName(ex.styleId),
+        recipe: ex.styleId
+          ? ex.char + " + " + styleName(ex.styleId)
+          : ex.char + " … " + (ex.close || ex.char),
         transform: (text) => FancyText.applyCharExample(ex, text),
         // The face plus the PLAIN words, never the styled line. Whatever this
         // opens is a styler, and every alphabet style no-ops on text that has
         // already been through one — hand off the finished string and the
         // destination shows forty identical unstyled previews.
         editUrl: (typed, text) =>
-          "/kaomoji/?text=" + encodeURIComponent(ex.char + " " + text),
+          (ex.hub || "/kaomoji/") + "?text=" + encodeURIComponent(ex.char + " " + text),
       }))
     );
     const EXAMPLE_BY_ID = {};
@@ -143,9 +128,9 @@
     // Where each example lands in the gallery: right after a style it's
     // made of, so they read as neighbors rather than a separate block.
     const EXAMPLE_AFTER = {
-      // The kaomoji sampler sits in the first row or two: it is the
+      // The kaomoji tile sits in the first row or two: it is the
       // advertisement, and an advertisement below the fold is a footnote.
-      "italic": ["sampler-kaomoji"],
+      "italic": ["char-kaomoji"],
       "script": ["char-smile-script"],
       "circled": ["mix-bold-script"],
       "bold-fraktur": ["char-love-fraktur"],
@@ -157,7 +142,7 @@
       "subscript": ["combo-struck-superscript", "combo-underlined-subscript"],
       "slashed": ["combo-crossed-underline", "combo-triple-flip"],
       "sans-bold": ["char-shrug-bold"],
-      "hearts-between": ["sampler-symbols"],
+      "hearts-between": ["char-symbols"],
     };
 
     // Dev-time sanity check: every style must belong to a category and
@@ -399,12 +384,8 @@
       for (const t of tiles) {
         const out = t.style.transform(text);
         t.outputEl.textContent = out;
-        // A sampler ignores the input, so its length says nothing about
-        // what the visitor's own text will cost.
-        if (!t.style.sampler) {
-          if (out.length > heaviest.length) heaviest = out;
-          if (lightest === null || out.length < lightest.length) lightest = out;
-        }
+        if (out.length > heaviest.length) heaviest = out;
+        if (lightest === null || out.length < lightest.length) lightest = out;
         if (t.editEl) {
           // Keep the ✎ link pointing at the editor with whatever the
           // visitor typed (mix URLs always need a concrete text).
