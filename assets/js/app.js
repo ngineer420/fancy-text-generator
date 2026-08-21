@@ -61,12 +61,21 @@
     // ---------------------------------------------------------------
 
     const EXAMPLE_CATEGORY = "combos";
+    const CHAR_CATEGORY = "chars";
+
+    // The banner spells the recipe out, so a tile says what it is made of
+    // instead of leaving the visitor to infer it from a truncated name.
+    const styleName = (id) => (STYLE_BY_ID[id] ? STYLE_BY_ID[id].name : id);
 
     const EXAMPLES = FancyText.COMBO_EXAMPLES.map((ex) => ({
       id: ex.id,
       name: ex.name,
       tag: "combo",
       toolName: "Font Combiner",
+      category: EXAMPLE_CATEGORY,
+      // Chained: each style's output feeds the next, so an arrow is the
+      // honest joiner. The order is the recipe.
+      recipe: ex.ids.map(styleName).join(" → "),
       transform: (text) => FancyText.applyChain(ex.ids, text),
       editUrl: (typed) =>
         "/combine/?chain=" + encodeURIComponent(ex.ids.join(",")) +
@@ -77,31 +86,53 @@
         name: ex.name,
         tag: "mix",
         toolName: "Font Mixer",
+        category: EXAMPLE_CATEGORY,
+        // Alternating letter by letter, not stacked — a cross, not an arrow.
+        recipe: ex.styleIds.map(styleName).join(" × "),
         transform: (text) => FancyText.applyMixPattern(ex.styleIds, text),
         editUrl: (typed, text) =>
           "/mix/?text=" + encodeURIComponent(text) +
           "&styles=" + encodeURIComponent(
             FancyText.mixPatternIds(ex.styleIds, text).map((id) => id || "-").join(",")
           ),
+      })),
+      FancyText.CHAR_EXAMPLES.map((ex) => ({
+        id: ex.id,
+        name: ex.name,
+        tag: "face",
+        toolName: "Kaomoji picker",
+        category: CHAR_CATEGORY,
+        recipe: ex.char + " + " + styleName(ex.styleId),
+        transform: (text) => FancyText.applyCharExample(ex, text),
+        // Hands off the finished line, not the recipe: the picker has no
+        // notion of a preset, and arriving with the line already in the box
+        // is what makes the next click an edit rather than a restart.
+        editUrl: (typed, text) =>
+          "/kaomoji/?text=" + encodeURIComponent(FancyText.applyCharExample(ex, text)),
       }))
     );
     const EXAMPLE_BY_ID = {};
     EXAMPLES.forEach((ex) => {
       EXAMPLE_BY_ID[ex.id] = ex;
-      CATEGORY_OF[ex.id] = EXAMPLE_CATEGORY;
+      CATEGORY_OF[ex.id] = ex.category;
     });
 
     // Where each example lands in the gallery: right after a style it's
     // made of, so they read as neighbors rather than a separate block.
     const EXAMPLE_AFTER = {
+      "script": ["char-smile-script"],
       "circled": ["mix-bold-script"],
-      "small-caps": ["mix-fraktur-double"],
+      "bold-fraktur": ["char-love-fraktur"],
+      "small-caps": ["mix-fraktur-double", "char-cat-smallcaps"],
+      "monospace": ["char-arrow-mono"],
       "underline": ["combo-struck-bold"],
       "upside-down": ["combo-flipped-underline"],
       "negative-squared": ["mix-circled-squared"],
       "superscript": ["mix-caps-super"],
       "subscript": ["combo-struck-superscript", "combo-underlined-subscript"],
       "slashed": ["combo-crossed-underline", "combo-triple-flip"],
+      "double-struck": ["char-stars-double"],
+      "sans-bold": ["char-shrug-bold"],
     };
 
     // Dev-time sanity check: every style must belong to a category and
@@ -112,6 +143,18 @@
       console.warn("fontloom: styles missing from TILE_ORDER/CATEGORIES:", missing);
     }
 
+    // Whether a recipe is worth a second line beside the name it belongs
+    // to. Compared with the joiners and spacing removed, so "Bold × Script"
+    // and "Bold × Script / Cursive" count as the same sentence, while the
+    // character in a face recipe survives and keeps that line.
+    const joinless = (t) => t.toLowerCase().replace(/[\s/×→+.,-]/g, "");
+    function addsToName(name, recipe) {
+      if (!recipe) return false;
+      const a = joinless(name);
+      const b = joinless(recipe);
+      return !(a.startsWith(b) || b.startsWith(a));
+    }
+
     const tiles = []; // { style, tileEl, outputEl, starEl?, editEl?, category }
 
     function buildTile(style) {
@@ -120,10 +163,18 @@
       tile.tabIndex = 0;
       tile.setAttribute("role", "button");
       tile.setAttribute("aria-label", "Copy " + style.name + " text");
+      // Drives the banner's hue. One attribute, one custom property per
+      // category in the stylesheet — no per-style colours to maintain.
+      if (CATEGORY_OF[style.id]) tile.dataset.cat = CATEGORY_OF[style.id];
 
       const output = document.createElement("div");
       output.className = "tile-output";
 
+      // The banner: a tinted, full-bleed strip across the foot of the card
+      // carrying everything the visitor scans for — what this is, what it is
+      // made of, and the way into the tool that made it. Before, all of that
+      // was one grey line of small caps that truncated mid-word on exactly
+      // the tiles where the detail mattered most.
       const foot = document.createElement("div");
       foot.className = "tile-foot";
 
@@ -141,8 +192,9 @@
 
       label.append(nameEl, copiedEl);
 
-      // Examples (combo/mix recipes) get a tag + edit link instead of a
-      // pin star; plain styles get the star.
+      // Examples (combo/mix recipes, kaomoji pairings) get a tag, a written
+      // recipe and an edit link instead of a pin star; plain styles get the
+      // star.
       const example = EXAMPLE_BY_ID[style.id] || null;
       let starEl = null;
       let editEl = null;
@@ -154,11 +206,25 @@
         tagEl.className = "tile-tag";
         tagEl.textContent = example.tag;
         tagEl.title = "Made with the " + example.toolName;
-        label.appendChild(tagEl);
+        nameEl.appendChild(tagEl);
+
+        // The ingredients, in full — but only where they say something the
+        // name does not. A combo called "Flipped Underline" is worth
+        // spelling out as "Upside-Down / Flip → Underline"; a mix called
+        // "Circled × Squared" made of Circled and Squared is not, and a
+        // line that restates the one above it is noise in a 200px card.
+        if (addsToName(example.name, example.recipe)) {
+          const recipeEl = document.createElement("span");
+          recipeEl.className = "tile-recipe";
+          recipeEl.textContent = example.recipe;
+          label.appendChild(recipeEl);
+        }
 
         editEl = document.createElement("a");
         editEl.className = "tile-edit";
-        editEl.textContent = "✎";
+        // Labelled, not a bare pencil. This link is the whole point of an
+        // example tile — it was the faintest mark on the card.
+        editEl.innerHTML = '<span aria-hidden="true">✎</span> Edit';
         editEl.setAttribute("aria-label", "Edit " + style.name + " in the " + example.toolName);
         editEl.title = "Edit in the " + example.toolName;
         // Don't let the tile's copy handler swallow the navigation.
@@ -257,7 +323,8 @@
     if (pillsEl) {
       const pillDefs = [{ id: null, title: "All" }].concat(
         CATEGORIES.map((c) => ({ id: c.id, title: c.title })),
-        [{ id: EXAMPLE_CATEGORY, title: "Combos & Mixes" }]
+        [{ id: EXAMPLE_CATEGORY, title: "Combos & Mixes" },
+         { id: CHAR_CATEGORY, title: "Faces & Symbols" }]
       );
       pillDefs.forEach(({ id, title }) => {
         const pill = document.createElement("button");

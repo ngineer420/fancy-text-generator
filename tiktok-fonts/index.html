@@ -22,7 +22,7 @@
 <!-- Bump ?v= on ALL asset links whenever styles.css or any js changes, so
      browsers holding a cached copy (GitHub Pages serves max-age=600) can't
      pair a stale asset with fresh HTML. -->
-<link rel="stylesheet" href="/assets/css/styles.css?v=15">
+<link rel="stylesheet" href="/assets/css/styles.css?v=21">
 <script src="/assets/js/toolbar.js?v=1" defer></script>
 
 <script type="application/ld+json">
@@ -96,24 +96,34 @@
 <!-- nav:start -->
 <nav class="toolbar" aria-label="Tools">
   <details class="tb-menu">
-    <summary class="tb-trigger" aria-label="All 8 tools">
+    <summary class="tb-trigger" aria-label="All 10 tools">
       <span class="tb-glyph" aria-hidden="true">&#9636;</span>
-      <span class="tb-label">All 8<span class="tb-label-long"> tools</span></span>
+      <span class="tb-label">All 10<span class="tb-label-long"> tools</span></span>
     </summary>
-    <div class="tb-sheet is-flat">
-      <ul>
+    <div class="tb-sheet">
+      <p class="tb-grouplabel" id="tb-g1">Every style at once</p>
+      <ul aria-labelledby="tb-g1">
         <li><a href="/">All Fonts Gallery</a></li>
+      </ul>
+      <p class="tb-grouplabel" id="tb-g2">One effect</p>
+      <ul aria-labelledby="tb-g2">
         <li><a href="/flip/">Flip Text Upside Down</a></li>
         <li><a href="/glitch/">Glitch &amp; Zalgo Text</a></li>
         <li><a href="/strikethrough/">Strikethrough Text</a></li>
         <li><a href="/small-caps/">Small Caps Text</a></li>
         <li><a href="/vaporwave/">Vaporwave Text</a></li>
+      </ul>
+      <p class="tb-grouplabel" id="tb-g3">Build your own</p>
+      <ul aria-labelledby="tb-g3">
         <li><a href="/combine/">Style Combiner</a></li>
         <li><a href="/mix/">Per-Letter Mixer</a></li>
       </ul>
+      <p class="tb-grouplabel" id="tb-g4">Characters to put beside them</p>
+      <ul aria-labelledby="tb-g4">
+        <li><a href="/kaomoji/">Kaomoji &amp; Text Faces</a></li>
+        <li><a href="/symbols/">Text Symbols</a></li>
+      </ul>
       <p class="tb-hub"><a href="/styles/">All 32 styles →</a></p>
-      <p class="tb-hub"><a href="/kaomoji/">Kaomoji &amp; text faces →</a></p>
-      <p class="tb-hub"><a href="/symbols/">Text symbols →</a></p>
     </div>
   </details>
   <div class="tb-scrim"></div>
@@ -126,6 +136,8 @@
     <li><a href="/vaporwave/">Vaporwave</a></li>
     <li><a href="/combine/">Combiner</a></li>
     <li><a href="/mix/">Mixer</a></li>
+    <li><a href="/kaomoji/">Kaomoji</a></li>
+    <li><a href="/symbols/">Symbols</a></li>
   </ul>
 </nav>
 <!-- nav:end -->
@@ -311,7 +323,7 @@
 
 <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
 
-<script src="/assets/js/fancytext-core.js?v=5"></script>
+<script src="/assets/js/fancytext-core.js?v=6"></script>
 <script src="/assets/js/site.js?v=2"></script>
 </body>
 </html>

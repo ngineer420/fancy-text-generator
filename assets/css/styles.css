@@ -15,6 +15,23 @@
   --accent-contrast: #1a0b26;
   --grad: linear-gradient(100deg, #ff6ec4, #c77dff 48%, #5db8ff);
   --focus: #7cc6ff;
+
+  /* One hue per gallery category, keyed by [data-cat] on the tile. These
+     colour the banner's rule and tint only — never the text on it — so a
+     hue can be chosen for how well it separates from its neighbours
+     rather than for its contrast against a label, and the same nine
+     values work in both themes. The two brand-gradient ends are reserved
+     for the example families, which are the lead-ins into the other
+     tools and are meant to catch the eye first. */
+  --cat-bold-italic: #4f8cff;
+  --cat-cursive-gothic: #7a5cf0;
+  --cat-circled-boxed: #12a594;
+  --cat-symbol-alphabets: #d9822b;
+  --cat-small-wide: #3f9e4d;
+  --cat-effects-glitch: #e5484d;
+  --cat-decorated: #c8a12b;
+  --cat-combos: #c77dff;
+  --cat-chars: #ff6ec4;
   --radius: 8px;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
     sans-serif;
@@ -36,6 +53,16 @@
   --accent-contrast: #ffffff;
   --grad: linear-gradient(100deg, #d6249f, #8e2de2 48%, #2b7fff);
   --focus: #0a6cbf;
+  /* Same nine hues, darkened where a light band would wash them out. */
+  --cat-bold-italic: #2f6fe0;
+  --cat-cursive-gothic: #6141d8;
+  --cat-circled-boxed: #0d8375;
+  --cat-symbol-alphabets: #b3651c;
+  --cat-small-wide: #2f7d3b;
+  --cat-effects-glitch: #c62f35;
+  --cat-decorated: #9c7a12;
+  --cat-combos: #8e2de2;
+  --cat-chars: #d6249f;
 }
 
 @media (prefers-color-scheme: light) {
@@ -52,6 +79,15 @@
     --accent-dim: #7423b8;
     --accent-contrast: #ffffff;
     --focus: #0a6cbf;
+    --cat-bold-italic: #2f6fe0;
+    --cat-cursive-gothic: #6141d8;
+    --cat-circled-boxed: #0d8375;
+    --cat-symbol-alphabets: #b3651c;
+    --cat-small-wide: #2f7d3b;
+    --cat-effects-glitch: #c62f35;
+    --cat-decorated: #9c7a12;
+    --cat-combos: #8e2de2;
+    --cat-chars: #d6249f;
   }
 }
 
@@ -364,7 +400,7 @@ label { display: block; font-size: 12.5px; color: var(--text-dim); margin-bottom
 /* The largest family is nine siblings; at 390px that is four rows of chips
    above the input, so the chips get tighter rather than the cluster shorter —
    dropping siblings would put the dead end straight back. */
-@media (max-width: 560px) {
+@media (max-width: 699px) {
   .style-switch { gap: 5px 8px; }
   .style-switch ul { gap: 5px; }
   .style-switch a.chip { min-height: 34px; padding: 0 9px; font-size: 12px; }
@@ -407,6 +443,41 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   box-shadow: 0 12px 32px -20px rgba(0, 0, 0, 0.5);
 }
 .control-bar-inner { display: flex; flex-direction: column; gap: 10px; }
+
+/* Homepage only: the character inserter sits at the end of the filter row
+   rather than on a line of its own. The control bar is sticky, so every
+   row it grows by is a row the gallery loses. The `pick` track is `auto`
+   and collapses to nothing with JavaScript off, when no button is built. */
+#control-bar .control-bar-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "input input"
+    "pills pick";
+  align-items: center;
+  column-gap: 10px;
+}
+#control-bar .input-shell { grid-area: input; }
+#control-bar .filter-pills { grid-area: pills; }
+#control-bar .charpick { grid-area: pick; }
+
+/* Where there is room, the pills wrap instead of scrolling. Ten of them
+   no longer fit on one line, and a horizontal scroller silently hides
+   whichever is last — which is the newest one, i.e. exactly the one
+   nobody has found yet. */
+@media (min-width: 700px) {
+  #control-bar .filter-pills { flex-wrap: wrap; overflow-x: visible; }
+  #control-bar .control-bar-inner { align-items: end; }
+}
+/* On a phone the pills keep scrolling — wrapping ten of them would push
+   the gallery most of a screen down inside a sticky bar — and the button
+   takes a full-width row of its own under them. */
+@media (max-width: 699px) {
+  #control-bar .control-bar-inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "input" "pills" "pick";
+  }
+}
 
 .input-shell { position: relative; }
 #text-input {
@@ -529,24 +600,56 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
 }
 
 /* the style name: a quiet footnote, not a headline */
+/* The banner. Full-bleed to the card's edges rather than inset in its
+   padding, so it reads as a labelled strip belonging to the tile instead
+   of a caption floating under the sample. Its hue comes from the tile's
+   [data-cat]; --cat falls back to the border colour so a tile with no
+   category (or a stylesheet that has not caught up with a new one) is
+   plain rather than broken. */
 .tile-foot {
+  --cat: var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   min-height: 20px;
+  margin: 2px -14px -10px;
+  padding: 7px 12px 8px;
+  border-top: 2px solid color-mix(in srgb, var(--cat) 62%, transparent);
+  border-radius: 0 0 13px 13px;
+  background: color-mix(in srgb, var(--cat) 12%, var(--bg-inset));
 }
-.tile-foot-label { position: relative; min-width: 0; }
+.tile[data-cat="bold-italic"] .tile-foot { --cat: var(--cat-bold-italic); }
+.tile[data-cat="cursive-gothic"] .tile-foot { --cat: var(--cat-cursive-gothic); }
+.tile[data-cat="circled-boxed"] .tile-foot { --cat: var(--cat-circled-boxed); }
+.tile[data-cat="symbol-alphabets"] .tile-foot { --cat: var(--cat-symbol-alphabets); }
+.tile[data-cat="small-wide"] .tile-foot { --cat: var(--cat-small-wide); }
+.tile[data-cat="effects-glitch"] .tile-foot { --cat: var(--cat-effects-glitch); }
+.tile[data-cat="decorated"] .tile-foot { --cat: var(--cat-decorated); }
+.tile[data-cat="combos"] .tile-foot { --cat: var(--cat-combos); }
+.tile[data-cat="chars"] .tile-foot { --cat: var(--cat-chars); }
+
+.tile-foot-label { position: relative; min-width: 0; flex: 1 1 auto; }
 .tile-name {
   display: block;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .07em;
+  color: var(--text-dim);
+  /* Wraps to a second line instead of ellipsing. The names that used to
+     be cut ("GOTHIC × DOUBLE-STR…") are exactly the ones that say what
+     the tile is. */
+  overflow-wrap: anywhere;
+  transition: opacity .12s ease;
+}
+.tile-recipe {
+  display: block;
+  margin-top: 2px;
+  font-size: 10.5px;
+  line-height: 1.35;
   color: var(--text-faint);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
   transition: opacity .12s ease;
 }
 .tile-copied {
@@ -583,7 +686,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   transition: opacity .12s ease, color .12s ease, background .12s ease;
 }
 .tile:hover .copy-icon-btn { opacity: 1; color: var(--accent); }
-.copy-icon-btn:hover { background: var(--bg-inset); }
+.copy-icon-btn:hover { background: color-mix(in srgb, var(--cat, var(--border)) 22%, transparent); }
 .copy-icon-btn:focus-visible { opacity: 1; }
 
 .tile.is-copied {
@@ -591,7 +694,8 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   background: color-mix(in srgb, var(--accent) 8%, var(--bg-raised));
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent);
 }
-.tile.is-copied .tile-name { opacity: 0; }
+.tile.is-copied .tile-name,
+.tile.is-copied .tile-recipe { opacity: 0; }
 .tile.is-copied .tile-copied { opacity: 1; transform: translateY(0); }
 
 /* ---------- about / explainer section ---------- */
@@ -847,11 +951,11 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   color: var(--text-faint);
   font-size: 14px;
   line-height: 1;
-  opacity: 0.55;
+  opacity: 0.7;
   transition: opacity .12s ease, color .12s ease, background .12s ease;
 }
 .tile:hover .tile-star { opacity: 1; }
-.tile-star:hover { background: var(--bg-inset); color: var(--accent); }
+.tile-star:hover { background: color-mix(in srgb, var(--cat) 22%, transparent); color: var(--accent); }
 .tile-star[aria-pressed="true"] { opacity: 1; color: var(--accent); }
 .tile-star:focus-visible { opacity: 1; }
 
@@ -907,42 +1011,73 @@ a.fav-pill:hover { text-decoration: none; }
   background: transparent;
 }
 
-/* homepage combo/mix example tiles: a small tag marks the recipe kind,
-   and an ✎ link opens it in its editor (Combiner or Mixer) */
-.tile-example .tile-foot-label { display: flex; align-items: center; }
+/* homepage example tiles (combo, mix, kaomoji pairing): a small tag marks
+   which kind it is, the banner spells the recipe out, and the Edit pill
+   opens it in the tool that made it. The label stacks — name with its tag
+   over the recipe — so neither competes for one line's worth of room. */
 .tile-example .tile-name { min-width: 0; }
+.tile-example .tile-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "label copy"
+    "edit  edit";
+  align-items: start;
+  row-gap: 7px;
+  column-gap: 8px;
+}
+.tile-example .tile-foot-label { grid-area: label; }
+.tile-example .copy-icon-btn { grid-area: copy; }
+.tile-example .tile-edit { grid-area: edit; justify-content: center; }
+
+/* Sits inside .tile-name so it wraps with the name instead of being
+   pushed off the end of the line. */
 .tile-tag {
-  flex: none;
-  align-self: center;
+  display: inline-block;
+  vertical-align: 1px;
   margin-left: 6px;
   font-size: 9.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .07em;
-  color: var(--accent);
-  border: 1px solid var(--accent-dim);
+  color: var(--cat);
+  background: color-mix(in srgb, var(--cat) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cat) 45%, transparent);
   border-radius: 999px;
   padding: 1px 6px;
-  opacity: 0.85;
 }
+
+/* The way into the Combiner, the Mixer and the kaomoji picker. It is the
+   reason an example tile exists, so it is a labelled pill in the banner's
+   own hue and legible with no hover — it used to be a 55%-opacity pencil
+   glyph that only reached full opacity on :hover, which on a phone is
+   never. */
 .tile-edit {
   flex: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 7px;
-  color: var(--text-faint);
-  font-size: 14px;
+  gap: 4px;
+  min-height: 24px;
+  padding: 3px 9px;
+  border: 1px solid color-mix(in srgb, var(--cat) 55%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cat) 14%, transparent);
+  color: color-mix(in srgb, var(--cat) 55%, var(--text));
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .03em;
   line-height: 1;
+  white-space: nowrap;
   text-decoration: none;
-  opacity: 0.55;
-  transition: opacity .12s ease, color .12s ease, background .12s ease;
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
 }
-.tile:hover .tile-edit { opacity: 1; }
-.tile-edit:hover { background: var(--bg-inset); color: var(--accent); text-decoration: none; }
-.tile-edit:focus-visible { opacity: 1; }
+.tile-edit:hover {
+  background: color-mix(in srgb, var(--cat) 28%, transparent);
+  border-color: var(--cat);
+  color: var(--text);
+  text-decoration: none;
+}
+.tile-edit:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 
 /* ---------- result panel (shared by both tools) ---------- */
 .result-panel {
@@ -1174,7 +1309,7 @@ a.fav-pill:hover { text-decoration: none; }
   min-width: 3.5em;
   text-align: right;
 }
-@media (max-width: 560px) {
+@media (max-width: 699px) {
   /* At the cap the readout grows a sentence, which would squeeze the slider
      to nothing on a phone — give it its own line instead. */
   .intensity-row { flex-wrap: wrap; }
@@ -1528,3 +1663,165 @@ a.fav-pill:hover { text-decoration: none; }
 ::-webkit-scrollbar-track { background: var(--bg-inset); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+/* ---------- character inserter (homepage + Combiner) ---------- */
+/* A face picker attached to the styler's own input, so a visitor who has
+   already built a chain can drop a kaomoji into it without leaving for
+   /kaomoji/ and losing the chain. Built entirely by charinsert.js; there
+   is no static markup for any of this. */
+.charpick {
+  position: relative;
+  flex: none;
+  align-self: start;
+  /* Hugs the button, so the panel anchors to the button rather than to
+     whatever width the host container happens to be. */
+  width: fit-content;
+}
+/* Pill-sized where it sits in the homepage's filter row; full-height where
+   it sits beside the Combiner's input. */
+#control-bar .charpick-btn { min-height: 28px; padding: 0 11px; font-size: 12px; }
+#control-bar .charpick-panel { left: auto; right: 0; }
+.charpick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 13px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .12s ease, color .12s ease, background .12s ease;
+}
+.charpick-btn:hover { border-color: var(--accent-dim); color: var(--text); }
+.charpick-btn[aria-expanded="true"] {
+  border-color: var(--accent);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg-raised));
+}
+.charpick-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.charpick-btn-face {
+  font-size: 13px;
+  line-height: 1;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.charpick-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  /* Opens rightward from the button by default. The homepage's button is
+     at the right end of its row, so that one opens the other way. */
+  left: 0;
+  right: auto;
+  width: min(420px, calc(100vw - 28px));
+  padding: 12px 12px 10px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 14px 34px -18px rgba(0, 0, 0, .7);
+}
+.charpick-panel[hidden] { display: none; }
+
+.charpick-tabs { display: flex; gap: 6px; margin-bottom: 9px; }
+.charpick-tab {
+  flex: 1 1 auto;
+  min-height: 32px;
+  padding: 0 10px;
+  background: var(--bg-inset);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.charpick-tab[aria-selected="true"] {
+  background: color-mix(in srgb, var(--accent) 16%, var(--bg-inset));
+  border-color: var(--accent-dim);
+  color: var(--text);
+}
+.charpick-tab:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+.charpick-search .input-field {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.charpick-note,
+.charpick-status,
+.charpick-empty {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-faint);
+}
+.charpick-status { color: var(--text-dim); }
+.charpick-note[hidden],
+.charpick-status[hidden],
+.charpick-empty[hidden] { display: none; }
+
+/* Capped and internally scrolled, so opening the picker can never push
+   the result panel off the screen. */
+.charpick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 5px;
+  max-height: min(38vh, 300px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-top: 9px;
+  padding-right: 2px;
+}
+.charpick-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 5px 4px;
+  background: var(--bg-inset);
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: var(--text);
+  cursor: pointer;
+  overflow: hidden;
+}
+.charpick-card[hidden] { display: none; }
+.charpick-card:hover { border-color: var(--accent-dim); background: var(--bg-raised); }
+.charpick-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.charpick-glyph {
+  min-width: 0;
+  max-width: 100%;
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+.charpick-more {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 6px 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+@media (max-width: 699px) {
+  /* The button spans its row; the panel stays anchored to it and just
+     narrows. It must NOT drop to `position: static` — the panel would
+     then resolve against whatever positioned ancestor the host page
+     happens to have, which on the Combiner is most of a screen away. */
+  .charpick { width: 100%; }
+  .charpick-btn { width: 100%; justify-content: center; }
+  .charpick-panel { width: min(420px, calc(100vw - 24px)); }
+}

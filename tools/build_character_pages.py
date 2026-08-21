@@ -48,6 +48,7 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
 import build_style_pages as B  # noqa: E402  — the page shell, shared verbatim
+import nav_data as NAV  # noqa: E402  — checked against this catalogue in main()
 from character_page_copy import (  # noqa: E402
     COPY, KAOMOJI_SLUGS, SYMBOL_SLUGS, CHARACTER_URLS,
 )
@@ -423,6 +424,19 @@ def main():
 
     data = load_catalogue()
     families = {"kaomoji": data["kaomoji"], "symbols": data["symbols"]}
+
+    # The toolbar names each hub's tier-2 family so the owning rail chip can be
+    # marked current on those pages. That list is a third copy of the same
+    # slugs, so it is checked here rather than left to drift into a bar that
+    # claims a page belongs to a family it was dropped from.
+    for attr, hub_slug in (("KAOMOJI_MOODS", "kaomoji"), ("SYMBOL_KINDS", "symbols")):
+        want = ["/%s/%s/" % (hub_slug, g["slug"]) for g in families[hub_slug]]
+        got = [i["href"] for i in
+               next(v for v in NAV.VARIANTS if v["parent"] == "/%s/" % hub_slug)["items"]]
+        if got != want:
+            raise SystemExit(
+                "tools/nav_data.py %s and the catalogue disagree:\n  nav:  %s\n  data: %s"
+                % (attr, got, want))
 
     stale = []
     pages = 0

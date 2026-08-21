@@ -5,7 +5,10 @@ A free, ad-supported fancy text generator: type plain text and instantly get 40 
 Alongside the fonts there are sixteen character-picker pages — `/kaomoji/` and
 `/symbols/`, each with a page per mood and per kind — where clicking a kaomoji
 or a symbol drops it into the same text box the styler reads, so a visitor who
-arrived for one heart leaves with a styled line rather than a clipboard.
+arrived for one heart leaves with a styled line rather than a clipboard. The
+same move works from the other side: the homepage and the Combiner carry an
+**Add a face** button beside their input, so a line that is already the shape
+you want can take a face without a trip to another page.
 
 Alongside the full gallery there are seven focused tools, each one query cluster deep: a Combiner, a Mixer, and five single-purpose pages (flip, glitch, strikethrough, small caps, vaporwave). Every one of them carries a **"where this works" note** per style — most of these transforms are stripped or refused somewhere, and finding that out after pasting is the commonest complaint about tools in this category — and a **character-count readout**, because combining marks push a bio past its limit with nothing visible to explain it.
 
@@ -104,8 +107,10 @@ assets/css/styles.css          Design system
 assets/js/fancytext-core.js    Pure Unicode transform engine (no DOM)
 assets/js/site.js              Shared chrome: theme toggle, header, copy helper
 assets/js/favorites.js         Local favorites store (styles, combos, mixes, chars)
-assets/js/characters.js        Kaomoji and symbol catalogue (build-time data, not shipped)
+assets/js/characters.js        Kaomoji and symbol catalogue (build-time data; also
+                               fetched at runtime by charinsert.js, on demand)
 assets/js/characters-page.js   Runtime for /kaomoji/ and /symbols/: insert, filter, star
+assets/js/charinsert.js        "Add a face" picker on / and /combine/ (lazy-loads the catalogue)
 assets/js/app.js               Homepage gallery wiring
 assets/js/combine.js           Font Combiner page wiring
 assets/js/mix.js               Font Mixer page wiring
