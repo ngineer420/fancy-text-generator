@@ -23,6 +23,18 @@ const FAMILIES = [
   ["symbols", Characters.SYMBOLS],
 ];
 
+/* html.escape() writes an apostrophe as &#x27;, so a hand-rolled list of the
+   five named entities is not enough — the table-flip face has one in it and
+   was the character that proved it. &amp; is unescaped last, or "&amp;lt;"
+   would decode twice. */
+function unescapeHtml(text) {
+  return text
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&");
+}
+
 let passed = 0;
 function test(name, fn) {
   fn();
@@ -380,28 +392,77 @@ test("every card offers the same thing, in the same words", () => {
   }
 });
 
-test("the way out carries the character and nothing else", () => {
+test("the way out leads with the card's own character", () => {
   const html = fs.readFileSync(path.join(ROOT, "kaomoji/index.html"), "utf8");
-  const m = html.match(/data-char="([^"]+)"[\s\S]*?class="char-insert" href="([^"]+)"/);
-  assert.ok(m, "no card with both a character and a link out");
-  const char = m[1].replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
-  const text = decodeURIComponent(m[2].replace("/?text=", ""));
-  assert.strictEqual(text.trim(), char.trim(),
-    "the link hands off " + JSON.stringify(text) + " for the card " + JSON.stringify(char));
+  const pairs = [...html.matchAll(/data-char="([^"]+)"[\s\S]*?class="char-insert" href="([^"]+)"/g)];
+  assert.ok(pairs.length > 40, "no cards with both a character and a link out");
+  for (const m of pairs) {
+    const char = unescapeHtml(m[1]);
+    const text = decodeURIComponent(m[2].replace("/?text=", ""));
+    assert.ok(text.startsWith(char + " "),
+      "the link hands off " + JSON.stringify(text) + " for the card " + JSON.stringify(char));
+  }
 });
 
-test("only a tile that leaves the homepage carries a destination colour", () => {
+test("a card with no line still hands over words to style", () => {
+  // A bare face at the far end gives forty tiles showing a face and nothing
+  // else. The sample the link carries has to be the one the homepage uses,
+  // or the handoff would arrive looking like text somebody typed.
+  const app = fs.readFileSync(path.join(ROOT, "assets/js/app.js"), "utf8");
+  const m = app.match(/const SAMPLE_TEXT = "([^"]+)"/);
+  assert.ok(m, "app.js no longer declares SAMPLE_TEXT");
+  const sample = m[1];
+
+  const py = fs.readFileSync(path.join(ROOT, "tools/build_character_pages.py"), "utf8");
+  assert.ok(py.includes('SAMPLE_TEXT = "' + sample + '"'),
+    "the builder's sample text has drifted from app.js's " + JSON.stringify(sample));
+
+  for (const page of ["kaomoji/index.html", "symbols/hearts/index.html"]) {
+    const html = fs.readFileSync(path.join(ROOT, page), "utf8");
+    const links = [...html.matchAll(/class="char-insert" href="\/\?text=([^"]+)"/g)]
+      .map((x) => decodeURIComponent(x[1]));
+    assert.ok(links.length, page + " has no links out");
+    for (const line of links) {
+      assert.ok(line.endsWith(" " + sample),
+        page + " hands off " + JSON.stringify(line) + " with nothing to style");
+    }
+  }
+});
+
+test("the baked label is the no-text one", () => {
+  // "Add fancy text" is what the card offers with nothing carried. The
+  // runtime rewrites it to "Style text" when a line arrives, so the baked
+  // file must be the former — a page that shipped "Style text" would be
+  // promising to style something the visitor has not given it.
+  const html = fs.readFileSync(path.join(ROOT, "kaomoji/index.html"), "utf8");
+  assert.ok(!/Style text/.test(html), "the file ships the carrying label");
+  assert.ok(html.includes("Add fancy text"), "the file has lost the plain label");
+});
+
+test("a card has somewhere to print a carried line", () => {
+  // Baked empty. The runtime fills it only when ?text= brought something,
+  // which is what keeps a plain visit a grid of bare faces.
+  const html = fs.readFileSync(path.join(ROOT, "kaomoji/index.html"), "utf8");
+  const glyphs = html.match(/<span class="char-glyph">[\s\S]*?<\/span><\/span>/g) || [];
+  assert.ok(glyphs.length > 40, "expected a glyph on every card");
+  for (const g of glyphs) {
+    assert.ok(g.includes('<span class="char-glyph-text"></span>'),
+      "a card has no slot for the carried line, or it was baked non-empty");
+  }
+});
+
+test("every character tile leaves for a picker page", () => {
   // Colour on a tile means one thing: the press opens something. The four
   // pairings act on the homepage itself, so they take none.
   const core = require(path.join(ROOT, "assets/js/fancytext-core.js"));
-  const leaves = core.CHAR_EXAMPLES.filter((ex) => ex.hub);
-  const stays = core.CHAR_EXAMPLES.filter((ex) => !ex.hub);
-  assert.strictEqual(leaves.length, 2, "expected exactly two picker tiles");
-  assert.ok(stays.length >= 3, "expected the pairings to act in place");
-  for (const ex of leaves) {
-    assert.ok(ex.hub === "/kaomoji/" || ex.hub === "/symbols/",
-      ex.id + " points at " + ex.hub + ", which is not a picker page");
-    assert.ok(fs.existsSync(path.join(ROOT, ex.hub.replace(/^\/|\/$/g, ""), "index.html")),
+  // Every character tile is an example and every one leaves for a picker
+  // page. None of them acts on the homepage: that is Add a face's job, and
+  // two controls for one value is one too many.
+  for (const ex of core.CHAR_EXAMPLES) {
+    const hub = ex.hub || "/kaomoji/";
+    assert.ok(hub === "/kaomoji/" || hub === "/symbols/",
+      ex.id + " points at " + hub + ", which is not a picker page");
+    assert.ok(fs.existsSync(path.join(ROOT, hub.replace(/^\/|\/$/g, ""), "index.html")),
       ex.id + " points at a page that does not exist");
   }
 });

@@ -100,48 +100,29 @@
           ),
       })),
       FancyText.CHAR_EXAMPLES.map((ex) => {
-        /* Two different things wear the same kind of tile.
+        /* Every one of these is an example, and every one goes to the same
+           place: the picker page, carrying the WORDS and not the character.
+           The character is the one thing that page changes — hand it one and
+           you would be handing it the variable — so it arrives holding the
+           line, prints it beside all two hundred faces, and lets you swap.
 
-           The two picker tiles are adverts: their job is to open /kaomoji/
-           or /symbols/, where two hundred more of them are, so they keep a
-           link and the colour that says the press leaves this page.
-
-           The four pairings are recipes, and their press belongs HERE. This
-           page is already the styler — all forty of them — and it already
-           has "Add a face" for changing which face. Sending that press to a
-           picker page meant landing on a smaller styler that had lost the
-           style you clicked to get there, which is the trip this removes.
-           Pressing puts the plain arrangement in the box instead, and the
-           forty tiles answer it on the spot. */
-        const inPlace = !ex.hub;
-        const faceLike = FancyText.splitGraphemes(ex.char).length > 1;
+           A press used to act on this page instead, putting the arrangement
+           in the box. That made these tiles controls rather than examples,
+           and it duplicated "Add a face", which is the control for changing
+           the face and is six inches to the right of them. */
+        const hub = ex.hub || "/kaomoji/";
         return {
           id: ex.id,
           name: ex.name,
-          dest: inPlace ? null : "chars",
-          destLabel: inPlace
-            ? (faceLike ? "Add face" : "Add symbol")
-            : (ex.hub === "/symbols/" ? "Symbols" : "Faces"),
-          toolName: ex.hub === "/symbols/" ? "symbol picker" : "kaomoji picker",
+          dest: "chars",
+          destLabel: hub === "/symbols/" ? "Symbols" : "Faces",
+          toolName: hub === "/symbols/" ? "symbol picker" : "kaomoji picker",
           category: CHAR_CATEGORY,
           recipe: ex.styleId
             ? ex.char + " + " + styleName(ex.styleId)
             : ex.char + " … " + (ex.close || ex.char),
-          inPlace,
           transform: (text) => FancyText.applyCharExample(ex, text),
-          // The plain arrangement, never the styled line: the box holds
-          // words for forty styles to work on, and freezing one of them
-          // into it would leave the other thirty-nine with nothing to do.
-          applyText: (text) => FancyText.charExampleText(ex, text),
-          /* In place: the plain arrangement, straight into the box.
-             Out: the picker page, carrying the WORDS and not the face — the
-             face is the one thing that page changes, so handing it one would
-             be handing it the variable. It shows the line on arrival and
-             every card there becomes that line with a different face. */
-          editUrl: (typed, text) =>
-            inPlace
-              ? "/?text=" + encodeURIComponent(FancyText.charExampleText(ex, text))
-              : ex.hub + "?text=" + encodeURIComponent(text),
+          editUrl: (typed, text) => hub + "?text=" + encodeURIComponent(text),
         };
       })
     );
@@ -222,9 +203,8 @@
       if (example) {
         tile.classList.add("tile-example");
         // The one thing on the card that carries a colour, and the only
-        // thing the colour means: which tool the press opens. A press that
-        // stays on this page opens nothing, so it takes no colour.
-        if (example.dest) tile.dataset.dest = example.dest;
+        // thing the colour means: which tool the Edit opens.
+        tile.dataset.dest = example.dest;
         // The recipe is real detail, but a second line of it is what made
         // these cards taller than their neighbours. It lives on the tile
         // itself now, where a hover or a screen reader finds it and the
@@ -233,34 +213,15 @@
 
         editEl = document.createElement("a");
         editEl.className = "tile-edit";
-        // Names what the press does rather than saying "Edit": that is the
+        // Names its destination rather than saying "Edit": that is the
         // same fact the colour carries, said in words, so the tile still
         // distinguishes a combo from a mix in monochrome.
-        editEl.innerHTML = '<span aria-hidden="true">' +
-          (example.inPlace ? "＋" : "✎") + '</span> ' + example.destLabel;
-        if (example.inPlace) {
-          editEl.setAttribute("aria-label",
-            "Put " + style.name + " (" + example.recipe + ") in the text box");
-          editEl.title = "Put it in the box — " + example.recipe;
-        } else {
-          editEl.setAttribute("aria-label",
-            "Open " + style.name + " (" + example.recipe + ") in the " + example.toolName);
-          editEl.title = "Open in the " + example.toolName + " — " + example.recipe;
-        }
-        // Don't let the tile's copy handler swallow the press.
-        editEl.addEventListener("click", (evt) => {
-          evt.stopPropagation();
-          if (!example.inPlace) return; // a real link; let it navigate
-          /* The href says the same thing and works with JavaScript off or on
-             a middle click, but following it would reload the page to change
-             one input. Do it here instead, and let the gallery answer. */
-          evt.preventDefault();
-          const raw = input.value.trim() ? input.value : SAMPLE_TEXT;
-          input.value = example.applyText(raw).slice(0, MAX_LEN);
-          render();
-          input.focus();
-          input.setSelectionRange(input.value.length, input.value.length);
-        });
+        editEl.innerHTML = '<span aria-hidden="true">✎</span> ' + example.destLabel;
+        editEl.setAttribute("aria-label",
+          "Open " + style.name + " (" + example.recipe + ") in the " + example.toolName);
+        editEl.title = "Open in the " + example.toolName + " — " + example.recipe;
+        // Don't let the tile's copy handler swallow the navigation.
+        editEl.addEventListener("click", (evt) => evt.stopPropagation());
       } else {
         starEl = document.createElement("button");
         starEl.type = "button";

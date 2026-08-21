@@ -57,6 +57,12 @@ from character_page_copy import (  # noqa: E402
 SITE = B.SITE
 esc = B.esc
 
+# The words a card's link hands to the generator when the visitor brought
+# none of their own. Landing there with a bare face gives forty tiles showing
+# a face and nothing else — nothing to see the styles on. Must match
+# SAMPLE_TEXT in app.js; test/characters.test.js checks that it does.
+SAMPLE_TEXT = "Fancy Text"
+
 GENERATED_WARNING = (
     "<!-- GENERATED FILE - do not edit by hand.\n"
     "     Written by tools/build_character_pages.py from assets/js/characters.js\n"
@@ -140,7 +146,12 @@ def card(item, kind):
         '        <li>',
         '          <div class="char-card" role="button" tabindex="0" data-char="%s" data-keys="%s"'
         ' aria-label="Copy %s">' % (esc(item["char"]), esc(filter_keys(item)), esc(label)),
-        '            <span class="char-glyph">%s</span>' % esc(item["char"]),
+        # The empty span is where characters-page.js writes the visitor's
+        # line when they arrived carrying one, so the card previews the
+        # combination rather than the character alone. It stays empty in the
+        # file: a visit with no text has nothing to put in it.
+        '            <span class="char-glyph"><span class="char-glyph-char">%s</span>'
+        '<span class="char-glyph-text"></span></span>' % esc(item["char"]),
         '            <span class="char-meta">',
         '              <span class="char-name">%s</span>' % esc(label),
     ]
@@ -154,8 +165,8 @@ def card(item, kind):
         '            </span>',
         '            <a class="char-insert" href="/?text=%s" title="Open the generator with this one in the box"'
         ' aria-label="Add fancy text to %s in the full generator">'
-        '<span aria-hidden="true">&#65291;</span> Add fancy text</a>'
-        % (esc(urllib.parse.quote(item["char"] + " ", safe="")), esc(label)),
+        '<span aria-hidden="true">+</span> Add fancy text</a>'
+        % (esc(urllib.parse.quote(item["char"] + " " + SAMPLE_TEXT, safe="")), esc(label)),
         '            <span class="char-copied" aria-hidden="true">Copied</span>',
         '          </div>',
         '        </li>',
