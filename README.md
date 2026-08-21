@@ -4,14 +4,16 @@ A free, ad-supported fancy text generator: type plain text and instantly get 40 
 
 Alongside the fonts there are sixteen character-picker pages — `/kaomoji/` and
 `/symbols/`, each with a page per mood and per kind — where a click copies the
-character and a `+ Style it` button drops it into the same text box the styler
-reads, so a visitor who arrived for one heart can leave with a styled line
-rather than a clipboard. A handful of styled cards sit among the plain ones in
-every grid, each linking into the full gallery with that line loaded, and the
-homepage carries a tile for each picker. The
-same move works from the other side: the homepage and the Combiner carry an
-**Add a face** button beside their input, so a line that is already the shape
-you want can take a face without a trip to another page.
+character and `Style it →` opens the generator with it already in the box, so
+a visitor who arrived for one heart can leave with a styled line rather than a
+clipboard. A handful of styled cards sit among the plain ones in every grid,
+each linking into the full gallery with that line loaded, and the homepage
+carries a tile for each picker. Those pages style nothing themselves: the
+homepage is the only styler on the site, and a face there is simply text in
+the text box, which is why all 40 tiles restyle around it for free. The same
+move works from the other side — the homepage and the Combiner carry an **Add
+a face** button beside their input, so a line that is already the shape you
+want can take a face, or swap the one it has, without a trip to another page.
 
 Alongside the full gallery there are seven focused tools, each one query cluster deep: a Combiner, a Mixer, and five single-purpose pages (flip, glitch, strikethrough, small caps, vaporwave). Every one of them carries a **"where this works" note** per style — most of these transforms are stripped or refused somewhere, and finding that out after pasting is the commonest complaint about tools in this category — and a **character-count readout**, because combining marks push a bio past its limit with nothing visible to explain it.
 

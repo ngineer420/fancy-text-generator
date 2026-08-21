@@ -331,4 +331,48 @@ test("every character example on the homepage is a real catalogue character", ()
   }
 });
 
+test("a picker page is a picker, not a second styler", () => {
+  // Three releases were spent trying to make these pages style text. The
+  // homepage does that, with forty styles instead of six, and every path off
+  // these pages goes there. A text box reappearing here is the regression.
+  for (const page of ["kaomoji/index.html", "symbols/index.html",
+                      "kaomoji/happy/index.html", "symbols/hearts/index.html"]) {
+    const html = fs.readFileSync(path.join(ROOT, page), "utf8");
+    assert.ok(!/id="tool-input"/.test(html), page + " grew a text box back");
+    assert.ok(!/class="composer/.test(html), page + " grew a composer back");
+    assert.ok(!/id="composer-out"/.test(html), page + " grew preview tiles back");
+    // ...and the way out is on every card.
+    const links = html.match(/class="char-insert" href="\/\?text=[^"]+"/g) || [];
+    const cards = html.match(/class="char-card"/g) || [];
+    assert.strictEqual(links.length, cards.length,
+      page + " has " + cards.length + " cards but " + links.length + " links to the generator");
+  }
+});
+
+test("the way out carries the character and nothing else", () => {
+  const html = fs.readFileSync(path.join(ROOT, "kaomoji/index.html"), "utf8");
+  const m = html.match(/data-char="([^"]+)"[\s\S]*?class="char-insert" href="([^"]+)"/);
+  assert.ok(m, "no card with both a character and a link out");
+  const char = m[1].replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  const text = decodeURIComponent(m[2].replace("/?text=", ""));
+  assert.strictEqual(text.trim(), char.trim(),
+    "the link hands off " + JSON.stringify(text) + " for the card " + JSON.stringify(char));
+});
+
+test("only a tile that leaves the homepage carries a destination colour", () => {
+  // Colour on a tile means one thing: the press opens something. The four
+  // pairings act on the homepage itself, so they take none.
+  const core = require(path.join(ROOT, "assets/js/fancytext-core.js"));
+  const leaves = core.CHAR_EXAMPLES.filter((ex) => ex.hub);
+  const stays = core.CHAR_EXAMPLES.filter((ex) => !ex.hub);
+  assert.strictEqual(leaves.length, 2, "expected exactly two picker tiles");
+  assert.ok(stays.length >= 3, "expected the pairings to act in place");
+  for (const ex of leaves) {
+    assert.ok(ex.hub === "/kaomoji/" || ex.hub === "/symbols/",
+      ex.id + " points at " + ex.hub + ", which is not a picker page");
+    assert.ok(fs.existsSync(path.join(ROOT, ex.hub.replace(/^\/|\/$/g, ""), "index.html")),
+      ex.id + " points at a page that does not exist");
+  }
+});
+
 console.log("\nAll " + passed + " tests passed.");

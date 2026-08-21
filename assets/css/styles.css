@@ -550,8 +550,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
   border-radius: 14px;
   /* The banner is full-bleed, so it cancels this padding with a negative
      margin. Both read the same two variables, which is what stops a tile
-     with different padding (the composer's previews) from having its
-     banner hang 2px off each edge. */
+     with different padding from having its banner hang 2px off each edge. */
   --tile-pad-x: 14px;
   --tile-pad-b: 10px;
   padding: 14px var(--tile-pad-x) var(--tile-pad-b);
@@ -1037,6 +1036,15 @@ a.fav-pill:hover { text-decoration: none; }
   text-decoration: none;
 }
 .tile-edit:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+/* No destination, no hue: the press stays on this page. It still has to look
+   pressable, so it takes the plain dim text colour rather than a mix with the
+   border, which lands most of the way back to the background. */
+.tile-example:not([data-dest]) .tile-edit { color: var(--text-dim); }
+.tile-example:not([data-dest]) .tile-edit:hover {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--text);
+}
 
 /* ---------- result panel (shared by both tools) ---------- */
 .result-panel {
@@ -1418,57 +1426,6 @@ a.fav-pill:hover { text-decoration: none; }
 
 /* ---------- misc ---------- */
 /* ---------- character pickers: /kaomoji/ and /symbols/ ---------- */
-/* The composer is the headline element on these pages, not the grid. A picker
-   that only copies is a dead end; this one hands the character to the styler,
-   so it sits above the cards, it is what a card click feeds, and it is styled
-   as a panel rather than as a stray input. */
-
-.composer {
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 14px 12px;
-}
-.composer-label {
-  margin: 0 0 6px;
-  font-size: 12px;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-}
-.composer-hint {
-  margin: 8px 0 0;
-  font-size: 12.5px;
-  color: var(--text-dim);
-}
-.composer .char-count { margin-top: 6px; }
-/* Two up on a phone, not one: six stacked preview tiles push the picker — the
-   thing the visitor came for — a whole screen and a half down the page. */
-.composer-out {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 148px), 1fr));
-  gap: 10px;
-  margin-top: 10px;
-}
-@media (min-width: 700px) {
-  .composer-out { grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
-}
-.composer-out:empty { margin-top: 0; }
-.composer-out .tile {
-  --tile-pad-x: 12px;
-  --tile-pad-b: 8px;
-  min-height: 84px;
-  border-radius: 12px;
-}
-.composer-out .tile-foot { min-height: 34px; border-radius: 0 0 11px 11px; }
-.composer-out .tile-output { font-size: clamp(17px, 1.7vw, 20px); max-height: 96px; }
-.composer-more {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 5px 0;
-  font-size: 12.5px;
-}
-
 .char-filter-row { margin: 20px 0 12px; }
 .char-filter-row .input-field {
   background: var(--bg-inset);
@@ -1609,6 +1566,7 @@ a.fav-pill:hover { text-decoration: none; }
   letter-spacing: .02em;
   line-height: 1;
   white-space: nowrap;
+  text-decoration: none;
   cursor: pointer;
 }
 .char-insert:hover {
@@ -1701,18 +1659,6 @@ a.fav-pill:hover { text-decoration: none; }
   background: color-mix(in srgb, var(--dest-chars) 16%, transparent);
   border-color: color-mix(in srgb, var(--dest-chars) 45%, transparent);
   color: var(--text);
-}
-
-/* The composer answering an insert from a card that scrolled it into view. */
-.composer.is-flash {
-  animation: composer-flash .9s ease;
-}
-@keyframes composer-flash {
-  0%, 100% { box-shadow: 0 0 0 0 transparent; }
-  25% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .composer.is-flash { animation: none; }
 }
 
 .char-card.is-copied {

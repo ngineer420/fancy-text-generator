@@ -80,21 +80,13 @@ GENERATED_WARNING = (
 
 # The scripts a character page loads. styletool.js is not among them — these
 # pages are not the style-page runtime with a parameter changed, they are a
-# picker wired into a composer, and characters-page.js is the whole of it.
+# catalogue you copy from, and characters-page.js is the whole of it.
 CHAR_SCRIPTS = [
     ("fancytext-core.js", "core"),
     ("site.js", "site"),
     ("favorites.js", "favorites"),
     ("characters-page.js", "characters"),
 ]
-
-# The styles the composer previews your line in. Six, chosen so the row shows
-# six visibly different answers rather than six weights of the same one, and
-# every one of them a substitution alphabet: the combining-mark styles
-# (underline, strikethrough, slashed) draw their mark to the width of the base
-# character, so on the fullwidth characters a kaomoji is full of they meet end
-# to end and paint a solid bar over the face.
-PREVIEW_STYLES = ["script", "bold", "fraktur", "double-struck", "circled", "small-caps"]
 
 # What a hub shows per group before handing off to the group's own page. The
 # hub is a sampler and a directory; the complete set lives one click down,
@@ -173,8 +165,9 @@ def card(item, kind):
         '              <button type="button" class="char-star" aria-pressed="false" title="Save to favorites"'
         ' aria-label="Save %s to favorites">&#9734;</button>' % esc(label),
         '            </span>',
-        '            <button type="button" class="char-insert" title="Add to the line you are building"'
-        ' aria-label="Add %s to the text you are styling">+ Style it</button>' % esc(label),
+        '            <a class="char-insert" href="/?text=%s" title="Open the generator with this one in the box"'
+        ' aria-label="Style text around %s in the full generator">Style it &rarr;</a>'
+        % (esc(urllib.parse.quote(item["char"] + " ", safe="")), esc(label)),
         '            <span class="char-copied" aria-hidden="true">Copied</span>',
         '          </div>',
         '        </li>',
@@ -188,8 +181,8 @@ def card(item, kind):
 STYLED_AT = (5, 17, 29)
 
 # The styles a mixed-in card demonstrates, in rotation. Substitution alphabets
-# only, for the reason under PREVIEW_STYLES: a combining mark drawn over the
-# fullwidth characters a face is built from paints a bar across it.
+# only: a combining mark drawn over the fullwidth characters a face is built
+# from meets its neighbours end to end and paints a bar across the face.
 STYLED_STYLES = ["script", "bold", "fraktur", "double-struck", "small-caps", "monospace"]
 
 STYLED_SAMPLE = "Fancy Text"
@@ -276,38 +269,6 @@ def filter_row(hub, count, hint):
       <p class="char-filter-count" id="char-filter-count" role="status"></p>
     </div>
 """.format(noun=hub["noun"], count=count, hint=esc(hint))
-
-
-def composer(hub, count):
-    """The build-a-line control, under the picker rather than above it.
-
-    A picker that only copies is still a dead end — the visitor leaves with a
-    clipboard and never touches the font engine — but leading with this made
-    the answer to "what does this page do" the wrong one. The advertisement
-    moved into the grid instead, as styled cards among the plain ones, each a
-    deep link into the styler with that line already loaded. This stays for
-    the visitor who wants to build the line here, reachable from the + on
-    every card.
-    """
-    return """  <section class="composer" id="composer" aria-labelledby="composer-label">
-    <h2 class="composer-label" id="composer-label">Style the text around your {one}</h2>
-    <div class="input-shell">
-      <label for="tool-input" class="visually-hidden">Your text</label>
-      <input type="text" id="tool-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
-      <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
-      </button>
-    </div>
-    <p class="composer-hint">Type here, then use the <strong>+</strong> on any {one} above to drop it in at your cursor. Everything you type is styled around it.</p>
-    <p class="char-count" id="char-count" role="status"></p>
-    <div class="composer-out" id="composer-out">
-      <noscript>
-        <p class="noscript-note">The live styling needs JavaScript. The {count} {noun} above are plain text either way — select one and copy it.</p>
-      </noscript>
-    </div>
-    <a class="composer-more" id="composer-more" href="/">Open this in the full generator — all 40 styles &rarr;</a>
-  </section>
-""".format(noun=hub["noun"], one=hub["one"], count=count)
 
 
 def switch(hub, groups, current_slug):
@@ -447,7 +408,6 @@ def group_page(hub, groups, group):
         switch(hub, groups, group["slug"]),
         filter_row(hub, count, copy["hint"]),
         grid(group["items"], hub["kind"], styled_cells(group, offset)),
-        composer(hub, count),
         '  </div>',
         '',
         '  <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>',
@@ -494,7 +454,6 @@ def hub_page(hub, groups):
         switch(hub, groups, None),
         filter_row(hub, shown, hub["hint"]),
         '\n\n'.join(sections),
-        composer(hub, shown),
         '  </div>',
         '',
         '  <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>',

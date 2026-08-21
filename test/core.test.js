@@ -439,4 +439,45 @@ test("every preset combo still reads as combined", () => {
   }
 });
 
+test("a picture is told from a word by the same rule marks use", () => {
+  for (const pic of ["(◕‿◕)", "♡", "「", "¯\\_(ツ)_/¯", "(=^･ω･^=)", ":)", "┻━┻"]) {
+    assert.ok(FancyText.isPictureToken(pic), JSON.stringify(pic) + " read as a word");
+  }
+  for (const word of ["hi", "Fancy", "3.14", "isn't", "café"]) {
+    assert.ok(!FancyText.isPictureToken(word), JSON.stringify(word) + " read as a picture");
+  }
+});
+
+test("a character example never stacks a second face on the first", () => {
+  // Pressing one of these tiles puts its own arrangement in the box, so the
+  // next press finds a face already where it wants to go. Replacing is the
+  // useful reading; stacking is what produced "(◕‿◕) (◕‿◕) hi (≧▽≦)".
+  for (const ex of FancyText.CHAR_EXAMPLES) {
+    const once = FancyText.charExampleText(ex, "hi");
+    const twice = FancyText.charExampleText(ex, once);
+    assert.strictEqual(twice, once, ex.id + " stacks its character on a second press");
+    // And it survives a face it did not put there.
+    const other = FancyText.charExampleText(ex, "(=^･ω･^=) hi (≧▽≦)");
+    assert.ok(!/\(=\^･ω･\^=\)\s*\(/.test(other),
+      ex.id + " left a doubled face: " + other);
+  }
+});
+
+test("a character example puts plain words in the box, never styled ones", () => {
+  // The box feeds forty styles. A styled string in it leaves thirty-nine of
+  // them with nothing to do, because an alphabet no-ops on its own output.
+  for (const ex of FancyText.CHAR_EXAMPLES) {
+    const plain = FancyText.charExampleText(ex, "Fancy Text");
+    assert.ok(plain.includes("Fancy Text"),
+      ex.id + " handed off styled text: " + plain);
+  }
+});
+
+test("a box holding only a face still has its face used as text", () => {
+  // The one token that is never stripped is the only one — otherwise the
+  // press would empty the box.
+  const ex = FancyText.CHAR_EXAMPLES.find((e) => e.place === "before");
+  assert.ok(FancyText.charExampleText(ex, "(◕‿◕)").includes("(◕‿◕)"));
+});
+
 console.log("\nAll " + count + " tests passed.");
