@@ -72,12 +72,13 @@ Ten tools sharing one transform engine (`FancyText` in
   their own right — see *Navigation*), plus a page per mood (happy, sad,
   angry, love, shrug, cute, table-flip, animals) and per kind (hearts, stars,
   arrows, check-and-cross, brackets-and-borders, music). The
-  headline element on every one of them is the **composer**, not the grid: a
-  card click inserts its character into the styler input at the cursor and the
-  line restyles, and copying is the secondary action on its own button. A
-  picker that only copies is a dead end — the visitor leaves with a clipboard
-  and never touches the font engine, which is the whole reason these pages are
-  fontloom's rather than generic. Currency, zodiac and dingbats were
+  headline element on every one of them is the **grid**: somebody who lands
+  on /kaomoji/ came for a face, so the filter box and then the faces take the
+  lead slot, a card click **copies**, and the composer sits below the grid
+  with a `+ Style it` button on every card feeding it. A picker that only
+  copies would still be a dead end, so the case for the font engine is made
+  *inside* the grid — see *Advertise the styler in the grid, not above it*.
+  Currency, zodiac and dingbats were
   deliberately cut: currency duplicates `/currency-text-generator/`, the other
   two were thin. Every surviving symbol page carries 40+ entries, asserted.
   `characters.js` is a build-time data file: `build_character_pages.py` bakes
@@ -177,6 +178,17 @@ visitor's typed text. Favorites are strictly user-created (starred styles pin
 to the gallery front; combos/mixes are named on save and appear as chips on
 the tool pages).
 
+`CHAR_SAMPLERS` is the exception to "a tile transforms your text": a sampler's
+sample **is** the characters, and it ignores the input. It has to. Every font
+style is a literal no-op on 186 of the 198 kaomoji — they contain no letter to
+substitute — so a tile that styled a face would show the same face forty
+times, and of the twelve that do contain one, most would have a single eye
+bolded (`＼(^𝐨^)／`) which reads as a rendering fault. Showing what is *in* the
+picker is the one thing a gallery of fonts cannot say by transforming
+anything. Its `total` is asserted against the catalogue, and it is placed
+early in `EXAMPLE_AFTER` because an advertisement below the fold is a
+footnote.
+
 A `CHAR_EXAMPLES` entry sets one catalogue character around text run through
 one style. Its `styleId` must be a substitution alphabet — combining marks
 paint a bar across a face, for the reason under *Combining marks and fullwidth
@@ -184,20 +196,68 @@ do not mix* — and its `char` must be in `characters.js`, so the glyph has
 actually been through `check_glyphs.mjs`. Both are asserted by
 `test/characters.test.js`.
 
-### The tile banner carries the details; the copy doesn't
-Every gallery tile ends in a full-bleed banner tinted by its category
-(`data-cat` on the tile, one `--cat-*` token per category in the stylesheet;
-the two brand-gradient ends are reserved for the example families). Three
-rules it exists to enforce:
+### The tile banner: one height, and colour that means one thing
+Every gallery tile ends in a full-bleed banner. Three rules:
+- **Colour means "this card goes somewhere", and says where.** Only a tile
+  with an Edit is tinted, keyed by `data-dest` to one of three
+  `--dest-*` tokens — Combiner, Mixer, kaomoji picker — which are the three
+  stops of the brand gradient. Forty tinted cards is a swatch book; six is a
+  signpost. Categories are **not** colour-coded; that was tried and it drowned
+  the signal. The pill names its destination as well as wearing its colour,
+  so a combo is still distinguishable from a mix in monochrome.
+- **Every banner is the same height** — `min-height: 44px`, two lines of
+  label, used or not, and `.tile-name` is line-clamped to two. The banner is
+  what made neighbouring cards differ in height when examples grew a tag row
+  and a recipe row; a grid of cards that are all *nearly* the same height
+  reads as broken in a way a grid of identical ones does not. The recipe now
+  lives in the tile's `title` and the Edit link's `aria-label`.
 - **The name wraps, it never ellipses.** The names that used to be cut —
   "GOTHIC × DOUBLE-STR…" — are exactly the ones that say what the tile is.
-- **An example spells its recipe out** on a second line, but only where that
-  says something the name does not: a mix called "Circled × Squared" made of
-  Circled and Squared gets no second line. `addsToName()` in `app.js` decides,
-  comparing with the joiners stripped.
-- **The way into the tool is a labelled pill on its own row**, not a glyph. It
-  was a 55%-opacity ✎ that only reached full opacity on `:hover` — i.e. never,
-  on a phone — and it is the entire reason an example tile is in the gallery.
+- **The banner's negative margin reads `--tile-pad-x` / `--tile-pad-b`**, set
+  on `.tile`. A tile with different padding (the composer's previews) would
+  otherwise have its banner hanging 2px off each edge.
+
+### Advertise the styler in the grid, not above it
+The character pages used to open with the composer. It answered "what does
+this page do" with the wrong one of the two things the page does, and pushed
+the faces — the reason for the visit — below the fold. The advertisement now
+sits **among** the characters instead: `build_character_pages.py` splices a
+`.char-styled` card into each grid at `STYLED_AT`, showing one real character
+from that group beside sample text in one real style, linking into `/?text=`.
+Same move as the homepage's example tiles, in the other direction.
+
+Three things those cards must keep doing:
+- **Hand off the plain line, never the styled one.** `?text=` goes to a
+  styler, and every alphabet style no-ops on text that has already been
+  through one — hand off a finished string and the destination shows forty
+  identical unstyled previews. This is also why the homepage's face tiles
+  link with `char + " " + text`, not `applyCharExample(...)`.
+- **Work with JavaScript off.** The href and the styled preview are both
+  baked in by the builder; `characters-page.js` only retargets them at what
+  the visitor has typed.
+- **Stay out of the results.** A filter hides them: they are adverts, not
+  matches, and the count beside the grid does not include them.
+
+### Substitution is welcome inside a face; an overlay is not
+This is the distinction, not "face versus word". A substitution alphabet
+swaps a glyph for a same-shaped one, so it belongs inside a kaomoji —
+`(T_T)` in bold is `(𝐓_𝐓)`, still a face and arguably a better one, and
+that happens today with no special handling. An **overlay** draws a line
+*through* the glyph, and a line through a cat's face is not a style, it is
+damage.
+
+So `markable()` gates the overlays — the five combining-mark styles and
+zalgo — and works a **word at a time**. A whitespace-delimited run that is
+at least half letters and digits is a word: its letters take a mark, and so
+does punctuation between two marked characters, with the word's own edges
+closing the run. That keeps a strike unbroken through "isn't", "3.14",
+"(parenthetical)" and a trailing "!". Anything else is a picture —
+`(=^･ω･^=)`, `:)`, `¯\_(ツ)_/¯` — and takes nothing at all, *including the
+one Greek letter in the middle of the cat* that would otherwise qualify on
+its own. Wide, fullwidth, kana and Hangul bases are never marked in either
+case. Six tests in `core.test.js` hold this down; don't "simplify" it back
+to marking everything but the space, and don't reduce it to a per-character
+rule — per-character was the version that left a bar through the omega.
 
 ### Combo quality bar
 A preset combo must (a) render cleanly and (b) look **obviously** combined.
@@ -229,7 +289,10 @@ Budget in **code points**, not draws from the mark pool — one pool entry
 ### Combining marks and fullwidth do not mix
 A strikethrough or underline is drawn to the width of its base character, so
 on fullwidth bases the marks meet end to end and render as solid black bars
-with the letters hidden. Don't offer that combination.
+with the letters hidden. This is enforced in the engine now — see *Where a
+combining mark is allowed to land* — rather than left to whoever writes the
+next preset, but don't offer the combination as a recipe either: the result
+is text with nothing visibly done to it.
 
 ### Small patterns to preserve
 - Tiles that contain buttons are `div[role=button][tabindex=0]` with

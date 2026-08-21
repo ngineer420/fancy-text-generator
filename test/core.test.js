@@ -359,5 +359,84 @@ test("every style with a page produces a character map worth printing", () => {
   }
 });
 
+// ---------------------------------------------------------------------
+// Where a combining mark is allowed to land
+// ---------------------------------------------------------------------
+
+const COMBINING_STYLES = ["strikethrough", "underline", "double-underline", "slashed", "overline"];
+const marked = (id, text) => FancyText.STYLE_BY_ID[id].transform(text);
+
+test("a combining mark runs unbroken through ordinary punctuation", () => {
+  // The commonest thing anybody does with these: strike a sentence. A mark
+  // that skipped the comma would leave a visible gap in the middle of it.
+  for (const id of COMBINING_STYLES) {
+    const out = marked(id, "isn't 3.14, wow!");
+    for (const ch of ["n", "'", "t", "3", ".", "1", "4", ",", "w", "!"]) {
+      const at = out.indexOf(ch);
+      assert.ok(at !== -1 && /\p{M}/u.test(out[at + 1] || ""),
+        id + " left " + JSON.stringify(ch) + " unmarked in a sentence");
+    }
+  }
+});
+
+test("a combining mark never lands on the brackets a kaomoji is made of", () => {
+  // Drawn on these it is drawn to their width, meets itself end to end and
+  // paints a bar over the face. The words beside it still get marked.
+  for (const id of COMBINING_STYLES) {
+    const out = marked(id, "(=^･ω･^=) meow");
+    // Including the omega. It is a letter, so it qualifies on its own — but
+    // it is the middle of a cat, and a line through that is not a style.
+    for (const ch of ["(", "=", "^", "･", "ω", ")"]) {
+      const at = out.indexOf(ch);
+      assert.ok(at !== -1 && !/\p{M}/u.test(out[at + 1] || ""),
+        id + " marked " + JSON.stringify(ch) + ", which is part of the face");
+    }
+    assert.ok(/m\p{M}/u.test(out), id + " did not mark the word beside the face");
+  }
+});
+
+test("an overlay leaves a whole face alone, not just its punctuation", () => {
+  // The rule is per whitespace-delimited run: a run that is at least half
+  // letters is a word, anything else is a picture and takes nothing.
+  for (const id of COMBINING_STYLES.concat(["zalgo-heavy"])) {
+    for (const face of ["(◕‿◕)", "(=^･ω･^=)", "(T_T)", ":)", "¯\\_(ツ)_/¯", "(≧▽≦)"]) {
+      const out = marked(id, face + " hello");
+      assert.ok(out.startsWith(face + " "),
+        id + " modified " + face + " -> " + JSON.stringify(out.split(" ")[0]));
+      assert.ok(/h\p{M}/u.test(out), id + " left the word beside " + face + " unmarked");
+    }
+  }
+});
+
+test("a combining mark never lands on a fullwidth character", () => {
+  // The rule the site already states as "combining marks and fullwidth do
+  // not mix", enforced per character rather than left to the visitor.
+  const wide = FancyText.STYLE_BY_ID.fullwidth.transform("Fancy");
+  for (const id of COMBINING_STYLES) {
+    assert.strictEqual(marked(id, wide), wide,
+      id + " marked fullwidth text, which renders as solid bars");
+  }
+});
+
+test("a combining mark still lands on every alphabet the engine produces", () => {
+  // Marks stacked on a substitution style is what the Combiner is for, so
+  // the skip rule must not quietly break the combo presets.
+  for (const base of ["bold", "script", "fraktur", "small-caps", "upside-down", "superscript"]) {
+    const styled = FancyText.STYLE_BY_ID[base].transform("Fancy");
+    for (const id of COMBINING_STYLES) {
+      const out = marked(id, styled);
+      assert.ok(out.length > styled.length,
+        id + " added nothing to " + base + " text");
+    }
+  }
+});
+
+test("every preset combo still reads as combined", () => {
+  for (const ex of FancyText.COMBO_EXAMPLES) {
+    const out = FancyText.applyChain(ex.ids, "Fancy Text");
+    assert.ok(/\p{M}/u.test(out) || out !== "Fancy Text",
+      ex.id + " produces text with nothing visibly done to it");
+  }
+});
 
 console.log("\nAll " + count + " tests passed.");

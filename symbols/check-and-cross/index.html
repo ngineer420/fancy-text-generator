@@ -24,7 +24,7 @@
 <meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/css/styles.css?v=21">
+<link rel="stylesheet" href="/assets/css/styles.css?v=26">
 <script src="/assets/js/toolbar.js?v=1" defer></script>
 
 <script type="application/ld+json">
@@ -161,25 +161,6 @@
     </ul>
   </nav>
   <div class="tool-shell">
-    <section class="composer" aria-labelledby="composer-label">
-      <p class="composer-label" id="composer-label">Your text</p>
-      <div class="input-shell">
-        <label for="tool-input" class="visually-hidden">Your text</label>
-        <input type="text" id="tool-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
-        <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
-          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
-        </button>
-      </div>
-      <p class="composer-hint">Click any symbol below and it drops into the box at your cursor. Everything you type is styled around it.</p>
-      <p class="char-count" id="char-count" role="status"></p>
-      <div class="composer-out" id="composer-out">
-        <noscript>
-          <p class="noscript-note">The live styling needs JavaScript. The 46 symbols below are plain text either way — select one and copy it.</p>
-        </noscript>
-      </div>
-      <a class="composer-more" id="composer-more" href="/">Open this in the full generator — all 40 styles &rarr;</a>
-    </section>
-
     <div class="char-filter-row">
       <label for="char-filter" class="visually-hidden">Filter symbols</label>
       <input type="search" id="char-filter" class="input-field" placeholder="Filter 46 symbols — try a word like checkbox…" autocomplete="off">
@@ -188,650 +169,696 @@
 
       <ul class="char-grid">
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="✓" data-keys="check mark check tick yes done correct" aria-label="Insert Check mark into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="✓" data-keys="check mark check tick yes done correct" aria-label="Copy Check mark">
             <span class="char-glyph">✓</span>
             <span class="char-meta">
               <span class="char-name">Check mark</span>
               <span class="char-code">U+2713</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Check mark">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Check mark to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Check mark to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="✔" data-keys="heavy check mark check tick heavy bold done" aria-label="Insert Heavy check mark into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="✔" data-keys="heavy check mark check tick heavy bold done" aria-label="Copy Heavy check mark">
             <span class="char-glyph">✔</span>
             <span class="char-meta">
               <span class="char-name">Heavy check mark</span>
               <span class="char-code">U+2714</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy check mark">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy check mark to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy check mark to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="✅" data-keys="check mark button check green emoji done" aria-label="Insert Check mark button into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="✅" data-keys="check mark button check green emoji done" aria-label="Copy Check mark button">
             <span class="char-glyph">✅</span>
             <span class="char-meta">
               <span class="char-name">Check mark button</span>
               <span class="char-code">U+2705</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Check mark button">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Check mark button to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Check mark button to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="☑" data-keys="ballot box with check checkbox ticked box done" aria-label="Insert Ballot box with check into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="☑" data-keys="ballot box with check checkbox ticked box done" aria-label="Copy Ballot box with check">
             <span class="char-glyph">☑</span>
             <span class="char-meta">
               <span class="char-name">Ballot box with check</span>
               <span class="char-code">U+2611</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Ballot box with check">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Ballot box with check to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Ballot box with check to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="✔️" data-keys="heavy check mark (emoji) check tick emoji green" aria-label="Insert Heavy check mark (emoji) into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="✔️" data-keys="heavy check mark (emoji) check tick emoji green" aria-label="Copy Heavy check mark (emoji)">
             <span class="char-glyph">✔️</span>
             <span class="char-meta">
               <span class="char-name">Heavy check mark (emoji)</span>
               <span class="char-code">U+2714 U+FE0F</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy check mark (emoji)">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy check mark (emoji) to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy check mark (emoji) to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
+        <li class="char-styled-cell">
+          <a class="char-styled" href="/?text=%E2%9C%97%20Fancy%20Text" data-styled-char="✗" data-styled-style="double-struck">
+            <span class="char-styled-out">✗ 𝔽𝕒𝕟𝕔𝕪 𝕋𝕖𝕩𝕥</span>
+            <span class="char-styled-meta">
+              <span class="char-styled-name">Ballot X in Double-Struck</span>
+              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
+            </span>
+          </a>
+        </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="✗" data-keys="ballot x cross x no wrong reject" aria-label="Insert Ballot X into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="✗" data-keys="ballot x cross x no wrong reject" aria-label="Copy Ballot X">
             <span class="char-glyph">✗</span>
             <span class="char-meta">
               <span class="char-name">Ballot X</span>
               <span class="char-code">U+2717</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Ballot X">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Ballot X to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Ballot X to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="✘" data-keys="heavy ballot x cross x heavy no bold" aria-label="Insert Heavy ballot X into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="✘" data-keys="heavy ballot x cross x heavy no bold" aria-label="Copy Heavy ballot X">
             <span class="char-glyph">✘</span>
             <span class="char-meta">
               <span class="char-name">Heavy ballot X</span>
               <span class="char-code">U+2718</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy ballot X">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy ballot X to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy ballot X to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="✕" data-keys="multiplication x cross x close times" aria-label="Insert Multiplication X into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="✕" data-keys="multiplication x cross x close times" aria-label="Copy Multiplication X">
             <span class="char-glyph">✕</span>
             <span class="char-meta">
               <span class="char-name">Multiplication X</span>
               <span class="char-code">U+2715</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Multiplication X">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Multiplication X to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Multiplication X to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="✖" data-keys="heavy multiplication x cross x heavy close" aria-label="Insert Heavy multiplication X into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="✖" data-keys="heavy multiplication x cross x heavy close" aria-label="Copy Heavy multiplication X">
             <span class="char-glyph">✖</span>
             <span class="char-meta">
               <span class="char-name">Heavy multiplication X</span>
               <span class="char-code">U+2716</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Heavy multiplication X">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Heavy multiplication X to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Heavy multiplication X to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="❌" data-keys="cross mark cross x red emoji no" aria-label="Insert Cross mark into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="❌" data-keys="cross mark cross x red emoji no" aria-label="Copy Cross mark">
             <span class="char-glyph">❌</span>
             <span class="char-meta">
               <span class="char-name">Cross mark</span>
               <span class="char-code">U+274C</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Cross mark">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Cross mark to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Cross mark to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="❎" data-keys="cross mark button cross x green emoji" aria-label="Insert Cross mark button into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="❎" data-keys="cross mark button cross x green emoji" aria-label="Copy Cross mark button">
             <span class="char-glyph">❎</span>
             <span class="char-meta">
               <span class="char-name">Cross mark button</span>
               <span class="char-code">U+274E</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Cross mark button">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Cross mark button to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Cross mark button to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="☒" data-keys="ballot box with x checkbox crossed box no" aria-label="Insert Ballot box with X into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="☒" data-keys="ballot box with x checkbox crossed box no" aria-label="Copy Ballot box with X">
             <span class="char-glyph">☒</span>
             <span class="char-meta">
               <span class="char-name">Ballot box with X</span>
               <span class="char-code">U+2612</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Ballot box with X">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Ballot box with X to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Ballot box with X to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="☓" data-keys="saltire cross saltire x" aria-label="Insert Saltire into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="☓" data-keys="saltire cross saltire x" aria-label="Copy Saltire">
             <span class="char-glyph">☓</span>
             <span class="char-meta">
               <span class="char-name">Saltire</span>
               <span class="char-code">U+2613</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Saltire">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Saltire to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Saltire to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="☐" data-keys="ballot box checkbox empty box todo" aria-label="Insert Ballot box into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="☐" data-keys="ballot box checkbox empty box todo" aria-label="Copy Ballot box">
             <span class="char-glyph">☐</span>
             <span class="char-meta">
               <span class="char-name">Ballot box</span>
               <span class="char-code">U+2610</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Ballot box">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Ballot box to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Ballot box to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⬜" data-keys="white large square square white box empty" aria-label="Insert White large square into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⬜" data-keys="white large square square white box empty" aria-label="Copy White large square">
             <span class="char-glyph">⬜</span>
             <span class="char-meta">
               <span class="char-name">White large square</span>
               <span class="char-code">U+2B1C</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy White large square">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save White large square to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add White large square to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⬛" data-keys="black large square square black filled" aria-label="Insert Black large square into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⬛" data-keys="black large square square black filled" aria-label="Copy Black large square">
             <span class="char-glyph">⬛</span>
             <span class="char-meta">
               <span class="char-name">Black large square</span>
               <span class="char-code">U+2B1B</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black large square">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black large square to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black large square to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="◻" data-keys="white medium square square white medium" aria-label="Insert White medium square into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="◻" data-keys="white medium square square white medium" aria-label="Copy White medium square">
             <span class="char-glyph">◻</span>
             <span class="char-meta">
               <span class="char-name">White medium square</span>
               <span class="char-code">U+25FB</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy White medium square">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save White medium square to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add White medium square to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
+        <li class="char-styled-cell">
+          <a class="char-styled" href="/?text=%E2%97%BC%20Fancy%20Text" data-styled-char="◼" data-styled-style="small-caps">
+            <span class="char-styled-out">◼ Fᴀɴᴄʏ Tᴇxᴛ</span>
+            <span class="char-styled-meta">
+              <span class="char-styled-name">Black medium square in Small Caps</span>
+              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
+            </span>
+          </a>
+        </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="◼" data-keys="black medium square square black medium" aria-label="Insert Black medium square into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="◼" data-keys="black medium square square black medium" aria-label="Copy Black medium square">
             <span class="char-glyph">◼</span>
             <span class="char-meta">
               <span class="char-name">Black medium square</span>
               <span class="char-code">U+25FC</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black medium square">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black medium square to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black medium square to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="▪" data-keys="black small square square small bullet" aria-label="Insert Black small square into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="▪" data-keys="black small square square small bullet" aria-label="Copy Black small square">
             <span class="char-glyph">▪</span>
             <span class="char-meta">
               <span class="char-name">Black small square</span>
               <span class="char-code">U+25AA</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black small square">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black small square to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black small square to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="▫" data-keys="white small square square small outline" aria-label="Insert White small square into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="▫" data-keys="white small square square small outline" aria-label="Copy White small square">
             <span class="char-glyph">▫</span>
             <span class="char-meta">
               <span class="char-name">White small square</span>
               <span class="char-code">U+25AB</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy White small square">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save White small square to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add White small square to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="●" data-keys="black circle circle filled bullet dot" aria-label="Insert Black circle into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="●" data-keys="black circle circle filled bullet dot" aria-label="Copy Black circle">
             <span class="char-glyph">●</span>
             <span class="char-meta">
               <span class="char-name">Black circle</span>
               <span class="char-code">U+25CF</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black circle">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black circle to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black circle to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="○" data-keys="white circle circle outline bullet empty" aria-label="Insert White circle into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="○" data-keys="white circle circle outline bullet empty" aria-label="Copy White circle">
             <span class="char-glyph">○</span>
             <span class="char-meta">
               <span class="char-name">White circle</span>
               <span class="char-code">U+25CB</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy White circle">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save White circle to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add White circle to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="◉" data-keys="fisheye circle radio selected dot" aria-label="Insert Fisheye into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="◉" data-keys="fisheye circle radio selected dot" aria-label="Copy Fisheye">
             <span class="char-glyph">◉</span>
             <span class="char-meta">
               <span class="char-name">Fisheye</span>
               <span class="char-code">U+25C9</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Fisheye">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Fisheye to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Fisheye to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="◎" data-keys="bullseye circle target radio double" aria-label="Insert Bullseye into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="◎" data-keys="bullseye circle target radio double" aria-label="Copy Bullseye">
             <span class="char-glyph">◎</span>
             <span class="char-meta">
               <span class="char-name">Bullseye</span>
               <span class="char-code">U+25CE</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Bullseye">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Bullseye to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Bullseye to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⦿" data-keys="circled bullet circle bullet radio dot" aria-label="Insert Circled bullet into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⦿" data-keys="circled bullet circle bullet radio dot" aria-label="Copy Circled bullet">
             <span class="char-glyph">⦿</span>
             <span class="char-meta">
               <span class="char-name">Circled bullet</span>
               <span class="char-code">U+29BF</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Circled bullet">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Circled bullet to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Circled bullet to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⭕" data-keys="hollow red circle circle red emoji correct" aria-label="Insert Hollow red circle into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⭕" data-keys="hollow red circle circle red emoji correct" aria-label="Copy Hollow red circle">
             <span class="char-glyph">⭕</span>
             <span class="char-meta">
               <span class="char-name">Hollow red circle</span>
               <span class="char-code">U+2B55</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Hollow red circle">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Hollow red circle to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Hollow red circle to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⚪" data-keys="white circle (emoji) circle white emoji" aria-label="Insert White circle (emoji) into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⚪" data-keys="white circle (emoji) circle white emoji" aria-label="Copy White circle (emoji)">
             <span class="char-glyph">⚪</span>
             <span class="char-meta">
               <span class="char-name">White circle (emoji)</span>
               <span class="char-code">U+26AA</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy White circle (emoji)">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save White circle (emoji) to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add White circle (emoji) to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⚫" data-keys="black circle (emoji) circle black emoji" aria-label="Insert Black circle (emoji) into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⚫" data-keys="black circle (emoji) circle black emoji" aria-label="Copy Black circle (emoji)">
             <span class="char-glyph">⚫</span>
             <span class="char-meta">
               <span class="char-name">Black circle (emoji)</span>
               <span class="char-code">U+26AB</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Black circle (emoji)">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Black circle (emoji) to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Black circle (emoji) to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="🔘" data-keys="radio button radio button selected emoji" aria-label="Insert Radio button into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="🔘" data-keys="radio button radio button selected emoji" aria-label="Copy Radio button">
             <span class="char-glyph">🔘</span>
             <span class="char-meta">
               <span class="char-name">Radio button</span>
               <span class="char-code">U+1F518</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Radio button">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Radio button to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Radio button to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
+        <li class="char-styled-cell">
+          <a class="char-styled" href="/?text=%E2%80%A2%20Fancy%20Text" data-styled-char="•" data-styled-style="monospace">
+            <span class="char-styled-out">• 𝙵𝚊𝚗𝚌𝚢 𝚃𝚎𝚡𝚝</span>
+            <span class="char-styled-meta">
+              <span class="char-styled-name">Bullet in Monospace</span>
+              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
+            </span>
+          </a>
+        </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="•" data-keys="bullet bullet dot list point" aria-label="Insert Bullet into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="•" data-keys="bullet bullet dot list point" aria-label="Copy Bullet">
             <span class="char-glyph">•</span>
             <span class="char-meta">
               <span class="char-name">Bullet</span>
               <span class="char-code">U+2022</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Bullet">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Bullet to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Bullet to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="◦" data-keys="white bullet bullet hollow list sub" aria-label="Insert White bullet into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="◦" data-keys="white bullet bullet hollow list sub" aria-label="Copy White bullet">
             <span class="char-glyph">◦</span>
             <span class="char-meta">
               <span class="char-name">White bullet</span>
               <span class="char-code">U+25E6</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy White bullet">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save White bullet to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add White bullet to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="‣" data-keys="triangular bullet bullet triangle list" aria-label="Insert Triangular bullet into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="‣" data-keys="triangular bullet bullet triangle list" aria-label="Copy Triangular bullet">
             <span class="char-glyph">‣</span>
             <span class="char-meta">
               <span class="char-name">Triangular bullet</span>
               <span class="char-code">U+2023</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Triangular bullet">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Triangular bullet to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Triangular bullet to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⁃" data-keys="hyphen bullet bullet hyphen dash list" aria-label="Insert Hyphen bullet into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⁃" data-keys="hyphen bullet bullet hyphen dash list" aria-label="Copy Hyphen bullet">
             <span class="char-glyph">⁃</span>
             <span class="char-meta">
               <span class="char-name">Hyphen bullet</span>
               <span class="char-code">U+2043</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Hyphen bullet">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Hyphen bullet to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Hyphen bullet to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➕" data-keys="plus plus add emoji more" aria-label="Insert Plus into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➕" data-keys="plus plus add emoji more" aria-label="Copy Plus">
             <span class="char-glyph">➕</span>
             <span class="char-meta">
               <span class="char-name">Plus</span>
               <span class="char-code">U+2795</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Plus">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Plus to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Plus to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="➖" data-keys="minus minus subtract emoji less" aria-label="Insert Minus into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="➖" data-keys="minus minus subtract emoji less" aria-label="Copy Minus">
             <span class="char-glyph">➖</span>
             <span class="char-meta">
               <span class="char-name">Minus</span>
               <span class="char-code">U+2796</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Minus">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Minus to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Minus to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⊕" data-keys="circled plus plus circle add" aria-label="Insert Circled plus into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⊕" data-keys="circled plus plus circle add" aria-label="Copy Circled plus">
             <span class="char-glyph">⊕</span>
             <span class="char-meta">
               <span class="char-name">Circled plus</span>
               <span class="char-code">U+2295</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Circled plus">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Circled plus to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Circled plus to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⊖" data-keys="circled minus minus circle remove" aria-label="Insert Circled minus into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⊖" data-keys="circled minus minus circle remove" aria-label="Copy Circled minus">
             <span class="char-glyph">⊖</span>
             <span class="char-meta">
               <span class="char-name">Circled minus</span>
               <span class="char-code">U+2296</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Circled minus">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Circled minus to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Circled minus to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⊗" data-keys="circled times cross circle times no" aria-label="Insert Circled times into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⊗" data-keys="circled times cross circle times no" aria-label="Copy Circled times">
             <span class="char-glyph">⊗</span>
             <span class="char-meta">
               <span class="char-name">Circled times</span>
               <span class="char-code">U+2297</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Circled times">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Circled times to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Circled times to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⊘" data-keys="circled division slash slash circle prohibited none" aria-label="Insert Circled division slash into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⊘" data-keys="circled division slash slash circle prohibited none" aria-label="Copy Circled division slash">
             <span class="char-glyph">⊘</span>
             <span class="char-meta">
               <span class="char-name">Circled division slash</span>
               <span class="char-code">U+2298</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Circled division slash">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Circled division slash to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Circled division slash to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="±" data-keys="plus-minus plus minus tolerance range" aria-label="Insert Plus-minus into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="±" data-keys="plus-minus plus minus tolerance range" aria-label="Copy Plus-minus">
             <span class="char-glyph">±</span>
             <span class="char-meta">
               <span class="char-name">Plus-minus</span>
               <span class="char-code">U+00B1</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Plus-minus">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Plus-minus to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Plus-minus to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⚠" data-keys="warning sign warning caution alert triangle" aria-label="Insert Warning sign into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⚠" data-keys="warning sign warning caution alert triangle" aria-label="Copy Warning sign">
             <span class="char-glyph">⚠</span>
             <span class="char-meta">
               <span class="char-name">Warning sign</span>
               <span class="char-code">U+26A0</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Warning sign">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Warning sign to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Warning sign to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="❗" data-keys="exclamation mark exclamation important emoji alert" aria-label="Insert Exclamation mark into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="❗" data-keys="exclamation mark exclamation important emoji alert" aria-label="Copy Exclamation mark">
             <span class="char-glyph">❗</span>
             <span class="char-meta">
               <span class="char-name">Exclamation mark</span>
               <span class="char-code">U+2757</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Exclamation mark">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Exclamation mark to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Exclamation mark to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="❓" data-keys="question mark question ask emoji unknown" aria-label="Insert Question mark into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="❓" data-keys="question mark question ask emoji unknown" aria-label="Copy Question mark">
             <span class="char-glyph">❓</span>
             <span class="char-meta">
               <span class="char-name">Question mark</span>
               <span class="char-code">U+2753</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Question mark">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Question mark to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Question mark to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="‼" data-keys="double exclamation exclamation double urgent" aria-label="Insert Double exclamation into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="‼" data-keys="double exclamation exclamation double urgent" aria-label="Copy Double exclamation">
             <span class="char-glyph">‼</span>
             <span class="char-meta">
               <span class="char-name">Double exclamation</span>
               <span class="char-code">U+203C</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Double exclamation">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Double exclamation to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Double exclamation to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="⁉" data-keys="exclamation question interrobang exclamation question" aria-label="Insert Exclamation question into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="⁉" data-keys="exclamation question interrobang exclamation question" aria-label="Copy Exclamation question">
             <span class="char-glyph">⁉</span>
             <span class="char-meta">
               <span class="char-name">Exclamation question</span>
               <span class="char-code">U+2049</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Exclamation question">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Exclamation question to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Exclamation question to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
         <li>
-          <div class="char-card" role="button" tabindex="0" data-char="🚫" data-keys="prohibited no prohibited ban emoji" aria-label="Insert Prohibited into your text">
+          <div class="char-card" role="button" tabindex="0" data-char="🚫" data-keys="prohibited no prohibited ban emoji" aria-label="Copy Prohibited">
             <span class="char-glyph">🚫</span>
             <span class="char-meta">
               <span class="char-name">Prohibited</span>
               <span class="char-code">U+1F6AB</span>
             </span>
             <span class="char-tools">
-              <button type="button" class="char-copy" title="Copy" aria-label="Copy Prohibited">&#10697;</button>
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Prohibited to favorites">&#9734;</button>
             </span>
-            <span class="char-insert" aria-hidden="true">+ Insert</span>
+            <button type="button" class="char-insert" title="Add to the line you are building" aria-label="Add Prohibited to the text you are styling">+ Style it</button>
+            <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
       </ul>
+  <section class="composer" id="composer" aria-labelledby="composer-label">
+    <h2 class="composer-label" id="composer-label">Style the text around your symbol</h2>
+    <div class="input-shell">
+      <label for="tool-input" class="visually-hidden">Your text</label>
+      <input type="text" id="tool-input" class="input-field" placeholder="Type your text…" autocomplete="off" spellcheck="false" maxlength="300">
+      <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear text" hidden>
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
+      </button>
+    </div>
+    <p class="composer-hint">Type here, then use the <strong>+</strong> on any symbol above to drop it in at your cursor. Everything you type is styled around it.</p>
+    <p class="char-count" id="char-count" role="status"></p>
+    <div class="composer-out" id="composer-out">
+      <noscript>
+        <p class="noscript-note">The live styling needs JavaScript. The 46 symbols above are plain text either way — select one and copy it.</p>
+      </noscript>
+    </div>
+    <a class="composer-more" id="composer-more" href="/">Open this in the full generator — all 40 styles &rarr;</a>
+  </section>
+
   </div>
 
   <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>
@@ -902,9 +929,9 @@
 
 <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
 
-<script src="/assets/js/fancytext-core.js?v=6"></script>
+<script src="/assets/js/fancytext-core.js?v=10"></script>
 <script src="/assets/js/site.js?v=2"></script>
 <script src="/assets/js/favorites.js?v=3"></script>
-<script src="/assets/js/characters-page.js?v=1"></script>
+<script src="/assets/js/characters-page.js?v=3"></script>
 </body>
 </html>
