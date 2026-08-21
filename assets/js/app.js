@@ -133,10 +133,15 @@
           // words for forty styles to work on, and freezing one of them
           // into it would leave the other thirty-nine with nothing to do.
           applyText: (text) => FancyText.charExampleText(ex, text),
+          /* In place: the plain arrangement, straight into the box.
+             Out: the picker page, carrying the WORDS and not the face — the
+             face is the one thing that page changes, so handing it one would
+             be handing it the variable. It shows the line on arrival and
+             every card there becomes that line with a different face. */
           editUrl: (typed, text) =>
             inPlace
               ? "/?text=" + encodeURIComponent(FancyText.charExampleText(ex, text))
-              : ex.hub,
+              : ex.hub + "?text=" + encodeURIComponent(text),
         };
       })
     );

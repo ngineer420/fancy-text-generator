@@ -74,10 +74,9 @@ Ten tools sharing one transform engine (`FancyText` in
   arrows, check-and-cross, brackets-and-borders, music). The
   whole of every one of them is the **grid**: somebody who lands on /kaomoji/
   came for a face, so the filter box and then the faces are the page, and a
-  card click **copies**. Styling is a link out — every card's `Style it →`
-  goes to `/?text=<char> `, and a few `.char-styled` cards sit among the
-  plain ones advertising the same trip. There is no composer here; see *One
-  styler, and it is the homepage*.
+  card click **copies**. Styling is a link out — every card's
+  `＋ Add fancy text` goes to `/?text=<char> `. There is no composer here and
+  no styled sample either; see *One styler, and it is the homepage*.
   Currency, zodiac and dingbats were
   deliberately cut: currency duplicates `/currency-text-generator/`, the other
   two were thin. Every surviving symbol page carries 40+ entries, asserted.
@@ -264,14 +263,38 @@ instead of forty, one link away from the real one. Following a homepage tile
 into it meant landing on a page that had *lost* the style you clicked to get
 there.
 
-So the picker pages do not style anything. What they have instead:
-- **`Style it →` on every card** — a link to `/?text=<char> `, the generator
-  with that character already in the box. Baked into the HTML by the builder,
-  so it works with JavaScript off.
-- **`.char-styled` cards spliced into the grid** at `STYLED_AT`, showing one
-  real character from that group beside sample text in one real style, also
-  linking into `/?text=`. Adverts, not results: a filter hides them, and the
-  count beside the grid does not include them.
+So the picker pages do not style anything. Every card carries the same one
+action — **`＋ Add fancy text`**, a link to `/?text=<char> `, the generator
+with that character already in the box. Baked into the HTML by the builder,
+so it works with JavaScript off.
+
+Three styled advert cards used to sit spliced into each grid, from the
+release where the only route to the styler was a composer at the foot of the
+page. They went when every card became that link: they were a third message
+saying what ninety-six cards already said, and the only thing on the page
+wearing text the visitor had not typed. Don't put them back without first
+having an answer to "what does this say that the ninety-six do not".
+
+**Carrying, and only when carrying is real.** A visitor who arrived from a
+homepage picker tile has a line already, and on this page that line is the
+*constant* while the character is the *variable* — every card is the same
+words with a different face in front of them. That is the whole reason the
+page never needed a text box:
+- the homepage picker tiles link to `/kaomoji/?text=<words>` — the words,
+  never the face, because the face is the one thing this page changes;
+- `characters-page.js` reads `?text=` once and writes it into every link that
+  leaves: the cards, the mood chips, the hop to the other family, the group
+  links on a hub. Losing the line by pressing "Cute" would make the chips a
+  trap rather than a filter;
+- the `.char-carry` strip says what is being held and links **back to the
+  generator** to change it. It is baked `hidden` and only ever unhidden by
+  the runtime, so a visit with no text makes no claim;
+- links are built with `encodeURIComponent`, not `URLSearchParams` — the
+  latter spells a space `+`, and the site would then write the same line two
+  ways on one page.
+
+Nothing is stored. The line lives in the URL for exactly as long as the
+visitor is inside the picker.
 
 And on the homepage, the face is just **text in the text box**, which is what
 makes the whole arrangement hold together — the forty tiles restyle around it

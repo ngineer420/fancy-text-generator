@@ -1426,6 +1426,40 @@ a.fav-pill:hover { text-decoration: none; }
 
 /* ---------- misc ---------- */
 /* ---------- character pickers: /kaomoji/ and /symbols/ ---------- */
+/* What the page is holding, when it arrived holding something. One line,
+   above the filter, because it changes what every card on the page will do
+   and a visitor who cannot see it would read the cards as lying. */
+.char-carry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin: 18px 0 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border-soft);
+  border-left: 2px solid color-mix(in srgb, var(--dest-chars) 60%, transparent);
+  border-radius: var(--radius);
+  background: var(--bg-inset);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.char-carry[hidden] { display: none; }
+.char-carry-text {
+  min-width: 0;
+  color: var(--text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.char-carry-edit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  margin-left: auto;
+  padding: 2px 0;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
 .char-filter-row { margin: 20px 0 12px; }
 .char-filter-row .input-field {
   background: var(--bg-inset);
@@ -1451,7 +1485,6 @@ a.fav-pill:hover { text-decoration: none; }
   /* Dense, because a styled card is two columns wide and the column count
      is responsive: without it the wide card wraps to its own row and leaves
      a hole wherever the arithmetic does not work out. */
-  grid-auto-flow: row dense;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
   gap: 8px;
   margin: 0;
@@ -1592,74 +1625,6 @@ a.fav-pill:hover { text-decoration: none; }
 }
 .char-card.is-copied .char-copied { opacity: 1; }
 .char-card.is-copied .char-insert { opacity: 0; }
-
-/* A styled card among the plain ones: the advertisement for the styler,
-   in the grid rather than above it. A link, not a picker card — it goes
-   somewhere, and it looks like it does. */
-.char-styled-cell { grid-column: span 2; min-width: 0; }
-.char-styled {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-  height: 100%;
-  min-height: 88px;
-  padding: 12px;
-  border: 1px solid var(--border-soft);
-  border-top: 2px solid color-mix(in srgb, var(--dest-chars) 60%, transparent);
-  border-radius: 12px;
-  background: var(--bg-raised);
-  color: var(--text);
-  text-decoration: none;
-  transition: border-color .12s ease, transform .12s ease, background .2s ease;
-}
-.char-styled:hover {
-  border-color: color-mix(in srgb, var(--dest-chars) 45%, transparent);
-  border-top-color: var(--dest-chars);
-  transform: translateY(-1px);
-  text-decoration: none;
-}
-.char-styled:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-.char-styled-out {
-  font-size: clamp(15px, 1.6vw, 18px);
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-.char-styled-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-width: 0;
-}
-.char-styled-name {
-  min-width: 0;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  color: var(--text-faint);
-  overflow-wrap: anywhere;
-}
-.char-styled-go {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  color: color-mix(in srgb, var(--dest-chars) 72%, var(--text-dim));
-  font-size: 10.5px;
-  font-weight: 700;
-  line-height: 1;
-  white-space: nowrap;
-}
-.char-styled:hover .char-styled-go {
-  background: color-mix(in srgb, var(--dest-chars) 16%, transparent);
-  border-color: color-mix(in srgb, var(--dest-chars) 45%, transparent);
-  color: var(--text);
-}
 
 .char-card.is-copied {
   border-color: var(--accent);

@@ -4,11 +4,12 @@ A free, ad-supported fancy text generator: type plain text and instantly get 40 
 
 Alongside the fonts there are sixteen character-picker pages — `/kaomoji/` and
 `/symbols/`, each with a page per mood and per kind — where a click copies the
-character and `Style it →` opens the generator with it already in the box, so
-a visitor who arrived for one heart can leave with a styled line rather than a
-clipboard. A handful of styled cards sit among the plain ones in every grid,
-each linking into the full gallery with that line loaded, and the homepage
-carries a tile for each picker. Those pages style nothing themselves: the
+character and `＋ Add fancy text` opens the generator with it already in the
+box, so a visitor who arrived for one heart can leave with a styled line
+rather than a clipboard. Arriving from the homepage's picker tile carries your
+words along: the strip at the top of the page says what it is holding, every
+card becomes that line with a different character in front of it, and the way
+to change the words is a link back. Those pages style nothing themselves: the
 homepage is the only styler on the site, and a face there is simply text in
 the text box, which is why all 40 tiles restyle around it for free. The same
 move works from the other side — the homepage and the Combiner carry an **Add
