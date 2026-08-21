@@ -313,6 +313,23 @@
     // drives the Combiner's picker, where the examples don't appear).
     let activeCategory = null; // null = all
 
+    /* The character tiles recommend a face for your words. Once the words
+       already HAVE a face — which is exactly what coming back from
+       /kaomoji/ means — that recommendation is noise at best. At worst it is
+       wrong: "Text Symbols" wraps the words in brackets, and to do that it
+       strips the picture off the front, so the tile would show the visitor
+       their line with the face they had just chosen quietly deleted. So they
+       come out of the grid, and their pill goes with them. */
+    let facesSuppressed = false;
+    let charPill = null;
+
+    function textHasFace(value) {
+      const parts = String(value).trim().split(/\s+/).filter(Boolean);
+      if (parts.length < 2) return false;
+      return FancyText.isPictureToken(parts[0]) ||
+             FancyText.isPictureToken(parts[parts.length - 1]);
+    }
+
     if (pillsEl) {
       const pillDefs = [{ id: null, title: "All" }].concat(
         CATEGORIES.map((c) => ({ id: c.id, title: c.title })),
@@ -332,6 +349,7 @@
           });
           applyFilter();
         });
+        if (id === CHAR_CATEGORY) charPill = pill;
         pillsEl.appendChild(pill);
       });
     }
@@ -400,14 +418,34 @@
         }
       }
       renderGalleryCount(text, lightest, heaviest);
-      markClipped();
+      if (syncFaceSuppression(hasInput ? raw : "")) applyFilter();
+      else markClipped();
     }
 
     function applyFilter() {
       for (const t of tiles) {
-        t.tileEl.hidden = Boolean(activeCategory) && t.category !== activeCategory;
+        const filtered = Boolean(activeCategory) && t.category !== activeCategory;
+        t.tileEl.hidden = filtered ||
+          (facesSuppressed && t.category === CHAR_CATEGORY);
       }
+      if (charPill) charPill.hidden = facesSuppressed;
       markClipped();
+    }
+
+    // Called from render(), which knows what is in the box.
+    function syncFaceSuppression(value) {
+      const next = textHasFace(value);
+      if (next === facesSuppressed) return false;
+      facesSuppressed = next;
+      // Leaving the visitor on a filter whose tiles have all just vanished
+      // would read as an empty gallery rather than as a hidden category.
+      if (next && activeCategory === CHAR_CATEGORY && pillsEl) {
+        activeCategory = null;
+        pillsEl.querySelectorAll(".filter-pill").forEach((p, n) => {
+          p.setAttribute("aria-pressed", String(n === 0));
+        });
+      }
+      return true;
     }
 
     if (clearBtn) {

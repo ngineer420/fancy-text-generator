@@ -365,21 +365,20 @@ test("a picker page is a picker, not a second styler", () => {
   }
 });
 
-test("a picker page carries text only when it was given some", () => {
-  // The carry strip is the page saying what every one of its links will do.
-  // Baked hidden, filled in from ?text= by the runtime — so a plain visit
-  // makes no claim, and a visit from a homepage tile makes an honest one.
+test("the carry strip is built, never baked", () => {
+  // With JavaScript off none of the carrying works, and an input that
+  // silently does nothing is worse than no input — so characters-page.js
+  // builds the whole strip and the file ships without it.
   for (const page of ["kaomoji/index.html", "symbols/index.html",
                       "kaomoji/shrug/index.html", "symbols/stars/index.html"]) {
     const html = fs.readFileSync(path.join(ROOT, page), "utf8");
-    const m = html.match(/<p class="char-carry" id="char-carry" hidden>/);
-    assert.ok(m, page + " has no carry strip, or it does not start hidden");
-    assert.ok(/id="char-carry-text"/.test(html), page + " has nowhere to print the line");
-    assert.ok(/id="char-carry-edit"/.test(html), page + " has no way back to the generator");
-    const one = page.startsWith("symbols") ? "symbol" : "kaomoji";
-    assert.ok(html.includes("Adding a " + one + " to"),
-      page + " names the wrong thing in its carry strip");
+    assert.ok(!/char-carry/.test(html), page + " bakes the carry strip");
   }
+  const js = fs.readFileSync(path.join(ROOT, "assets/js/characters-page.js"), "utf8");
+  assert.ok(js.includes('wrap.className = "char-carry"'),
+    "characters-page.js no longer builds the carry strip");
+  assert.ok(js.includes('field.id = "char-carry-input"'),
+    "the carry strip has no input to change the line with");
 });
 
 test("every card offers the same thing, in the same words", () => {
@@ -416,6 +415,9 @@ test("a card with no line still hands over words to style", () => {
   const py = fs.readFileSync(path.join(ROOT, "tools/build_character_pages.py"), "utf8");
   assert.ok(py.includes('SAMPLE_TEXT = "' + sample + '"'),
     "the builder's sample text has drifted from app.js's " + JSON.stringify(sample));
+  const cp = fs.readFileSync(path.join(ROOT, "assets/js/characters-page.js"), "utf8");
+  assert.ok(cp.includes('const SAMPLE_TEXT = "' + sample + '"'),
+    "characters-page.js's sample text has drifted from app.js's " + JSON.stringify(sample));
 
   for (const page of ["kaomoji/index.html", "symbols/hearts/index.html"]) {
     const html = fs.readFileSync(path.join(ROOT, page), "utf8");

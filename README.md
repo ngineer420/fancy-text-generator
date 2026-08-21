@@ -8,9 +8,9 @@ character and `＋ Add fancy text` opens the generator with it already in the
 box, so a visitor who arrived for one heart can leave with a styled line
 rather than a clipboard. Arriving from one of the homepage's character tiles
 carries your words along, and the page turns into "which face goes with my
-words": a strip at the top says what it is holding, every card *prints* that
-line beside its own character so you are choosing against something you can
-read, and the way to change the words is a link back. Those pages style nothing themselves: the
+words": one input at the top holds the line, every card *prints* it beside
+its own character so you are choosing against something you can read, and
+editing it re-runs the whole page without costing you your place in the grid. Those pages style nothing themselves: the
 homepage is the only styler on the site, and a face there is simply text in
 the text box, which is why all 40 tiles restyle around it for free. The same
 move works from the other side — the homepage and the Combiner carry an **Add

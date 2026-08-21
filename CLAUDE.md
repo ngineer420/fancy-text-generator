@@ -77,8 +77,9 @@ Ten tools sharing one transform engine (`FancyText` in
   card click **copies**. Styling is a link out — every card's
   `＋ Add fancy text` goes to `/?text=<char> <words>`. Arriving from a
   homepage character tile, those words are the visitor's and every card
-  prints them beside its face. There is no composer here and no styled sample
-  either; see *One styler, and it is the homepage*.
+  prints them beside its face; one input at the top edits them. There is no
+  composer here and no styled sample either; see *One styler, and it is the
+  homepage*.
   Currency, zodiac and dingbats were
   deliberately cut: currency duplicates `/currency-text-generator/`, the other
   two were thin. Every surviving symbol page carries 40+ entries, asserted.
@@ -191,6 +192,15 @@ for changing the face and sits six inches to their right. They are examples
 of what a face and a style look like together; pressing one says "show me the
 faces, for this line".
 
+**A box that already has a face is not sold faces.** Coming back from
+`/kaomoji/` the homepage input holds `＼(^o^)／ hey`, and six tiles offering
+to put a face on it are noise. One of them is worse than noise: `char-symbols`
+wraps the words in brackets, and to wrap it strips the picture off the front —
+so it would show the visitor their line with the face they had just chosen
+quietly deleted. So `render()` hides every `chars` tile, and the "Faces &
+Symbols" pill with them, whenever the first or last whitespace token is a
+picture. A box holding *only* a face is holding its text, and keeps them.
+
 **The stacking guard is still load-bearing.** *Add a face* puts a face in the
 box, so these tiles regularly meet text that already has one.
 `applyCharExample()` strips a leading or trailing *picture* — the same "less
@@ -288,10 +298,15 @@ reason the page never needed a text box:
   they are the constant, and giving them equal weight makes the one thing
   that differs the hardest thing to find. They are clamped to two lines, so a
   three-hundred-character line cannot turn the grid into a wall of text;
-- the `.char-carry` strip says what is being held and links **back to the
-  generator** to change it. It is baked `hidden` and only ever unhidden by
-  the runtime, so a visit with no text makes no claim, shows bare faces, and
-  gets no extra card height;
+- the `.char-carry` strip is an **input**, and editing it re-runs all of the
+  above live — printed lines, links, labels, mood chips, and the address via
+  `replaceState`. It began as a read-only line with "Change the text or style
+  it →" back to the generator; both halves were wrong, since changing was all
+  that link did and every card already offers to style. It is **built by
+  `characters-page.js`, never baked**: with JavaScript off none of the
+  carrying works, and an input that silently does nothing is worse than no
+  input. Empty, the page is a plain picker — bare faces, no extra card
+  height;
 - links are built with `encodeURIComponent`, not `URLSearchParams` — the
   latter spells a space `+`, and the site would then write the same line two
   ways on one page.
@@ -312,8 +327,13 @@ for free, and *Add a face* changes it. No third surface, no `?face=` /
 `?place=` / `?style=` parameters, nothing on the picker pages to keep in sync
 with the styler.
 
-If a picker page ever needs a text box again, that is the signal that the
-homepage is missing something — go and put it there.
+There **is** a text box on the picker pages again, and the line above is
+still the rule it lives under. It holds the carried line and nothing else: no
+style previews, no per-style output, no second gallery. What it edits is the
+page's own state — which face goes with *these* words — and sending somebody
+back to the generator to change one word cost them their place in a grid of
+ninety-six. A box that starts previewing styles is the regression; a box that
+edits what the page is already displaying is not.
 
 ### Substitution is welcome inside a face; an overlay is not
 This is the distinction, not "face versus word". A substitution alphabet

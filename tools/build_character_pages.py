@@ -191,24 +191,6 @@ def grid(items, kind):
     return "\n".join(out)
 
 
-def carry(hub):
-    """What this page is holding, when it is holding anything.
-
-    Only a visitor who arrived from a homepage tile has text, and then every
-    card on the page is the same line with a different character in it — the
-    text is the constant and the character is the variable, which is the
-    whole reason this page never needed a text box. `characters-page.js`
-    fills it in from `?text=` and unhides it; a visit with no text never sees
-    it, because there is nothing to say.
-    """
-    return """    <p class="char-carry" id="char-carry" hidden>
-      <span class="char-carry-label">Adding a {one} to</span>
-      <strong class="char-carry-text" id="char-carry-text"></strong>
-      <a class="char-carry-edit" id="char-carry-edit" href="/">Change the text or style it &rarr;</a>
-    </p>
-""".format(one=hub["one"])
-
-
 def filter_row(hub, count, hint):
     """The search box, and the first thing under the h1.
 
@@ -217,12 +199,12 @@ def filter_row(hub, count, hint):
     lead slot belongs to the reason the visit happened.
     """
     return """  <div class="tool-shell">
-{carry}    <div class="char-filter-row">
+    <div class="char-filter-row">
       <label for="char-filter" class="visually-hidden">Filter {noun}</label>
       <input type="search" id="char-filter" class="input-field" placeholder="Filter {count} {noun} — try a word like {hint}…" autocomplete="off">
       <p class="char-filter-count" id="char-filter-count" role="status"></p>
     </div>
-""".format(noun=hub["noun"], count=count, hint=esc(hint), carry=carry(hub))
+""".format(noun=hub["noun"], count=count, hint=esc(hint))
 
 
 def switch(hub, groups, current_slug):

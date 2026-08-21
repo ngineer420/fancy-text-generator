@@ -1426,38 +1426,38 @@ a.fav-pill:hover { text-decoration: none; }
 
 /* ---------- misc ---------- */
 /* ---------- character pickers: /kaomoji/ and /symbols/ ---------- */
-/* What the page is holding, when it arrived holding something. One line,
-   above the filter, because it changes what every card on the page will do
-   and a visitor who cannot see it would read the cards as lying. */
+/* The line the page is holding, and the one control that changes it. Built
+   by characters-page.js, never baked: with JavaScript off nothing here works
+   and an input that silently does nothing is worse than no input.
+
+   It used to be a read-only strip with a link back to the generator. Both
+   halves of that were wrong — changing the text was all the link actually
+   did, and every card already offers to style — so it is an input now, and
+   the visitor keeps their place in the grid while they edit. */
 .char-carry {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 8px;
   margin: 18px 0 0;
-  padding: 10px 14px;
+  padding: 12px 14px;
   border: 1px solid var(--border-soft);
   border-left: 2px solid color-mix(in srgb, var(--dest-chars) 60%, transparent);
   border-radius: var(--radius);
   background: var(--bg-inset);
-  font-size: 13px;
-  color: var(--text-dim);
 }
-.char-carry[hidden] { display: none; }
-.char-carry-text {
-  min-width: 0;
-  color: var(--text);
-  font-weight: 600;
-  overflow-wrap: anywhere;
+.char-carry-label {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 11px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
 }
-.char-carry-edit {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  margin-left: auto;
-  padding: 2px 0;
-  font-size: 12.5px;
-  white-space: nowrap;
+.char-carry-shell .input-field {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 40px 10px 14px;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .char-filter-row { margin: 20px 0 12px; }
