@@ -284,6 +284,31 @@ test("the homepage introduces the pickers where they can be seen", () => {
   }
 });
 
+test("the sampler tiles show real characters and count them honestly", () => {
+  const core = require(path.join(ROOT, "assets/js/fancytext-core.js"));
+  const known = new Set();
+  const counts = { "/kaomoji/": 0, "/symbols/": 0 };
+  for (const [family, groups] of FAMILIES) {
+    const hub = "/" + family + "/";
+    for (const group of groups) for (const item of group.items) {
+      known.add(item.char);
+      counts[hub]++;
+    }
+  }
+  assert.strictEqual(core.CHAR_SAMPLERS.length, 2, "expected one sampler per picker");
+  for (const sm of core.CHAR_SAMPLERS) {
+    assert.strictEqual(sm.total, counts[sm.hub],
+      sm.id + " claims " + sm.total + " characters; the catalogue has " + counts[sm.hub]);
+    for (const ch of sm.chars) {
+      assert.ok(known.has(ch),
+        sm.id + " shows " + JSON.stringify(ch) + ", which is not in characters.js");
+    }
+    // It is the one tile that ignores what you type; it must at least say
+    // the same thing whatever you type.
+    assert.strictEqual(core.samplerText(sm), sm.chars.join(" "));
+  }
+});
+
 test("every character example on the homepage is a real catalogue character", () => {
   const core = require(path.join(ROOT, "assets/js/fancytext-core.js"));
   const known = new Set();

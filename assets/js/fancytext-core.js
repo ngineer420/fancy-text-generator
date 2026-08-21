@@ -357,34 +357,58 @@
   const MARKABLE = /[\p{L}\p{N}]/u;
 
   /**
-   * Which graphemes in a string a combining mark should be drawn on.
+   * Which graphemes an overlay mark may be drawn on.
    *
-   * A mark belongs on a letter. Drawn on the brackets and arithmetic a
-   * kaomoji is assembled from, it turns `(=^･ω･^=)` into a row of black
-   * bars — so punctuation only earns a mark where it sits *between* marked
-   * characters, which is what keeps a strike running unbroken through
-   * "isn't" and "3.14" and a sentence's commas while leaving a face alone.
-   * End of string counts as the right-hand neighbour, so trailing "!" is
-   * struck along with the word it follows.
+   * The distinction that matters is substitution versus overlay. A
+   * substitution alphabet swaps a glyph for a same-shaped one, so it is
+   * welcome inside a kaomoji — `(T_T)` in bold is `(𝐓_𝐓)`, still a face and
+   * arguably a better one. An overlay draws a line *through* the glyph, and
+   * a line through a cat's face is not a style, it is damage.
+   *
+   * So overlays work a word at a time. A whitespace-delimited run that is at
+   * least half letters and digits is a word: its letters take a mark, and so
+   * does punctuation sitting between two marked characters, which keeps a
+   * strike unbroken through "isn't", "3.14" and a sentence's commas (end of
+   * the word counts as the right-hand neighbour, so a trailing "!" is struck
+   * too). Anything else is a picture — `(=^･ω･^=)`, `:)`, `¯\_(ツ)_/¯` — and
+   * takes nothing at all, including the one Greek letter in the middle of
+   * the cat that would otherwise qualify on its own.
+   *
+   * Wide, fullwidth, kana and Hangul bases are never marked in either case:
+   * the mark is drawn to the width of its base, and on those it meets itself
+   * end to end and paints a solid bar.
    */
   function markable(graphemes) {
+    const out = graphemes.map(() => false);
+    const isSpace = (g) => /^\s$/.test(g);
     const solid = graphemes.map((g) => !WIDE_BASE.test(g) && MARKABLE.test(g));
-    return graphemes.map((g, i) => {
-      if (g === " " || WIDE_BASE.test(g)) return false;
-      if (solid[i]) return true;
-      let before = false;
-      for (let j = i - 1; j >= 0; j--) {
-        if (graphemes[j] === " ") continue;
-        before = solid[j];
-        break;
+
+    let i = 0;
+    while (i < graphemes.length) {
+      if (isSpace(graphemes[i])) { i++; continue; }
+      let end = i;
+      while (end < graphemes.length && !isSpace(graphemes[end])) end++;
+
+      let letters = 0;
+      for (let j = i; j < end; j++) if (solid[j]) letters++;
+      // Half, counted over the whole run: "don't" and "3.14" clear it,
+      // "(=^･ω･^=)" and ":)" do not.
+      if (letters * 2 >= end - i) {
+        for (let j = i; j < end; j++) {
+          if (WIDE_BASE.test(graphemes[j])) continue;
+          if (solid[j]) { out[j] = true; continue; }
+          // The word's own edges close the run, so "(parenthetical)" is
+          // struck through both brackets rather than only the closing one.
+          let before = true;
+          for (let k = j - 1; k >= i; k--) { before = solid[k]; break; }
+          let after = true;
+          for (let k = j + 1; k < end; k++) { after = solid[k]; break; }
+          out[j] = before && after;
+        }
       }
-      if (!before) return false;
-      for (let j = i + 1; j < graphemes.length; j++) {
-        if (graphemes[j] === " ") continue;
-        return solid[j];
-      }
-      return true; // nothing but spaces to the right: end of the run
-    });
+      i = end;
+    }
+    return out;
   }
 
   // Combining-mark effects (strikethrough, underline, …): one mark appended
@@ -480,9 +504,14 @@
 
   function zalgoText(str, level) {
     const ranges = zalgoRanges(level);
-    return splitGraphemes(str)
-      .map((g) => {
-        if (g === " ") return g;
+    const graphemes = splitGraphemes(str);
+    // The same rule as the single-mark effects, and it matters more here:
+    // one strikethrough over a face is a line through it, twelve zalgo
+    // marks are a smudge where the face was.
+    const wanted = markable(graphemes);
+    return graphemes
+      .map((g, gi) => {
+        if (!wanted[gi]) return g;
         let out = g;
         // Budget in code points, not in draws from the pool: at least one
         // entry (U+0344, stored decomposed as U+0308 U+0301) is two marks in
@@ -828,20 +857,51 @@
   // the combo and mix examples introduce their tools — as ordinary
   // gallery tiles beside the styles they are made of, not a banner.
   //
-  // `styleId` is always a substitution alphabet. The combining-mark
-  // styles draw their mark to the width of the base character, and the
-  // characters a kaomoji is built from are mostly fullwidth, so an
-  // underline or a strikethrough over one paints a solid bar across the
-  // face — the same rule the character pages' PREVIEW_STYLES follow.
+  // `styleId` is always a substitution alphabet. An overlay style is safe
+  // on a face now — markable() leaves a whole face alone — but it would
+  // demonstrate the mark rather than the pairing, and the pairing is what
+  // these tiles exist to show.
   // ---------------------------------------------------------------
+
+  // Samplers: a tile whose sample IS the characters, rather than the
+  // visitor's text with one set beside it. Every font style is a literal
+  // no-op on 186 of the 198 kaomoji — none of them contain a letter to
+  // substitute — so a tile that styled a face would show the same face
+  // forty times. This advertises the pickers by showing what is in them,
+  // which is the one thing a gallery of fonts cannot say by transforming
+  // anything. It is the only kind of tile that ignores what you type.
+  const CHAR_SAMPLERS = [
+    {
+      id: "sampler-kaomoji",
+      name: "Kaomoji",
+      chars: ["(◕‿◕)", "(≧▽≦)", "(´∀｀)"],
+      hub: "/kaomoji/",
+      hubLabel: "Faces",
+      toolName: "kaomoji picker",
+      // Asserted against the catalogue by test/characters.test.js, so the
+      // number in the tooltip cannot drift as faces are added.
+      total: 198,
+    },
+    {
+      id: "sampler-symbols",
+      name: "Text Symbols",
+      chars: ["♥", "★", "➤", "✓", "♪", "「", "」"],
+      hub: "/symbols/",
+      hubLabel: "Symbols",
+      toolName: "symbol picker",
+      total: 278,
+    },
+  ];
+
+  function samplerText(sampler) {
+    return sampler.chars.join(" ");
+  }
 
   const CHAR_EXAMPLES = [
     { id: "char-smile-script", name: "Smiling Script", char: "(◕‿◕)", styleId: "script", place: "before" },
     { id: "char-shrug-bold", name: "Shrug in Bold", char: "¯\\_(ツ)_/¯", styleId: "bold", place: "after" },
     { id: "char-love-fraktur", name: "Loved Gothic", char: "♡", styleId: "fraktur", place: "wrap" },
-    { id: "char-stars-double", name: "Starry Double-Struck", char: "✦", styleId: "double-struck", place: "wrap" },
     { id: "char-cat-smallcaps", name: "Cat Small Caps", char: "(=^･ω･^=)", styleId: "small-caps", place: "before" },
-    { id: "char-arrow-mono", name: "Pointed Monospace", char: "➤", styleId: "monospace", place: "before" },
   ];
 
   // Set a character around text run through one style. `wrap` puts it on
@@ -890,6 +950,8 @@
     COMBO_EXAMPLES,
     MIX_EXAMPLES,
     CHAR_EXAMPLES,
+    CHAR_SAMPLERS,
+    samplerText,
     applyCharExample,
     applyChain,
     mixPatternIds,

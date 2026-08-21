@@ -178,6 +178,17 @@ visitor's typed text. Favorites are strictly user-created (starred styles pin
 to the gallery front; combos/mixes are named on save and appear as chips on
 the tool pages).
 
+`CHAR_SAMPLERS` is the exception to "a tile transforms your text": a sampler's
+sample **is** the characters, and it ignores the input. It has to. Every font
+style is a literal no-op on 186 of the 198 kaomoji — they contain no letter to
+substitute — so a tile that styled a face would show the same face forty
+times, and of the twelve that do contain one, most would have a single eye
+bolded (`＼(^𝐨^)／`) which reads as a rendering fault. Showing what is *in* the
+picker is the one thing a gallery of fonts cannot say by transforming
+anything. Its `total` is asserted against the catalogue, and it is placed
+early in `EXAMPLE_AFTER` because an advertisement below the fold is a
+footnote.
+
 A `CHAR_EXAMPLES` entry sets one catalogue character around text run through
 one style. Its `styleId` must be a substitution alphabet — combining marks
 paint a bar across a face, for the reason under *Combining marks and fullwidth
@@ -227,16 +238,26 @@ Three things those cards must keep doing:
 - **Stay out of the results.** A filter hides them: they are adverts, not
   matches, and the count beside the grid does not include them.
 
-### Where a combining mark is allowed to land
-`appendCombiningMark` does not mark every grapheme. A mark is drawn to the
-width of its base, so on the brackets and arithmetic a kaomoji is built from
-it renders as a row of black bars over the face. `markable()` marks letters
-and digits, and punctuation **only where it sits between them** — which keeps
-a strike running unbroken through "isn't", "3.14" and a sentence's commas
-(end of string counts as the right-hand neighbour, so a trailing "!" is
-struck) while leaving `(=^･ω･^=)` alone. Wide, fullwidth, kana and Hangul
-bases are never marked at all. Five tests in `core.test.js` hold this down;
-don't "simplify" it back to marking everything but the space.
+### Substitution is welcome inside a face; an overlay is not
+This is the distinction, not "face versus word". A substitution alphabet
+swaps a glyph for a same-shaped one, so it belongs inside a kaomoji —
+`(T_T)` in bold is `(𝐓_𝐓)`, still a face and arguably a better one, and
+that happens today with no special handling. An **overlay** draws a line
+*through* the glyph, and a line through a cat's face is not a style, it is
+damage.
+
+So `markable()` gates the overlays — the five combining-mark styles and
+zalgo — and works a **word at a time**. A whitespace-delimited run that is
+at least half letters and digits is a word: its letters take a mark, and so
+does punctuation between two marked characters, with the word's own edges
+closing the run. That keeps a strike unbroken through "isn't", "3.14",
+"(parenthetical)" and a trailing "!". Anything else is a picture —
+`(=^･ω･^=)`, `:)`, `¯\_(ツ)_/¯` — and takes nothing at all, *including the
+one Greek letter in the middle of the cat* that would otherwise qualify on
+its own. Wide, fullwidth, kana and Hangul bases are never marked in either
+case. Six tests in `core.test.js` hold this down; don't "simplify" it back
+to marking everything but the space, and don't reduce it to a per-character
+rule — per-character was the version that left a bar through the omega.
 
 ### Combo quality bar
 A preset combo must (a) render cleanly and (b) look **obviously** combined.

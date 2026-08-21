@@ -24,7 +24,7 @@
      all: forty tinted cards is a swatch book, six is a signpost. */
   --dest-combine: #c77dff;
   --dest-mix: #5db8ff;
-  --dest-kaomoji: #ff6ec4;
+  --dest-chars: #ff6ec4;
   --radius: 8px;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
     sans-serif;
@@ -49,7 +49,7 @@
   /* The same three, darkened so they read on a light band. */
   --dest-combine: #8e2de2;
   --dest-mix: #2b7fff;
-  --dest-kaomoji: #d6249f;
+  --dest-chars: #d6249f;
 }
 
 @media (prefers-color-scheme: light) {
@@ -68,7 +68,7 @@
     --focus: #0a6cbf;
     --dest-combine: #8e2de2;
     --dest-mix: #2b7fff;
-    --dest-kaomoji: #d6249f;
+    --dest-chars: #d6249f;
   }
 }
 
@@ -616,7 +616,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
 }
 .tile[data-dest="combine"] .tile-foot { --dest: var(--dest-combine); }
 .tile[data-dest="mix"] .tile-foot { --dest: var(--dest-mix); }
-.tile[data-dest="kaomoji"] .tile-foot { --dest: var(--dest-kaomoji); }
+.tile[data-dest="chars"] .tile-foot { --dest: var(--dest-chars); }
 
 .tile-foot-label {
   position: relative;
@@ -1644,16 +1644,16 @@ a.fav-pill:hover { text-decoration: none; }
   height: 100%;
   min-height: 88px;
   padding: 12px;
-  border: 1px solid color-mix(in srgb, var(--dest-kaomoji) 38%, transparent);
+  border: 1px solid color-mix(in srgb, var(--dest-chars) 38%, transparent);
   border-radius: 12px;
-  background: color-mix(in srgb, var(--dest-kaomoji) 9%, var(--bg-raised));
+  background: color-mix(in srgb, var(--dest-chars) 9%, var(--bg-raised));
   color: var(--text);
   text-decoration: none;
   transition: border-color .12s ease, transform .12s ease, background .2s ease;
 }
 .char-styled:hover {
-  border-color: var(--dest-kaomoji);
-  background: color-mix(in srgb, var(--dest-kaomoji) 15%, var(--bg-raised));
+  border-color: var(--dest-chars);
+  background: color-mix(in srgb, var(--dest-chars) 15%, var(--bg-raised));
   transform: translateY(-1px);
   text-decoration: none;
 }
@@ -1685,18 +1685,18 @@ a.fav-pill:hover { text-decoration: none; }
   align-items: center;
   gap: 4px;
   padding: 4px 9px;
-  border: 1px solid color-mix(in srgb, var(--dest-kaomoji) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--dest-chars) 50%, transparent);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--dest-kaomoji) 14%, transparent);
-  color: color-mix(in srgb, var(--dest-kaomoji) 55%, var(--text));
+  background: color-mix(in srgb, var(--dest-chars) 14%, transparent);
+  color: color-mix(in srgb, var(--dest-chars) 55%, var(--text));
   font-size: 10.5px;
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
 }
 .char-styled:hover .char-styled-go {
-  background: color-mix(in srgb, var(--dest-kaomoji) 26%, transparent);
-  border-color: var(--dest-kaomoji);
+  background: color-mix(in srgb, var(--dest-chars) 26%, transparent);
+  border-color: var(--dest-chars);
   color: var(--text);
 }
 

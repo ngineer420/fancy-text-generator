@@ -384,12 +384,27 @@ test("a combining mark never lands on the brackets a kaomoji is made of", () => 
   // paints a bar over the face. The words beside it still get marked.
   for (const id of COMBINING_STYLES) {
     const out = marked(id, "(=^･ω･^=) meow");
-    for (const ch of ["(", "=", "^", "･", ")"]) {
+    // Including the omega. It is a letter, so it qualifies on its own — but
+    // it is the middle of a cat, and a line through that is not a style.
+    for (const ch of ["(", "=", "^", "･", "ω", ")"]) {
       const at = out.indexOf(ch);
       assert.ok(at !== -1 && !/\p{M}/u.test(out[at + 1] || ""),
         id + " marked " + JSON.stringify(ch) + ", which is part of the face");
     }
     assert.ok(/m\p{M}/u.test(out), id + " did not mark the word beside the face");
+  }
+});
+
+test("an overlay leaves a whole face alone, not just its punctuation", () => {
+  // The rule is per whitespace-delimited run: a run that is at least half
+  // letters is a word, anything else is a picture and takes nothing.
+  for (const id of COMBINING_STYLES.concat(["zalgo-heavy"])) {
+    for (const face of ["(◕‿◕)", "(=^･ω･^=)", "(T_T)", ":)", "¯\\_(ツ)_/¯", "(≧▽≦)"]) {
+      const out = marked(id, face + " hello");
+      assert.ok(out.startsWith(face + " "),
+        id + " modified " + face + " -> " + JSON.stringify(out.split(" ")[0]));
+      assert.ok(/h\p{M}/u.test(out), id + " left the word beside " + face + " unmarked");
+    }
   }
 });
 
