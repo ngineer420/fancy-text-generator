@@ -4,11 +4,12 @@
    bakes the whole grid, so the page is a working list of characters with
    JavaScript switched off and this file is enhancement rather than rendering.
 
-   Three behaviours, in the order they matter:
+   Four behaviours, in the order they matter:
 
      copy     a card click puts its character on the clipboard
      filter   instant keyword match over every card on the page
      save     the star adds it to favorites as the fourth kind, "chars"
+     carry    `?text=` from a homepage tile rides along on every link out
 
    Styling is not among them, and that is deliberate. This page used to carry
    a composer — a text box and six preview tiles — so a visitor could build a
@@ -18,6 +19,14 @@
    one link away. Every card's "Style it →" is that link, with the character
    already in the box. Nothing here has to reproduce the styler.
 
+   What it does do is carry. A visitor who arrived from a homepage tile has
+   a line already, and on this page that line is the constant and the
+   character is the variable — every card is the same words with a different
+   face in front of them. So `?text=` is read once and written into every
+   link that leaves: the cards, the mood chips, the other family. No text box
+   is needed to hold it, because nothing here edits it; changing it is a link
+   back to the generator, which is where text is edited.
+
    Load after fancytext-core.js, site.js and favorites.js. */
 
 (function () {
@@ -25,6 +34,8 @@
 
   const { debounce, copyText } = window.Site;
   const Favs = window.Favs;
+
+  const MAX_LEN = 300;
 
   document.addEventListener("DOMContentLoaded", () => {
     const main = document.querySelector("main.char-page");
@@ -37,11 +48,6 @@
     const grids = [...main.querySelectorAll(".char-grid")];
     const groups = [...main.querySelectorAll(".char-group")];
     if (!cards.length) return;
-
-    // The styled cards mixed into the grid: a real face in a real style,
-    // linking into the styler. Adverts, not results — they come out while a
-    // filter is running.
-    const styledCells = [...main.querySelectorAll(".char-styled-cell")];
 
     const noun = main.dataset.charKind === "symbols" ? "symbols" : "kaomoji";
 
@@ -139,11 +145,6 @@
         if (hit) shown++;
       }
 
-      // Leaving the adverts in a filtered grid would put them beside a count
-      // that does not include them and among characters they have nothing to
-      // do with.
-      for (const cell of styledCells) cell.hidden = terms.length > 0;
-
       // A hub is sectioned by group; a section with nothing left in it is a
       // heading over a gap, so it goes too.
       for (const group of groups) {
@@ -169,9 +170,50 @@
       });
     }
 
+    /* ---------- carry ---------- */
+
+    /* The line the visitor brought with them, if they brought one. It is
+       never edited here and never stored — it exists only as the text half
+       of every link off this page. */
+    const carried = (new URLSearchParams(location.search).get("text") || "").slice(0, MAX_LEN);
+
+    function applyCarry() {
+      if (!carried) return;
+
+      const strip = document.getElementById("char-carry");
+      const shown = document.getElementById("char-carry-text");
+      const back = document.getElementById("char-carry-edit");
+      if (shown) shown.textContent = "“" + carried + "”";
+      // Back to the only place that edits text, with the line intact.
+      if (back) back.href = "/?text=" + encodeURIComponent(carried);
+      if (strip) strip.hidden = false;
+
+      // Every card is now that line with this character in front of it.
+      for (const card of cards) {
+        const link = card.querySelector(".char-insert");
+        if (!link) continue;
+        link.href = "/?text=" + encodeURIComponent(card.dataset.char + " " + carried);
+      }
+
+      /* And the browse controls keep it. Losing the line by clicking "Cute"
+         would make the mood chips a trap rather than a filter. Every link
+         from here into another picker page gets it; links out of the family
+         (the generator, /styles/, the Combiner) already point somewhere that
+         reads `?text=` on its own terms and are left alone. */
+      for (const a of main.querySelectorAll('a[href^="/kaomoji/"], a[href^="/symbols/"]')) {
+        if (a.classList.contains("char-insert")) continue;
+        // Built by hand rather than through URLSearchParams, which spells a
+        // space "+". Both decode the same but the site would then be writing
+        // the line two ways in two places on one page.
+        const path = a.getAttribute("href").split(/[?#]/)[0];
+        a.setAttribute("href", path + "?text=" + encodeURIComponent(carried));
+      }
+    }
+
     /* ---------- init ---------- */
 
     syncStars();
     pinStarred();
+    applyCarry();
   });
 })();

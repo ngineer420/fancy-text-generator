@@ -341,11 +341,42 @@ test("a picker page is a picker, not a second styler", () => {
     assert.ok(!/id="tool-input"/.test(html), page + " grew a text box back");
     assert.ok(!/class="composer/.test(html), page + " grew a composer back");
     assert.ok(!/id="composer-out"/.test(html), page + " grew preview tiles back");
+    // Nor a styled sample. Every card links to the styler now, so a card
+    // that showed one was a third message and the only thing on the page
+    // wearing text the visitor did not type.
+    assert.ok(!/char-styled/.test(html), page + " still carries a styled sample card");
     // ...and the way out is on every card.
     const links = html.match(/class="char-insert" href="\/\?text=[^"]+"/g) || [];
     const cards = html.match(/class="char-card"/g) || [];
     assert.strictEqual(links.length, cards.length,
       page + " has " + cards.length + " cards but " + links.length + " links to the generator");
+  }
+});
+
+test("a picker page carries text only when it was given some", () => {
+  // The carry strip is the page saying what every one of its links will do.
+  // Baked hidden, filled in from ?text= by the runtime — so a plain visit
+  // makes no claim, and a visit from a homepage tile makes an honest one.
+  for (const page of ["kaomoji/index.html", "symbols/index.html",
+                      "kaomoji/shrug/index.html", "symbols/stars/index.html"]) {
+    const html = fs.readFileSync(path.join(ROOT, page), "utf8");
+    const m = html.match(/<p class="char-carry" id="char-carry" hidden>/);
+    assert.ok(m, page + " has no carry strip, or it does not start hidden");
+    assert.ok(/id="char-carry-text"/.test(html), page + " has nowhere to print the line");
+    assert.ok(/id="char-carry-edit"/.test(html), page + " has no way back to the generator");
+    const one = page.startsWith("symbols") ? "symbol" : "kaomoji";
+    assert.ok(html.includes("Adding a " + one + " to"),
+      page + " names the wrong thing in its carry strip");
+  }
+});
+
+test("every card offers the same thing, in the same words", () => {
+  const html = fs.readFileSync(path.join(ROOT, "kaomoji/index.html"), "utf8");
+  const actions = html.match(/class="char-insert"[^>]*>([\s\S]*?)<\/a>/g) || [];
+  assert.ok(actions.length > 40, "expected an action on every card");
+  for (const a of actions) {
+    assert.ok(a.includes("Add fancy text"),
+      "a card action reads " + JSON.stringify(a.slice(-40)) + " rather than \"Add fancy text\"");
   }
 });
 

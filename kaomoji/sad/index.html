@@ -24,7 +24,7 @@
 <meta name="twitter:image" content="https://fontloom.com/assets/og-image.png">
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/css/styles.css?v=28">
+<link rel="stylesheet" href="/assets/css/styles.css?v=29">
 <script src="/assets/js/toolbar.js?v=1" defer></script>
 
 <script type="application/ld+json">
@@ -163,6 +163,11 @@
     </ul>
   </nav>
   <div class="tool-shell">
+    <p class="char-carry" id="char-carry" hidden>
+      <span class="char-carry-label">Adding a kaomoji to</span>
+      <strong class="char-carry-text" id="char-carry-text"></strong>
+      <a class="char-carry-edit" id="char-carry-edit" href="/">Change the text or style it &rarr;</a>
+    </p>
     <div class="char-filter-row">
       <label for="char-filter" class="visually-hidden">Filter kaomoji</label>
       <input type="search" id="char-filter" class="input-field" placeholder="Filter 26 kaomoji — try a word like tears…" autocomplete="off">
@@ -179,7 +184,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Streaming tears to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E2%95%A5%EF%B9%8F%E2%95%A5%29%20" title="Open the generator with this one in the box" aria-label="Style text around Streaming tears in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E2%95%A5%EF%B9%8F%E2%95%A5%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Streaming tears in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -192,7 +197,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Full-face tears to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%E0%B2%A5_%E0%B2%A5%20" title="Open the generator with this one in the box" aria-label="Style text around Full-face tears in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%E0%B2%A5_%E0%B2%A5%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Full-face tears in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -205,7 +210,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Classic crying to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28T_T%29%20" title="Open the generator with this one in the box" aria-label="Style text around Classic crying in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28T_T%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Classic crying in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -218,7 +223,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Quiet tears to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%3B_%3B%29%20" title="Open the generator with this one in the box" aria-label="Style text around Quiet tears in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%3B_%3B%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Quiet tears in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -231,18 +236,9 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Downcast to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28._.%29%20" title="Open the generator with this one in the box" aria-label="Style text around Downcast in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28._.%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Downcast in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
-        </li>
-        <li class="char-styled-cell">
-          <a class="char-styled" href="/?text=%28%C2%B4%EF%BC%9B%CF%89%EF%BC%9B%60%29%20Fancy%20Text" data-styled-char="(´；ω；`)" data-styled-style="bold">
-            <span class="char-styled-out">(´；ω；`) 𝐅𝐚𝐧𝐜𝐲 𝐓𝐞𝐱𝐭</span>
-            <span class="char-styled-meta">
-              <span class="char-styled-name">Sobbing in Bold</span>
-              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
-            </span>
-          </a>
         </li>
         <li>
           <div class="char-card" role="button" tabindex="0" data-char="(´；ω；`)" data-keys="sobbing sob cry tears upset" aria-label="Copy Sobbing">
@@ -253,7 +249,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Sobbing to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%C2%B4%EF%BC%9B%CF%89%EF%BC%9B%60%29%20" title="Open the generator with this one in the box" aria-label="Style text around Sobbing in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%C2%B4%EF%BC%9B%CF%89%EF%BC%9B%60%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Sobbing in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -266,7 +262,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Turned away crying to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E2%95%AF%EF%B8%B5%E2%95%B0%2C%29%20" title="Open the generator with this one in the box" aria-label="Style text around Turned away crying in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E2%95%AF%EF%B8%B5%E2%95%B0%2C%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Turned away crying in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -279,7 +275,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Bawling to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E3%84%92o%E3%84%92%29%20" title="Open the generator with this one in the box" aria-label="Style text around Bawling in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E3%84%92o%E3%84%92%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Bawling in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -292,7 +288,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Head down to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E4%B8%AA_%E4%B8%AA%29%20" title="Open the generator with this one in the box" aria-label="Style text around Head down in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E4%B8%AA_%E4%B8%AA%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Head down in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -305,7 +301,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Looking down sadly to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E2%97%9E%E2%80%B8%E2%97%9F%29%20" title="Open the generator with this one in the box" aria-label="Style text around Looking down sadly in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E2%97%9E%E2%80%B8%E2%97%9F%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Looking down sadly in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -318,7 +314,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Weary sigh to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%C2%B4-%CF%89-%60%29%20" title="Open the generator with this one in the box" aria-label="Style text around Weary sigh in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%C2%B4-%CF%89-%60%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Weary sigh in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -331,7 +327,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Frowning to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%20%CB%98%EF%B8%B9%CB%98%20%29%20" title="Open the generator with this one in the box" aria-label="Style text around Frowning in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%20%CB%98%EF%B8%B9%CB%98%20%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Frowning in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -344,7 +340,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Wailing to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%C2%B4%EF%BC%9B%D0%B4%EF%BC%9B%60%29%20" title="Open the generator with this one in the box" aria-label="Style text around Wailing in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%C2%B4%EF%BC%9B%D0%B4%EF%BC%9B%60%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Wailing in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -357,7 +353,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Sulking to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%CE%BC_%CE%BC%29%20" title="Open the generator with this one in the box" aria-label="Style text around Sulking in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%CE%BC_%CE%BC%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Sulking in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -370,7 +366,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Face in hands to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%EF%BE%89%D0%94%60%29%20" title="Open the generator with this one in the box" aria-label="Style text around Face in hands in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%EF%BE%89%D0%94%60%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Face in hands in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -383,7 +379,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Wiping the eyes to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E3%83%8E_%3C%E3%80%82%29%20" title="Open the generator with this one in the box" aria-label="Style text around Wiping the eyes in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E3%83%8E_%3C%E3%80%82%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Wiping the eyes in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -396,18 +392,9 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Big sad eyes to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E2%97%95%EF%B8%B5%E2%97%95%29%20" title="Open the generator with this one in the box" aria-label="Style text around Big sad eyes in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E2%97%95%EF%B8%B5%E2%97%95%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Big sad eyes in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
-        </li>
-        <li class="char-styled-cell">
-          <a class="char-styled" href="/?text=%28%EF%BC%9E%EF%B9%8F%EF%BC%9C%29%20Fancy%20Text" data-styled-char="(＞﹏＜)" data-styled-style="fraktur">
-            <span class="char-styled-out">(＞﹏＜) 𝔉𝔞𝔫𝔠𝔶 𝔗𝔢𝔵𝔱</span>
-            <span class="char-styled-meta">
-              <span class="char-styled-name">Screwed shut in Fraktur / Gothic</span>
-              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>
-            </span>
-          </a>
         </li>
         <li>
           <div class="char-card" role="button" tabindex="0" data-char="(＞﹏＜)" data-keys="screwed shut pain wince upset hurt" aria-label="Copy Screwed shut">
@@ -418,7 +405,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Screwed shut to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%EF%BC%9E%EF%B9%8F%EF%BC%9C%29%20" title="Open the generator with this one in the box" aria-label="Style text around Screwed shut in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%EF%BC%9E%EF%B9%8F%EF%BC%9C%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Screwed shut in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -431,7 +418,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Awkward gloom to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28-_-%3B%29%20" title="Open the generator with this one in the box" aria-label="Style text around Awkward gloom in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28-_-%3B%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Awkward gloom in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -444,7 +431,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Blank sadness to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%C2%B4_%EF%BD%80%29%20" title="Open the generator with this one in the box" aria-label="Style text around Blank sadness in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%C2%B4_%EF%BD%80%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Blank sadness in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -457,7 +444,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Downturned to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E2%95%AF_%E2%95%B0%29%20" title="Open the generator with this one in the box" aria-label="Style text around Downturned in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E2%95%AF_%E2%95%B0%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Downturned in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -470,7 +457,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Curled up sad to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E3%81%A3-%20%E2%80%B8%20-%20%CF%82%29%20" title="Open the generator with this one in the box" aria-label="Style text around Curled up sad in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E3%81%A3-%20%E2%80%B8%20-%20%CF%82%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Curled up sad in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -483,7 +470,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Welling up to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E1%B5%95%CC%A3%CC%A3%CC%A3%CC%A3%CC%A3%CC%A3%EF%B9%8F%E1%B5%95%CC%A3%CC%A3%CC%A3%CC%A3%CC%A3%CC%A3%29%20" title="Open the generator with this one in the box" aria-label="Style text around Welling up in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E1%B5%95%CC%A3%CC%A3%CC%A3%CC%A3%CC%A3%CC%A3%EF%B9%8F%E1%B5%95%CC%A3%CC%A3%CC%A3%CC%A3%CC%A3%CC%A3%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Welling up in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -496,7 +483,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Crying out loud to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%E3%80%82%E3%82%9C%E3%82%9C%28%C2%B4%EF%BC%AF%60%29%20%E3%82%9C%E3%82%9C%E3%80%82%20" title="Open the generator with this one in the box" aria-label="Style text around Crying out loud in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%E3%80%82%E3%82%9C%E3%82%9C%28%C2%B4%EF%BC%AF%60%29%20%E3%82%9C%E3%82%9C%E3%80%82%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Crying out loud in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -509,7 +496,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Quietly defeated to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E2%8C%A3_%E2%8C%A3%E2%80%9D%29%20" title="Open the generator with this one in the box" aria-label="Style text around Quietly defeated in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E2%8C%A3_%E2%8C%A3%E2%80%9D%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Quietly defeated in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -522,7 +509,7 @@
             <span class="char-tools">
               <button type="button" class="char-star" aria-pressed="false" title="Save to favorites" aria-label="Save Trying to be brave to favorites">&#9734;</button>
             </span>
-            <a class="char-insert" href="/?text=%28%E0%B9%91%C2%B4%E2%80%A2.%CC%AB%20%E2%80%A2%20%60%E0%B9%91%29%20" title="Open the generator with this one in the box" aria-label="Style text around Trying to be brave in the full generator">Style it &rarr;</a>
+            <a class="char-insert" href="/?text=%28%E0%B9%91%C2%B4%E2%80%A2.%CC%AB%20%E2%80%A2%20%60%E0%B9%91%29%20" title="Open the generator with this one in the box" aria-label="Add fancy text to Trying to be brave in the full generator"><span aria-hidden="true">&#65291;</span> Add fancy text</a>
             <span class="char-copied" aria-hidden="true">Copied</span>
           </div>
         </li>
@@ -602,6 +589,6 @@
 <script src="/assets/js/fancytext-core.js?v=12"></script>
 <script src="/assets/js/site.js?v=2"></script>
 <script src="/assets/js/favorites.js?v=3"></script>
-<script src="/assets/js/characters-page.js?v=4"></script>
+<script src="/assets/js/characters-page.js?v=5"></script>
 </body>
 </html>

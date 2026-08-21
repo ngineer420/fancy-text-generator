@@ -57,19 +57,6 @@ from character_page_copy import (  # noqa: E402
 SITE = B.SITE
 esc = B.esc
 
-# name and pre-transformed sample per style id, from the engine itself via
-# tools/dump_styles.js — the same dump the style pages are built from, so a
-# styled card in this grid cannot disagree with the style page it advertises.
-_STYLE_DUMP = None
-
-
-def style_dump():
-    global _STYLE_DUMP
-    if _STYLE_DUMP is None:
-        cat = B.load_catalogue()
-        _STYLE_DUMP = {st["id"]: st for st in cat["styles"]}
-    return _STYLE_DUMP
-
 GENERATED_WARNING = (
     "<!-- GENERATED FILE - do not edit by hand.\n"
     "     Written by tools/build_character_pages.py from assets/js/characters.js\n"
@@ -166,7 +153,8 @@ def card(item, kind):
         ' aria-label="Save %s to favorites">&#9734;</button>' % esc(label),
         '            </span>',
         '            <a class="char-insert" href="/?text=%s" title="Open the generator with this one in the box"'
-        ' aria-label="Style text around %s in the full generator">Style it &rarr;</a>'
+        ' aria-label="Add fancy text to %s in the full generator">'
+        '<span aria-hidden="true">&#65291;</span> Add fancy text</a>'
         % (esc(urllib.parse.quote(item["char"] + " ", safe="")), esc(label)),
         '            <span class="char-copied" aria-hidden="true">Copied</span>',
         '          </div>',
@@ -175,84 +163,39 @@ def card(item, kind):
     return "\n".join(out)
 
 
-# Where a styled card goes among the plain ones, counting from the top of a
-# grid. Early enough to be seen without scrolling, then far enough apart that
-# the grid never reads as an advert with characters in it.
-STYLED_AT = (5, 17, 29)
+def grid(items, kind):
+    """The picker grid. Nothing in it but characters.
 
-# The styles a mixed-in card demonstrates, in rotation. Substitution alphabets
-# only: a combining mark drawn over the fullwidth characters a face is built
-# from meets its neighbours end to end and paints a bar across the face.
-STYLED_STYLES = ["script", "bold", "fraktur", "double-struck", "small-caps", "monospace"]
-
-STYLED_SAMPLE = "Fancy Text"
-
-
-def styled_cell(item, style_id, styled_text, sample):
-    """One styled card among the plain ones — the advert, in the grid.
-
-    It is not a picker card and does not behave like one: it is a link, it
-    carries the visitor's line rather than the character alone, and it hands
-    off the *plain* text. The styler's job is to style it; arriving with a
-    line already styled would leave every alphabet no-op on it.
+    It used to carry three styled advert cards spliced in among the plain
+    ones, from the release where the only way to reach the styler was a
+    composer at the foot of the page. Every card is that link now, so the
+    adverts were a third message saying what ninety-six cards already said —
+    and the one thing on the page showing sample text that was not the
+    visitor's own.
     """
-    plain = item["char"] + " " + sample
-    label = "%s in %s" % (item["name"], style_dump()[style_id]["name"])
-    return "\n".join([
-        '        <li class="char-styled-cell">',
-        '          <a class="char-styled" href="/?text=%s" data-styled-char="%s" data-styled-style="%s">'
-        % (esc(urllib.parse.quote(plain, safe="")), esc(item["char"]), style_id),
-        '            <span class="char-styled-out">%s</span>' % esc(styled_text),
-        '            <span class="char-styled-meta">',
-        '              <span class="char-styled-name">%s</span>' % esc(label),
-        '              <span class="char-styled-go"><span aria-hidden="true">&#9998;</span> All fonts</span>',
-        '            </span>',
-        '          </a>',
-        '        </li>',
-    ])
-
-
-def grid(items, kind, styled=()):
-    """The picker grid, with the styled cards spliced in at STYLED_AT."""
-    at = {pos: cell for pos, cell in styled}
     out = ['      <ul class="char-grid">']
-    for n, i in enumerate(items):
-        if n in at:
-            out.append(at[n])
+    for i in items:
         out.append(card(i, kind))
-    for pos, cell in styled:
-        if pos >= len(items):
-            out.append(cell)
     out.append('      </ul>')
     return "\n".join(out)
 
 
-def styled_cells(group, style_offset):
-    """Rendered styled cards for one group, as (position, html) pairs."""
-    cells = []
-    for pos, item, style_id in styled_for(group, style_offset):
-        styled_text = item["char"] + " " + style_dump()[style_id]["sample"]
-        cells.append((pos, styled_cell(item, style_id, styled_text, STYLED_SAMPLE)))
-    return cells
+def carry(hub):
+    """What this page is holding, when it is holding anything.
 
-
-def styled_for(group, style_offset):
-    """Pick the styled cards for one group: which character, in which style.
-
-    Deterministic — index into the group's own items and into the style
-    rotation — so a rebuild of an unchanged catalogue produces an unchanged
-    file, which is the whole basis of `--check`.
+    Only a visitor who arrived from a homepage tile has text, and then every
+    card on the page is the same line with a different character in it — the
+    text is the constant and the character is the variable, which is the
+    whole reason this page never needed a text box. `characters-page.js`
+    fills it in from `?text=` and unhides it; a visit with no text never sees
+    it, because there is nothing to say.
     """
-    picks = []
-    for n, pos in enumerate(STYLED_AT):
-        if pos > len(group["items"]):
-            break
-        # The character just before the slot, so the card sits beside
-        # something it plausibly came from.
-        item = group["items"][min(pos, len(group["items"]) - 1)]
-        style_id = STYLED_STYLES[(style_offset + n) % len(STYLED_STYLES)]
-        picks.append((pos, item, style_id))
-    return picks
+    return """    <p class="char-carry" id="char-carry" hidden>
+      <span class="char-carry-label">Adding a {one} to</span>
+      <strong class="char-carry-text" id="char-carry-text"></strong>
+      <a class="char-carry-edit" id="char-carry-edit" href="/">Change the text or style it &rarr;</a>
+    </p>
+""".format(one=hub["one"])
 
 
 def filter_row(hub, count, hint):
@@ -263,12 +206,12 @@ def filter_row(hub, count, hint):
     lead slot belongs to the reason the visit happened.
     """
     return """  <div class="tool-shell">
-    <div class="char-filter-row">
+{carry}    <div class="char-filter-row">
       <label for="char-filter" class="visually-hidden">Filter {noun}</label>
       <input type="search" id="char-filter" class="input-field" placeholder="Filter {count} {noun} — try a word like {hint}…" autocomplete="off">
       <p class="char-filter-count" id="char-filter-count" role="status"></p>
     </div>
-""".format(noun=hub["noun"], count=count, hint=esc(hint))
+""".format(noun=hub["noun"], count=count, hint=esc(hint), carry=carry(hub))
 
 
 def switch(hub, groups, current_slug):
@@ -400,14 +343,13 @@ def group_page(hub, groups, group):
     path = "/%s/%s/" % (hub["slug"], group["slug"])
     count = len(group["items"])
 
-    offset = [g["slug"] for g in groups].index(group["slug"])
     body = [
         '<main id="main" class="tool-page char-page" data-char-kind="%s" data-char-group="%s">'
         % (hub["kind"], esc(group["slug"])),
         hero(copy),
         switch(hub, groups, group["slug"]),
         filter_row(hub, count, copy["hint"]),
-        grid(group["items"], hub["kind"], styled_cells(group, offset)),
+        grid(group["items"], hub["kind"]),
         '  </div>',
         '',
         '  <div id="copy-live-region" class="visually-hidden" aria-live="polite"></div>',
@@ -433,7 +375,7 @@ def hub_page(hub, groups):
     shown = sum(min(len(g["items"]), HUB_SAMPLE) for g in groups)
 
     sections = []
-    for n, g in enumerate(groups):
+    for g in groups:
         gcopy = COPY["%s/%s" % (hub["slug"], g["slug"])]
         sample = {"slug": g["slug"], "items": g["items"][:HUB_SAMPLE]}
         sections.append(
@@ -444,7 +386,7 @@ def hub_page(hub, groups):
             '      <p class="char-group-more"><a href="/%s/%s/">All %d %s &rarr;</a></p>\n'
             '    </div>'
             % (esc(g["slug"]), esc(gcopy["h1"]), esc(gcopy["hub_blurb"]),
-               grid(sample["items"], hub["kind"], styled_cells(sample, n)),
+               grid(sample["items"], hub["kind"]),
                hub["slug"], g["slug"], len(g["items"]), esc(gcopy["h1"].lower()))
         )
 
