@@ -3,74 +3,53 @@
    Every card on these pages is already in the HTML: tools/build_character_pages.py
    bakes the whole grid, so the page is a working list of characters with
    JavaScript switched off and this file is enhancement rather than rendering.
-   What it adds is the reason the pages exist at all — clicking a character puts
-   it in the text box rather than only on the clipboard, and the box is the
-   site's styler, so an arriving symbol-searcher ends up holding a styled line
-   instead of one character.
 
    Three behaviours, in the order they matter:
 
-     insert   a card click drops its character in at the cursor and restyles
+     copy     a card click puts its character on the clipboard
      filter   instant keyword match over every card on the page
      save     the star adds it to favorites as the fourth kind, "chars"
 
-   Copy is deliberately the secondary action, on its own button. Making the
-   whole card copy would be the obvious choice and it is the one that leaves
-   the visitor with nothing but a clipboard.
+   Styling is not among them, and that is deliberate. This page used to carry
+   a composer — a text box and six preview tiles — so a visitor could build a
+   styled line without leaving. The homepage is that same box with forty
+   styles instead of six, and it already has "Add a face" for changing which
+   character sits in it, so the composer was a smaller copy of a better page
+   one link away. Every card's "Style it →" is that link, with the character
+   already in the box. Nothing here has to reproduce the styler.
 
    Load after fancytext-core.js, site.js and favorites.js. */
 
 (function () {
   "use strict";
 
-  const { debounce, copyText, renderCharCount } = window.Site;
-  const { STYLE_BY_ID } = FancyText;
+  const { debounce, copyText } = window.Site;
   const Favs = window.Favs;
-
-  const SAMPLE_TEXT = "Fancy Text";
-  const MAX_LEN = 300;
-
-  /* The styles the composer previews. Six substitution alphabets, chosen so
-     the row shows six visibly different answers rather than six weights of
-     the same one. Combining-mark styles are left out for the same reason,
-     not for safety — the engine now keeps a mark off the brackets a face is
-     built from, so an underline here would be correct but nearly invisible
-     beside the alphabets. */
-  const PREVIEW = ["script", "bold", "fraktur", "double-struck", "circled", "small-caps"];
-
-  const COPY_ICON =
-    '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>';
-  const CHECK_ICON =
-    '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 
   document.addEventListener("DOMContentLoaded", () => {
     const main = document.querySelector("main.char-page");
     if (!main) return;
 
-    const input = document.getElementById("tool-input");
-    const clearBtn = document.getElementById("clear-btn");
-    const countEl = document.getElementById("char-count");
-    const outHost = document.getElementById("composer-out");
-    const moreLink = document.getElementById("composer-more");
     const filterEl = document.getElementById("char-filter");
     const filterCount = document.getElementById("char-filter-count");
     const liveRegion = document.getElementById("copy-live-region");
     const cards = [...main.querySelectorAll(".char-card")];
     const grids = [...main.querySelectorAll(".char-grid")];
     const groups = [...main.querySelectorAll(".char-group")];
-    if (!input || !cards.length) return;
+    if (!cards.length) return;
+
+    // The styled cards mixed into the grid: a real face in a real style,
+    // linking into the styler. Adverts, not results — they come out while a
+    // filter is running.
+    const styledCells = [...main.querySelectorAll(".char-styled-cell")];
 
     const noun = main.dataset.charKind === "symbols" ? "symbols" : "kaomoji";
-
-    function sourceText() {
-      return input.value || SAMPLE_TEXT;
-    }
 
     function announce(message) {
       if (liveRegion) liveRegion.textContent = message;
     }
 
-    /* ---------- copy, shared by the preview tiles and the cards ---------- */
+    /* ---------- copy ---------- */
 
     function wireCopy(el, getText, label) {
       return async function doCopy(evt) {
@@ -86,148 +65,6 @@
       };
     }
 
-    /* ---------- the composer ---------- */
-
-    const previews = [];
-
-    for (const id of PREVIEW) {
-      const style = STYLE_BY_ID[id];
-      if (!style) continue;
-
-      const tile = document.createElement("div");
-      tile.className = "tile";
-      tile.tabIndex = 0;
-      tile.setAttribute("role", "button");
-      tile.setAttribute("aria-label", "Copy your text in " + style.name);
-
-      const output = document.createElement("div");
-      output.className = "tile-output";
-
-      const foot = document.createElement("div");
-      foot.className = "tile-foot";
-      const label = document.createElement("span");
-      label.className = "tile-foot-label";
-      const nameEl = document.createElement("span");
-      nameEl.className = "tile-name";
-      nameEl.textContent = style.name;
-      const copiedEl = document.createElement("span");
-      copiedEl.className = "tile-copied";
-      copiedEl.setAttribute("aria-hidden", "true");
-      copiedEl.innerHTML = CHECK_ICON + "<span>Copied</span>";
-      label.append(nameEl, copiedEl);
-
-      const copyBtn = document.createElement("button");
-      copyBtn.type = "button";
-      copyBtn.className = "copy-icon-btn";
-      copyBtn.setAttribute("aria-label", "Copy your text in " + style.name);
-      copyBtn.innerHTML = COPY_ICON;
-
-      foot.append(label, copyBtn);
-      tile.append(output, foot);
-
-      const doCopy = wireCopy(tile, () => output.textContent, style.name + " text");
-      tile.addEventListener("click", doCopy);
-      tile.addEventListener("keydown", (evt) => {
-        if (evt.target !== tile) return;
-        if (evt.key === "Enter" || evt.key === " ") {
-          evt.preventDefault();
-          doCopy(evt);
-        }
-      });
-      copyBtn.addEventListener("click", doCopy);
-
-      outHost.appendChild(tile);
-      previews.push({ style, output });
-    }
-
-    /* The styled cards mixed into the grid. Each is a static advert with
-       JavaScript off — a real face in a real style, linking into the full
-       gallery — and follows whatever the visitor types once it is on. The
-       href always carries the PLAIN line: the destination is a styler, and
-       every alphabet style no-ops on text that has already been through
-       one, so handing off a finished string would show forty identical
-       previews. */
-    const styledCellsList = [...document.querySelectorAll(".char-styled-cell")];
-    const styledCells = [...document.querySelectorAll(".char-styled")].map((el) => ({
-      el,
-      out: el.querySelector(".char-styled-out"),
-      char: el.dataset.styledChar,
-      style: FancyText.STYLE_BY_ID[el.dataset.styledStyle],
-    })).filter((c) => c.out && c.char && c.style);
-
-    function renderStyled(words) {
-      for (const c of styledCells) {
-        c.out.textContent = c.char + " " + c.style.transform(words);
-        c.el.href = "/?text=" + encodeURIComponent(c.char + " " + words);
-      }
-    }
-
-    function render() {
-      const text = sourceText();
-      let longest = text;
-      for (const p of previews) {
-        const out = p.style.transform(text);
-        p.output.textContent = out;
-        if (out.length > longest.length) longest = out;
-      }
-      renderCharCount(countEl, text, longest);
-      if (clearBtn) clearBtn.hidden = !input.value;
-      if (moreLink) moreLink.href = "/?text=" + encodeURIComponent(text);
-      // The styled cards advertise the styler with the visitor's own words
-      // once there are any, and with the sample until then.
-      renderStyled(sourceText());
-    }
-
-    /* Bring the composer into view when a card sends a character to it.
-       It sits below the grid now, so an insert with no visible effect
-       would read as a dead button. */
-    function revealComposer() {
-      const composer = document.getElementById("composer");
-      if (!composer) return;
-      const box = composer.getBoundingClientRect();
-      const off = box.top < 0 || box.bottom > (window.innerHeight || 0);
-      if (off) composer.scrollIntoView({ behavior: "smooth", block: "center" });
-      composer.classList.remove("is-flash");
-      void composer.offsetWidth;
-      composer.classList.add("is-flash");
-      clearTimeout(composer._flash);
-      composer._flash = setTimeout(() => composer.classList.remove("is-flash"), 900);
-    }
-
-    /* ---------- URL state, matching the other tool pages ---------- */
-
-    function readUrl() {
-      const value = new URLSearchParams(location.search).get("text");
-      return value ? value.slice(0, MAX_LEN) : "";
-    }
-
-    function writeUrl() {
-      const params = new URLSearchParams(location.search);
-      if (input.value) params.set("text", input.value);
-      else params.delete("text");
-      const query = params.toString();
-      history.replaceState(null, "", location.pathname + (query ? "?" + query : ""));
-    }
-
-    const writeUrlDebounced = debounce(writeUrl, 400);
-
-    /* ---------- insert: the whole point of the page ---------- */
-
-    function insert(text) {
-      const before = input.value;
-      // At the cursor, not at the end: somebody decorating a name wants the
-      // heart between the words, and appending would make them re-type it.
-      const start = input.selectionStart == null ? before.length : input.selectionStart;
-      const end = input.selectionEnd == null ? before.length : input.selectionEnd;
-      const next = (before.slice(0, start) + text + before.slice(end)).slice(0, MAX_LEN);
-      input.value = next;
-      const caret = Math.min(start + text.length, next.length);
-      input.focus();
-      input.setSelectionRange(caret, caret);
-      render();
-      writeUrl();
-    }
-
     /* ---------- the cards ---------- */
 
     for (const card of cards) {
@@ -235,13 +72,14 @@
       const name = card.querySelector(".char-name").textContent;
 
       // Copying is what the whole card does, because copying a face is what
-      // the visit is for. Building a styled line around it is the other
-      // thing this page offers and it has its own button — the reverse of
-      // the arrangement this page shipped with, which answered "what does
-      // this page do" with the wrong one of the two.
+      // the visit is for. Styling one is the other thing this page offers
+      // and it has its own control — a link out to the generator.
       const doCopy = wireCopy(card, () => ch, name);
       card.addEventListener("click", (evt) => {
-        if (evt.target.closest("button")) return;
+        // Both real controls on the card have to be able to answer for
+        // themselves: the star is a button, "Style it" is a link, and either
+        // one swallowed by the copy handler would look broken.
+        if (evt.target.closest("button, a")) return;
         doCopy();
       });
       card.addEventListener("keydown", (evt) => {
@@ -251,18 +89,6 @@
           doCopy();
         }
       });
-
-      const insertBtn = card.querySelector(".char-insert");
-      if (insertBtn) {
-        insertBtn.addEventListener("click", (evt) => {
-          evt.stopPropagation();
-          insert(ch);
-          announce(name + " added to your text");
-          // The composer is below the grid now, so an insert that gave no
-          // sign of itself would read as a dead button.
-          revealComposer();
-        });
-      }
 
       const starBtn = card.querySelector(".char-star");
       if (starBtn) {
@@ -313,10 +139,10 @@
         if (hit) shown++;
       }
 
-      // The styled cards are adverts, not results. Leaving them in a filtered
-      // grid would put them beside a count that does not include them and
-      // among characters they have nothing to do with.
-      for (const cell of styledCellsList) cell.hidden = terms.length > 0;
+      // Leaving the adverts in a filtered grid would put them beside a count
+      // that does not include them and among characters they have nothing to
+      // do with.
+      for (const cell of styledCells) cell.hidden = terms.length > 0;
 
       // A hub is sectioned by group; a section with nothing left in it is a
       // heading over a gap, so it goes too.
@@ -345,22 +171,7 @@
 
     /* ---------- init ---------- */
 
-    input.value = readUrl();
-    input.addEventListener("input", debounce(() => {
-      render();
-      writeUrlDebounced();
-    }, 50));
-    if (clearBtn) {
-      clearBtn.addEventListener("click", () => {
-        input.value = "";
-        input.focus();
-        render();
-        writeUrl();
-      });
-    }
-
     syncStars();
     pinStarred();
-    render();
   });
 })();

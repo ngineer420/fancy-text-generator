@@ -874,25 +874,68 @@
   // the 198 kaomoji contain no letter at all, so every font style is a
   // literal no-op on the face itself. What varies is the characters.
   const CHAR_EXAMPLES = [
-    { id: "char-kaomoji", name: "Kaomoji", char: "(◕‿◕)", close: "(≧▽≦)", styleId: null, place: "wrap", hub: "/kaomoji/" },
-    { id: "char-symbols", name: "Text Symbols", char: "「", close: "」", styleId: null, place: "wrap", hub: "/symbols/" },
+    { id: "char-kaomoji", name: "Kaomoji", char: "(◕‿◕)", close: "(≧▽≦)", styleId: null, place: "around", hub: "/kaomoji/" },
+    { id: "char-symbols", name: "Text Symbols", char: "「", close: "」", styleId: null, place: "around", hub: "/symbols/" },
     { id: "char-smile-script", name: "Smiling Script", char: "(◕‿◕)", styleId: "script", place: "before" },
     { id: "char-shrug-bold", name: "Shrug in Bold", char: "¯\\_(ツ)_/¯", styleId: "bold", place: "after" },
-    { id: "char-love-fraktur", name: "Loved Gothic", char: "♡", styleId: "fraktur", place: "wrap" },
+    { id: "char-love-fraktur", name: "Loved Gothic", char: "♡", styleId: "fraktur", place: "around" },
     { id: "char-cat-smallcaps", name: "Cat Small Caps", char: "(=^･ω･^=)", styleId: "small-caps", place: "before" },
   ];
 
-  // Set a character around text, optionally run through one style first.
-  // `wrap` puts one at each end — `close` where the two ends differ, which
-  // is what a pair of brackets and a pair of faces both want; `before` and
-  // `after` put it on one end, which is what a single kaomoji wants, since
-  // one face reads as a face and two read as mismatched brackets.
+  /* Is this whitespace-separated token a picture rather than a word?
+
+     The same test `markable()` uses to decide whether a combining mark may
+     land on something: fewer than half its characters are letters or digits,
+     so "(◕‿◕)", "♡" and "「" are pictures and "hi" is not. One rule, used
+     twice, because both questions are the same question — a face is a
+     drawing made of punctuation and the engine should treat it as one
+     wherever it meets it. */
+  function isPictureToken(token) {
+    const gs = splitGraphemes(token);
+    if (!gs.length) return false;
+    let letters = 0;
+    for (const g of gs) if (!WIDE_BASE.test(g) && MARKABLE.test(g)) letters++;
+    return letters * 2 < gs.length;
+  }
+
+  /* Take a picture off the front or the back, if that is what is there.
+
+     A visitor who presses one of these tiles gets its character into their
+     box, so the next press finds it already sitting where it wants to go.
+     Stacking is what that used to produce — "(◕‿◕) (◕‿◕) hi (≧▽≦)", the
+     gallery apparently unable to read its own input. Replacing is the useful
+     reading of a second press: put THIS one on my text instead. */
+  function stripEdge(text, which) {
+    const parts = String(text).trim().split(/\s+/).filter(Boolean);
+    // Never strip the only token: a box holding just a face is holding its
+    // text, and taking it out would leave nothing to style.
+    if (parts.length < 2) return String(text);
+    if (which === "start" && isPictureToken(parts[0])) return parts.slice(1).join(" ");
+    if (which === "end" && isPictureToken(parts[parts.length - 1])) {
+      return parts.slice(0, -1).join(" ");
+    }
+    return String(text);
+  }
+
+  /* A homepage character tile: style the words, then set the character
+     around them. The character never goes through the style — it is a
+     picture, and the one thing every alphabet does to a picture is nothing. */
   function applyCharExample(ex, text) {
+    let body = String(text);
+    if (ex.place !== "after") body = stripEdge(body, "start");
+    if (ex.place !== "before") body = stripEdge(body, "end");
     const style = STYLE_BY_ID[ex.styleId];
-    const styled = style ? style.transform(text) : text;
+    const styled = style ? style.transform(body) : body;
     if (ex.place === "before") return ex.char + " " + styled;
     if (ex.place === "after") return styled + " " + ex.char;
     return ex.char + " " + styled + " " + (ex.close || ex.char);
+  }
+
+  // The same arrangement with no style run over it — what the tile puts in
+  // the box when its ＋ is pressed, so the other thirty-nine styles still
+  // have plain words to work on.
+  function charExampleText(ex, text) {
+    return applyCharExample({ ...ex, styleId: null }, text);
   }
 
   // Run a Combiner chain: each style's output feeds the next.
@@ -930,6 +973,8 @@
     MIX_EXAMPLES,
     CHAR_EXAMPLES,
     applyCharExample,
+    charExampleText,
+    isPictureToken,
     applyChain,
     mixPatternIds,
     applyMixPattern,

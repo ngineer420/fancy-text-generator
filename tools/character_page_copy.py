@@ -54,9 +54,9 @@ COPY = {
 
 "kaomoji": {
     "title": "Kaomoji: Japanese Text Emoticons to Copy and Paste",
-    "description": "Every kaomoji on fontloom, grouped by mood — happy, sad, angry, love, shrug, cute, table flip and animals. Click one to drop it into the text box and style it.",
+    "description": "Every kaomoji on fontloom, grouped by mood — happy, sad, angry, love, shrug, cute, table flip and animals. Click one to copy it, or open it in the generator to style the line around it.",
     "h1": "Kaomoji",
-    "tagline": "Faces made of ordinary characters — click one to build it into your text",
+    "tagline": "Faces made of ordinary characters — click one to copy it",
     "intro_heading": "What a kaomoji is, and why it reads the right way up",
     "intro": "A kaomoji is a face assembled out of characters that already exist for other reasons: a katakana tsu for a smile, a Kannada letter for a stare, box-drawing pieces for a table. The Western emoticon :-) is read by tilting your head. A kaomoji is not — (◕‿◕) faces you already, which is why it can carry an expression a colon and a bracket cannot, and why the vocabulary grew to thousands of faces rather than a dozen.",
     "second": "The practical reason to reach for one in 2026 is that a kaomoji is text. It is not an image the receiving app has to have a font for, it does not become a coloured picture in one client and a black outline in another, and it goes through fields that strip emoji outright — a username, a commit message, a filename, a game chat box. What it costs is length: most of these run ten to twenty characters, which matters where you are counting against a limit.",
@@ -66,7 +66,7 @@ COPY = {
         ("Why is my kaomoji suddenly wider than it looked here?",
          "Fullwidth characters. Many kaomoji use the fullwidth forms — ＾ ω ｀ ）— which are drawn to the width of a CJK character, roughly double a Latin letter. In a proportional font that is exactly what makes the face look balanced. In a monospaced field it can go the other way, since some terminals give a fullwidth character one cell instead of two and the face collapses."),
         ("How much of my character limit does one use?",
-         "More than it looks. A face like (づ｡◕‿‿◕｡)づ is thirteen characters and none of them are typed by you. The counter above the text box on this site reports what a string costs, including where a character counts as two against a limit, which is the surprise that catches people out on a bio field."),
+         "More than it looks. A face like (づ｡◕‿‿◕｡)づ is thirteen characters and none of them are typed by you. The generator on this site reports what a string costs, including where a character counts as two against a limit, which is the surprise that catches people out on a bio field."),
     ],
     "aka": ["kaomoji", "japanese emoticons", "text faces", "text emoticons copy paste", "emoticon symbols"],
 },
@@ -74,7 +74,7 @@ COPY = {
 "kaomoji/happy": {
     "hint": "cheer",
     "title": "Happy Kaomoji: Smiling Text Faces to Copy and Paste",
-    "description": "Smiling, laughing and cheering kaomoji — (◕‿◕) (＾▽＾) ヽ(´▽`)/ and more, each one click away from the text box so you can style it and copy it.",
+    "description": "Smiling, laughing and cheering kaomoji — (◕‿◕) (＾▽＾) ヽ(´▽`)/ and more, click one to copy it, or open it in the generator to style the line around it.",
     "h1": "Happy Kaomoji",
     "tagline": "Smiles, grins and both arms in the air",
     "intro_heading": "How a smile is built out of characters",
@@ -95,7 +95,7 @@ COPY = {
 "kaomoji/sad": {
     "hint": "tears",
     "title": "Sad and Crying Kaomoji: Text Faces to Copy and Paste",
-    "description": "Crying, sobbing and downcast kaomoji — (╥﹏╥) ಥ_ಥ (´；ω；`) and more. Click one to drop it into the text box, style it, and copy the result.",
+    "description": "Crying, sobbing and downcast kaomoji — (╥﹏╥) ಥ_ಥ (´；ω；`) and more. Click one to copy it, or open it in the generator to style the line around it.",
     "h1": "Sad Kaomoji",
     "tagline": "Tears, sighs and looking at the floor",
     "intro_heading": "Two traditions of drawing a tear",
@@ -116,7 +116,7 @@ COPY = {
 "kaomoji/angry": {
     "hint": "glare",
     "title": "Angry Kaomoji: Rage and Disapproval Text Faces",
-    "description": "Angry kaomoji to copy and paste — ಠ_ಠ ಠ益ಠ (╬ Ò﹏Ó) (¬_¬) and more. Click one to drop it into the text box and style the whole line.",
+    "description": "Angry kaomoji to copy and paste — ಠ_ಠ ಠ益ಠ (╬ Ò﹏Ó) (¬_¬) and more. Click one to copy it, or open it in the generator to style the whole line.",
     "h1": "Angry Kaomoji",
     "tagline": "Disapproval, rage and the vein on the forehead",
     "intro_heading": "The anger marks, and where they came from",
@@ -179,7 +179,7 @@ COPY = {
 "kaomoji/cute": {
     "hint": "bunny",
     "title": "Cute Kaomoji: Soft Text Faces to Copy and Paste",
-    "description": "Cute kaomoji — (｡･ω･｡) (◍•ᴗ•◍) (づ｡◕‿‿◕｡)づ and more soft, round text faces. Click one to insert it into the text box and style the line.",
+    "description": "Cute kaomoji — (｡･ω･｡) (◍•ᴗ•◍) (づ｡◕‿‿◕｡)づ and more soft, round text faces. Click one to copy it, or open it in the generator to style the line.",
     "h1": "Cute Kaomoji",
     "tagline": "Round, soft and small enough to fit in a bio",
     "intro_heading": "Cuteness is made of small punctuation",
@@ -200,7 +200,7 @@ COPY = {
 "kaomoji/table-flip": {
     "hint": "unflip",
     "title": "Table Flip Text: (╯°□°）╯︵ ┻━┻ Copy and Paste",
-    "description": "The table flip emoticon and the one that puts it back — (╯°□°）╯︵ ┻━┻ and ┬─┬ ノ( ゜-゜ノ). Copy either, or insert it into the text box and style it.",
+    "description": "The table flip emoticon and the one that puts it back — (╯°□°）╯︵ ┻━┻ and ┬─┬ ノ( ゜-゜ノ). Copy either, or open it in the generator to style the line around it.",
     "h1": "Table Flip",
     "tagline": "(╯°□°）╯︵ ┻━┻ — and the one that puts it back",
     "intro_heading": "The table is drawn with box-drawing characters",
@@ -243,7 +243,7 @@ COPY = {
 
 "symbols": {
     "title": "Text Symbols to Copy and Paste: Hearts, Stars, Arrows, Checks",
-    "description": "Copy-and-paste text symbols grouped by what they are for — hearts, stars, arrows, check marks, brackets and borders, music. Click one to insert it into the text box.",
+    "description": "Copy-and-paste text symbols grouped by what they are for — hearts, stars, arrows, check marks, brackets and borders, music. Click one to copy it, or open it in the generator to style the line around it.",
     "h1": "Text Symbols",
     "tagline": "Single characters, sorted by the job they do",
     "intro_heading": "A text symbol is not a small emoji",
@@ -253,7 +253,7 @@ COPY = {
         ("Why does a symbol I copied change colour when I paste it?",
          "It has emoji presentation, and the destination has an emoji font. Nothing was altered in the copy — the same code point arrived, and the receiving app chose to draw it from a colour font. If you want it to stay monochrome, use the text-presentation character from the same page: ♥ instead of ❤, ★ instead of ⭐, ✔ instead of ✅."),
         ("Do these count as one character?",
-         "Most do. The ones from the Basic Multilingual Plane — hearts, stars, arrows, box drawing — are a single UTF-16 unit and count as one everywhere. Emoji symbols are usually two, and a few, like the mending heart, are four or more because they are several code points joined together. The counter above the text box reports the real number for whatever you build."),
+         "Most do. The ones from the Basic Multilingual Plane — hearts, stars, arrows, box drawing — are a single UTF-16 unit and count as one everywhere. Emoji symbols are usually two, and a few, like the mending heart, are four or more because they are several code points joined together. The generator on this site reports the real number for whatever you build."),
         ("Where do these actually work?",
          "Anywhere plain text goes: bios, spreadsheet headers, commit messages, chat, filenames, alt text. The failure mode is not usually the destination but the reader — a screen reader announces ★ as 'black star' in the middle of your sentence, so use them as marks and ornaments rather than as words."),
     ],

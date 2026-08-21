@@ -72,12 +72,12 @@ Ten tools sharing one transform engine (`FancyText` in
   their own right — see *Navigation*), plus a page per mood (happy, sad,
   angry, love, shrug, cute, table-flip, animals) and per kind (hearts, stars,
   arrows, check-and-cross, brackets-and-borders, music). The
-  headline element on every one of them is the **grid**: somebody who lands
-  on /kaomoji/ came for a face, so the filter box and then the faces take the
-  lead slot, a card click **copies**, and the composer sits below the grid
-  with a `+ Style it` button on every card feeding it. A picker that only
-  copies would still be a dead end, so the case for the font engine is made
-  *inside* the grid — see *Advertise the styler in the grid, not above it*.
+  whole of every one of them is the **grid**: somebody who lands on /kaomoji/
+  came for a face, so the filter box and then the faces are the page, and a
+  card click **copies**. Styling is a link out — every card's `Style it →`
+  goes to `/?text=<char> `, and a few `.char-styled` cards sit among the
+  plain ones advertising the same trip. There is no composer here; see *One
+  styler, and it is the homepage*.
   Currency, zodiac and dingbats were
   deliberately cut: currency duplicates `/currency-text-generator/`, the other
   two were thin. Every surviving symbol page carries 40+ entries, asserted.
@@ -88,8 +88,11 @@ Ten tools sharing one transform engine (`FancyText` in
   `/combine/` only. Opt in with `data-char-insert` on the `.input-shell`; it
   builds the button, the tabbed panel and the grid itself, so JavaScript off
   leaves no dead control. It fetches `characters.js` (~12kB gzipped) the first
-  time the panel opens rather than on page load, and integrates with its host
-  page through exactly one line — it dispatches a bubbling `input` event after
+  time the panel opens rather than on page load. On the homepage it is also
+  the **change-the-face control**: the face lives in the ordinary text box,
+  so changing it is picking another one from this panel, and no second
+  editing surface has to exist anywhere. It integrates with its host page
+  through exactly one line — it dispatches a bubbling `input` event after
   inserting at the cursor, and knows nothing else about what the page does
   with the text. **Not on `/mix/`**: the Mixer paints one style per grapheme
   and a kaomoji is a dozen of them, so a face would fill its paint strip with
@@ -131,9 +134,9 @@ implementation: photoshrink#7). There is exactly one definition of it:
 - `/kaomoji/` and `/symbols/` are **tier 1**, with `RAIL_MAX = 10`. The tier
   test is the question a page answers, and theirs is "give me a face to put
   beside my words" — not "restyle my words". Neither is the style runtime with
-  a parameter changed; they are a character catalogue wired into a composer on
-  their own script. They spent one release as `HUBS` entries at the foot of
-  the sheet and were, in practice, undiscoverable.
+  a parameter changed; they are a character catalogue on their own script.
+  They spent one release as `HUBS` entries at the foot of the sheet and were,
+  in practice, undiscoverable.
 - The **14 mood and kind pages** under them are tier 2 — *that* is where the
   parameter is, the set loaded into the same picker — so they get sibling
   chips under each h1 and a `VARIANTS` family each, which is what marks their
@@ -173,10 +176,37 @@ No seeded "default favorites". Preset recipes live in core
 homepage as ordinary gallery tiles **mixed in beside their ingredient styles**
 (never a pinned strip above the gallery). Each is copyable, tagged
 `combo`/`mix`/`face`, filterable via the homepage-only "Combos & Mixes" and
-"Faces & Symbols" pills, and carries an Edit link into its editor with the
-visitor's typed text. Favorites are strictly user-created (starred styles pin
-to the gallery front; combos/mixes are named on save and appear as chips on
-the tool pages).
+"Faces & Symbols" pills, and carries a pill in its banner with the visitor's
+typed text already in it. Favorites are strictly user-created (starred styles
+pin to the gallery front; combos/mixes are named on save and appear as chips
+on the tool pages).
+
+**Where that pill goes depends on whether there is anywhere to go.** A combo
+opens the Combiner and a mix opens the Mixer, because those are real editors
+this page is not. The four character *pairings* have no such editor — this
+page is already the styler and already carries *Add a face* — so their pill
+is `＋ Add face` / `＋ Add symbol` and it acts **here**: it puts the plain
+arrangement in the box and lets the forty tiles answer. The href says the
+same thing (`/?text=…`) so a middle click and JavaScript-off both work, but
+the click handler cancels it rather than reloading the page to change one
+input. The two picker tiles (`char-kaomoji`, `char-symbols`) keep a real link,
+to `/kaomoji/` and `/symbols/`, because browsing two hundred faces by mood is
+a page and not a control. Only a pill that *leaves* carries a `data-dest`
+colour, so those two are now the only coloured character tiles.
+
+**Plain, never styled, into the box.** The box holds words for forty styles to
+work on. Putting `(◕‿◕) 𝒽𝒾` in it freezes one style and leaves the other
+thirty-nine with nothing to do — `charExampleText()` is `applyCharExample()`
+with the style dropped for exactly this.
+
+**A second press replaces, it does not stack.** Once one of these tiles has
+run, the box holds a face, so the next press finds one already where it wants
+to go. `applyCharExample()` strips a leading or trailing *picture* — the same
+"less than half letters" test `markable()` uses, exposed as
+`isPictureToken()` — before setting its own character down. Without it the
+gallery showed `(◕‿◕) (◕‿◕) hi (≧▽≦)` and looked unable to read its own
+input. The one token never stripped is the only one: a box holding just a
+face is holding its text.
 
 **Every tile in the gallery answers to typing** — there is no exception, and
 one was tried. Two tiles briefly showed a fixed row of characters to advertise
@@ -217,29 +247,40 @@ Every gallery tile ends in a full-bleed banner. Three rules:
 - **The name wraps, it never ellipses.** The names that used to be cut —
   "GOTHIC × DOUBLE-STR…" — are exactly the ones that say what the tile is.
 - **The banner's negative margin reads `--tile-pad-x` / `--tile-pad-b`**, set
-  on `.tile`. A tile with different padding (the composer's previews) would
-  otherwise have its banner hanging 2px off each edge.
+  on `.tile`. A tile with different padding would otherwise have its banner
+  hanging 2px off each edge.
 
-### Advertise the styler in the grid, not above it
-The character pages used to open with the composer. It answered "what does
-this page do" with the wrong one of the two things the page does, and pushed
-the faces — the reason for the visit — below the fold. The advertisement now
-sits **among** the characters instead: `build_character_pages.py` splices a
-`.char-styled` card into each grid at `STYLED_AT`, showing one real character
-from that group beside sample text in one real style, linking into `/?text=`.
-Same move as the homepage's example tiles, in the other direction.
+### One styler, and it is the homepage
+There is one place on this site where text gets styled, and it has all forty
+styles in it. Everything else hands off to it.
 
-Three things those cards must keep doing:
-- **Hand off the plain line, never the styled one.** `?text=` goes to a
-  styler, and every alphabet style no-ops on text that has already been
-  through one — hand off a finished string and the destination shows forty
-  identical unstyled previews. This is also why the homepage's face tiles
-  link with `char + " " + text`, not `applyCharExample(...)`.
-- **Work with JavaScript off.** The href and the styled preview are both
-  baked in by the builder; `characters-page.js` only retargets them at what
-  the visitor has typed.
-- **Stay out of the results.** A filter hides them: they are adverts, not
-  matches, and the count beside the grid does not include them.
+The character pages spent three releases trying to be a second one. First a
+composer above the grid, which answered "what does this page do" with the
+wrong one of the two things it does; then the composer below the grid; then a
+two-slot builder with the face and the words in separate boxes and the
+arrangement carried in the URL. Each round fixed the previous round's
+complaint and kept the mistake underneath: a smaller styler, six styles
+instead of forty, one link away from the real one. Following a homepage tile
+into it meant landing on a page that had *lost* the style you clicked to get
+there.
+
+So the picker pages do not style anything. What they have instead:
+- **`Style it →` on every card** — a link to `/?text=<char> `, the generator
+  with that character already in the box. Baked into the HTML by the builder,
+  so it works with JavaScript off.
+- **`.char-styled` cards spliced into the grid** at `STYLED_AT`, showing one
+  real character from that group beside sample text in one real style, also
+  linking into `/?text=`. Adverts, not results: a filter hides them, and the
+  count beside the grid does not include them.
+
+And on the homepage, the face is just **text in the text box**, which is what
+makes the whole arrangement hold together — the forty tiles restyle around it
+for free, and *Add a face* changes it. No third surface, no `?face=` /
+`?place=` / `?style=` parameters, nothing on the picker pages to keep in sync
+with the styler.
+
+If a picker page ever needs a text box again, that is the signal that the
+homepage is missing something — go and put it there.
 
 ### Substitution is welcome inside a face; an overlay is not
 This is the distinction, not "face versus word". A substitution alphabet
