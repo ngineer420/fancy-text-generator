@@ -63,9 +63,9 @@ ASSET_V = {
     "toolbar": 1,
     "core": 13,
     "site": 2,
-    "favorites": 3,
+    "favorites": 4,
     "styletool": 2,
-    "characters": 7,
+    "characters": 8,
 }
 
 # Hand-written, not generated — but the sitemap, the footer and the homepage

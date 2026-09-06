@@ -248,6 +248,8 @@
         if (evt) evt.stopPropagation();
         const ok = await copyText(output.textContent);
         if (!ok) return;
+        // The tally hears which style was copied, never the text.
+        window.dispatchEvent(new CustomEvent("ftg:copied", { detail: { kind: "style", item: style.id, target: tile } }));
         tile.classList.remove("is-copied");
         void tile.offsetWidth; // restart the flash animation on rapid re-clicks
         tile.classList.add("is-copied");
