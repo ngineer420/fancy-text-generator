@@ -63,7 +63,7 @@ ASSET_V = {
     "toolbar": 1,
     "core": 13,
     "site": 2,
-    "favorites": 4,
+    "favorites": 5,
     "styletool": 2,
     "characters": 8,
 }
