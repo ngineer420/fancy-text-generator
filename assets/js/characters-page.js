@@ -85,6 +85,8 @@
         if (evt) evt.stopPropagation();
         const ok = await copyText(getText());
         if (!ok) return;
+        // The tally hears which character was copied, never the carried line.
+        if (el.dataset && el.dataset.char) window.dispatchEvent(new CustomEvent("ftg:copied", { detail: { kind: "char", item: el.dataset.char, target: el } }));
         el.classList.remove("is-copied");
         void el.offsetWidth; // restart the flash on a rapid second click
         el.classList.add("is-copied");

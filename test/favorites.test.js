@@ -161,3 +161,20 @@ test("chars, styles, combos and mixes are four independent lists", () => {
 });
 
 console.log("\nAll " + passed + " tests passed.");
+
+/* ---------- sync: snapshot and mergeRemote (sch3ma.js) ---------- */
+{
+  const Favs = require("../assets/js/favorites.js");
+  const before = Favs.snapshot();
+  assert.ok(Array.isArray(before.styles) && Array.isArray(before.chars), "snapshot is the whole store");
+  const localStyles = before.styles.slice();
+  const merged = Favs.mergeRemote({ styles: ["zz-remote", ...localStyles], chars: ["☆"], combos: [{ id: "c-remote", name: "Remote", ids: ["bold"] }], mixes: "not a list" });
+  assert.ok(merged.styles.includes("zz-remote"), "a remote star is kept");
+  for (const s of localStyles) assert.ok(merged.styles.includes(s), "a local star survives the merge");
+  assert.strictEqual(merged.styles.filter((s) => s === "zz-remote").length, 1, "no duplicate on a second merge");
+  assert.ok(merged.chars.includes("☆") && merged.combos.some((c) => c.id === "c-remote"), "chars and combos merge by value and by id");
+  assert.ok(Array.isArray(merged.mixes), "a malformed remote kind is ignored");
+  assert.deepStrictEqual(Favs.snapshot().styles, merged.styles, "the merge is saved");
+  assert.strictEqual(Favs.mergeRemote(null).styles.length, merged.styles.length, "a missing remote changes nothing");
+  console.log("ok  sync: snapshot and mergeRemote union without loss");
+}
