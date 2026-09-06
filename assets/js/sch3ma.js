@@ -141,7 +141,7 @@ function renderControl(db, state, note) {
     if (note) { const p = document.createElement("p"); p.className = "note"; p.textContent = note; line.append(p); }
     input.focus();
   } else if (state === "sent") {
-    span.textContent = "Check your inbox. Open the link on any device and your favorites are there. It works for 15 minutes.";
+    span.textContent = "Check your inbox. Open the link on any device and your favorites are there. It works for an hour.";
     line.append(span);
   } else {
     span.textContent = "Favorites stay in this browser.";
