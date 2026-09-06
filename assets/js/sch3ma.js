@@ -9,8 +9,8 @@
    sch3ma is our own product (a database as an API, with the auth already in it) and this
    site is its first real user. Keep the shapes here the shapes a customer would write. */
 
-const PROJECT = "";   // prj_…, from the sch3ma dashboard
-const KEY = "";       // pk_live_…, the project's publishable key
+const PROJECT = "prj_01M1TEYNYXZR8FNTQ2ZFSAWBE8";
+const KEY = "pk_live_01M1TF03GXMNNDA7D2DSFKVZS6_g3bILr00xT6lTx9A5vJ1wq7nZ256TQGw"; // publishable: it ships in the page by design
 const SYNC_KEY = "ftg-sync-v1";
 
 const store = {
