@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signing you in - Fontloom</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://fontloom.com/signin.html">
+<meta name="theme-color" content="#0c0a12">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/styles.css?v=31">
+<style>
+  /* One message, centred, and nothing to click while the hop happens. */
+  .signin { min-height: 70vh; display: grid; place-items: center; text-align: center; padding: 24px; }
+  .signin p { max-width: 34rem; color: var(--text-dim); }
+  .signin h1 { margin: 0 0 12px; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="fontloom.com home">
+      <span class="brand-mark">fontloom</span>
+    </a>
+  </div>
+</header>
+
+<!-- nav:start -->
+<nav class="toolbar" aria-label="Tools">
+  <details class="tb-menu">
+    <summary class="tb-trigger" aria-label="All 10 tools">
+      <span class="tb-glyph" aria-hidden="true">&#9636;</span>
+      <span class="tb-label">All 10<span class="tb-label-long"> tools</span></span>
+    </summary>
+    <div class="tb-sheet">
+      <p class="tb-grouplabel" id="tb-g1">Every style at once</p>
+      <ul aria-labelledby="tb-g1">
+        <li><a href="/">All Fonts Gallery</a></li>
+      </ul>
+      <p class="tb-grouplabel" id="tb-g2">One effect</p>
+      <ul aria-labelledby="tb-g2">
+        <li><a href="/flip/">Flip Text Upside Down</a></li>
+        <li><a href="/glitch/">Glitch &amp; Zalgo Text</a></li>
+        <li><a href="/strikethrough/">Strikethrough Text</a></li>
+        <li><a href="/small-caps/">Small Caps Text</a></li>
+        <li><a href="/vaporwave/">Vaporwave Text</a></li>
+      </ul>
+      <p class="tb-grouplabel" id="tb-g3">Build your own</p>
+      <ul aria-labelledby="tb-g3">
+        <li><a href="/combine/">Style Combiner</a></li>
+        <li><a href="/mix/">Per-Letter Mixer</a></li>
+      </ul>
+      <p class="tb-grouplabel" id="tb-g4">Characters to put beside them</p>
+      <ul aria-labelledby="tb-g4">
+        <li><a href="/kaomoji/">Kaomoji &amp; Text Faces</a></li>
+        <li><a href="/symbols/">Text Symbols</a></li>
+      </ul>
+      <p class="tb-hub"><a href="/styles/">All 32 styles →</a></p>
+    </div>
+  </details>
+  <div class="tb-scrim"></div>
+  <ul class="tb-rail">
+    <li><a href="/">All fonts</a></li>
+    <li><a href="/flip/">Flip</a></li>
+    <li><a href="/glitch/">Glitch</a></li>
+    <li><a href="/strikethrough/">Strike</a></li>
+    <li><a href="/small-caps/">Small Caps</a></li>
+    <li><a href="/vaporwave/">Vaporwave</a></li>
+    <li><a href="/combine/">Combiner</a></li>
+    <li><a href="/mix/">Mixer</a></li>
+    <li><a href="/kaomoji/">Kaomoji</a></li>
+    <li><a href="/symbols/">Symbols</a></li>
+  </ul>
+</nav>
+<!-- nav:end -->
+
+<main id="main" class="signin">
+  <div>
+    <h1 id="head">Signing you in</h1>
+    <p id="note">One moment.</p>
+    <noscript><p>This page needs JavaScript to finish signing you in. Turn it on and open the link again.</p></noscript>
+  </div>
+</main>
+
+<!-- The sign-in mail points here rather than at auth.sch3ma.com, so the link a person sees
+     is fontloom.com. The token rides the URL fragment, which a browser never sends to a
+     server, so it reaches nothing but the host that issued it. The SDK reads it and hands
+     it back. See sch3ma docs 03 §08. -->
+<script type="module">
+  const PROJECT = "prj_01M1TEYNYXZR8FNTQ2ZFSAWBE8";
+  const KEY = "pk_live_01M1TF03GXMNNDA7D2DSFKVZS6_g3bILr00xT6lTx9A5vJ1wq7nZ256TQGw"; // publishable: it ships in the page by design
+  const say = (head, note) => {
+    document.getElementById("head").textContent = head;
+    document.getElementById("note").innerHTML = note;
+  };
+  try {
+    const { sch3ma } = await import("https://sch3ma.com/sdk/1.js");
+    const db = sch3ma({ project: PROJECT, key: KEY });
+    // True when this load was a sign-in link and the browser is already leaving.
+    if (!db.handleSignInLink()) say("Nothing to sign in with", 'This page finishes a sign-in link. Open the link from your email, or <a href="/">go back to Fontloom</a>.');
+  } catch {
+    say("That did not work", 'Request a new sign-in link from <a href="/">the homepage</a>.');
+  }
+</script>
+</body>
+</html>
