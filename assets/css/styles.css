@@ -1246,6 +1246,9 @@ a.fav-pill:hover { text-decoration: none; }
 }
 .footer-contact a { color: var(--text-dim); }
 .footer-contact a:hover { color: var(--accent); }
+/* 404.html has no .footer-inner, so the contact line is the last thing in the
+   footer and has to pay the bottom padding itself. */
+.footer-contact:last-child { padding-bottom: 40px; }
 /* A phone needs a real tap target, the same one the peer links get. */
 @media (max-width: 700px) {
   .footer-contact { padding-top: 4px; }
