@@ -38,6 +38,7 @@ import datetime
 import html
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -618,17 +619,29 @@ def sitemap_file(loc):
 def lastmod(loc):
     """The page's own modification date, as YYYY-MM-DD.
 
-    Read from the file the URL serves, at build time. This builder writes its
-    own pages before it writes the sitemap, so a page rewritten in this run
-    carries today's date and a page left untouched keeps the date it had.
+    The day of the last commit that touched the file the URL serves, not the
+    file's mtime. A fresh clone gives every file the same mtime, and this
+    builder rewrites every page it owns on every run whether the content
+    changed or not. Neither number is the day the page last changed. The
+    commit date is. Where git cannot answer, the mtime is what is left.
+
     Run `build_character_pages.py` first and this one second: the character
-    pages are written by that tool, and this one has to read their dates after
-    they land.
+    pages are written by that tool, and this one reads their dates after they
+    land.
     """
     path = sitemap_file(loc)
     if not os.path.exists(path):
         raise SystemExit("sitemap lists %s but %s does not exist"
                          % (loc, os.path.relpath(path, ROOT)))
+    try:
+        out = subprocess.run(
+            ["git", "log", "-1", "--format=%ad", "--date=short", "--", path],
+            cwd=ROOT, capture_output=True, text=True, timeout=20)
+        date = out.stdout.strip()
+        if out.returncode == 0 and re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
+            return date
+    except Exception:
+        pass
     return datetime.date.fromtimestamp(os.path.getmtime(path)).isoformat()
 
 
