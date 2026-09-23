@@ -9,7 +9,11 @@
   --border-soft: #1e1a28;
   --text: #ece9f2;
   --text-dim: #a79fb8;
-  --text-faint: #6c6480;
+  /* WCAG AA. #6c6480 measured 3.53:1 on --bg and 3.32:1 on --bg-raised,
+     and .hero p sets it at 12.5px, which is not large text. This value
+     keeps the hue (258deg) and measures 4.81:1 on --bg, 4.52:1 on
+     --bg-raised and 4.86:1 on --bg-inset. */
+  --text-faint: #827997;
   --accent: #c77dff;
   --accent-dim: #9d4edd;
   --accent-contrast: #1a0b26;
@@ -40,7 +44,10 @@
   --border-soft: #eae6f2;
   --text: #1c1626;
   --text-dim: #5c5470;
-  --text-faint: #8f87a0;
+  /* WCAG AA, as above. #8f87a0 measured 3.26:1 on --bg. This keeps the hue
+     (260deg) and measures 4.92:1 on --bg, 5.16:1 on --bg-raised and
+     4.50:1 on --bg-inset. */
+  --text-faint: #726984;
   --accent: #8e2de2;
   --accent-dim: #7423b8;
   --accent-contrast: #ffffff;
@@ -61,7 +68,7 @@
     --border-soft: #eae6f2;
     --text: #1c1626;
     --text-dim: #5c5470;
-    --text-faint: #8f87a0;
+    --text-faint: #726984;
     --accent: #8e2de2;
     --accent-dim: #7423b8;
     --accent-contrast: #ffffff;
@@ -1174,6 +1181,56 @@ a.fav-pill:hover { text-decoration: none; }
 .footer-tools a[aria-current="page"] { color: var(--accent); }
 @media (max-width: 700px) {
   .footer-tools a { padding: 8px 0; }
+}
+
+/* ---------- related tools, in the footer ---------- */
+/* The sibling sites in the same portfolio. It sits in the same column as the
+   two tool rows above it and wears the same label, so it reads as the third
+   row of the footer rather than as a bolted-on link farm. The erabb.it mark
+   still closes the page; this is the crawlable route the mark never was.
+
+   A grid rather than the flex row the tool lists use, because each entry is
+   two pieces — what the site does, then which site that is — and those have
+   to stay together when a phone wraps them. */
+.peer-sites {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 20px 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 16px;
+  font-size: 13px;
+}
+.peer-sites-label {
+  color: var(--text-faint);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+.peer-sites ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 4px 16px;
+  flex: 1 1 320px;
+}
+/* Two lines per entry, always: what the site does, then which site that is.
+   Wide enough for four columns, one of the four labels still wraps, and an
+   entry that breaks only sometimes gives the row a ragged second line. */
+.peer-sites li { min-width: 0; }
+.peer-sites a { color: var(--text-dim); }
+.peer-sites a:hover { color: var(--accent); }
+.peer-domain { display: block; color: var(--text-faint); font-size: 11px; }
+/* One column on a phone, so the pair fits on one line and reads as one item. */
+@media (max-width: 700px) {
+  .peer-sites ul { grid-template-columns: 1fr; gap: 0; }
+  .peer-sites li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+  .peer-sites a { padding: 8px 0; }
+  .peer-domain { display: inline; }
 }
 
 /* ---------- character count readout ---------- */

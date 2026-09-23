@@ -282,7 +282,7 @@ def related(hub, groups, current_slug):
             '    <h2>More like this</h2>\n' + "\n".join(rows) + "\n  </section>")
 
 
-def ld_blocks(copy, url, kind):
+def ld_blocks(copy, url, kind, trail):
     app = {
         "@context": "https://schema.org",
         "@type": kind,
@@ -303,17 +303,18 @@ def ld_blocks(copy, url, kind):
             for q, a in copy["faq"]
         ],
     }
-    return [app, faq]
+    return [app, faq, B.breadcrumb(trail)]
 
 
-def shell(copy, url, path, body, kind):
+def shell(copy, url, path, body, kind, trail):
     """head + header + body + footer, with the do-not-edit banner swapped in.
 
     build_style_pages.head() stamps its own banner, naming its own builder. The
     file on disk has to name the tool that will overwrite it, so this replaces
     that one line rather than growing a parameter on the shared function.
     """
-    head = B.head(copy["title"] + " | fontloom", copy["description"], url, ld_blocks(copy, url, kind))
+    head = B.head(copy["title"] + " | fontloom", copy["description"], url,
+                  ld_blocks(copy, url, kind, trail))
     head = head.replace(B.GENERATED_WARNING, GENERATED_WARNING, 1)
     return (head + B.site_header(path) + body
             + B.site_footer(scripts=CHAR_SCRIPTS))
@@ -352,7 +353,9 @@ def group_page(hub, groups, group):
         related(hub, groups, group["slug"]),
         '</main>',
     ]
-    return shell(copy, url, path, "\n".join(body), "WebApplication")
+    # Home > the hub > this group. The hub is a real page, so it is a real step.
+    trail = [(COPY[hub["slug"]]["h1"], "/%s/" % hub["slug"]), (copy["h1"], path)]
+    return shell(copy, url, path, "\n".join(body), "WebApplication", trail)
 
 
 def hub_page(hub, groups):
@@ -398,7 +401,8 @@ def hub_page(hub, groups):
         related(hub, groups, "\0"),  # no current group: list every one of them
         '</main>',
     ]
-    return shell(copy, url, path, "\n".join(body), "CollectionPage")
+    return shell(copy, url, path, "\n".join(body), "CollectionPage",
+                 [(copy["h1"], path)])
 
 
 def check_sitemap(stale):
