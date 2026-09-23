@@ -1233,6 +1233,25 @@ a.fav-pill:hover { text-decoration: none; }
   .peer-domain { display: inline; }
 }
 
+/* ---------- footer contact ---------- */
+/* Same width and gutter as the related-tools block above it, so the footer
+   reads as one column rather than as two stacked widgets. The sentence is
+   faint and the address is not: the address is the part somebody scans for. */
+.footer-contact {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 10px 20px 0;
+  font-size: 13px;
+  color: var(--text-faint);
+}
+.footer-contact a { color: var(--text-dim); }
+.footer-contact a:hover { color: var(--accent); }
+/* A phone needs a real tap target, the same one the peer links get. */
+@media (max-width: 700px) {
+  .footer-contact { padding-top: 4px; }
+  .footer-contact a { display: inline-block; padding: 8px 0; }
+}
+
 /* ---------- character count readout ---------- */
 /* Sits directly under the input because it is about the text you just typed,
    and because the number it reports is the one that decides whether a bio
