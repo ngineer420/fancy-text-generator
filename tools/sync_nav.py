@@ -204,10 +204,35 @@ def render_footernav(url):
     return "\n".join(out)
 
 
+def render_peers(url):
+    """The footer's "Related tools" block: the sibling sites in the portfolio.
+
+    Every page of this site links to the same four peers, so the block carries
+    no per-page state and ignores `url`. It keeps the signature the other
+    renderers have because `apply_regions` calls them all the same way.
+
+    The erabb.it mark stays where it is. This block sits beside it, not
+    instead of it: the mark is the portfolio badge and this is the crawlable
+    route between the sites.
+    """
+    peers = getattr(D, "PEERS", None)
+    if not peers:
+        return ""
+    out = ['<nav class="peer-sites" aria-label="Related tools">',
+           '  <span class="peer-sites-label">Related tools</span>',
+           '  <ul>']
+    for p in peers:
+        out.append('    <li><a href="%s">%s</a> <span class="peer-domain">%s</span></li>'
+                   % (esc(p["href"]), esc(p["text"]), esc(p["domain"])))
+    out += ['  </ul>', '</nav>']
+    return "\n".join(out)
+
+
 RENDERERS = {
     "nav": render_nav,
     "sizechips": render_sizechips,
     "footernav": render_footernav,
+    "peers": render_peers,
 }
 
 
@@ -222,19 +247,30 @@ def region_re(name):
     )
 
 
+def region(name, url, indent=""):
+    """One marked region, markers included, rendered at `indent`.
+
+    The generators call this to write the same regions into the pages they own,
+    so a generated page and a hand-written one carry byte-identical markup and
+    either tool's `--check` catches a drift in the other.
+    """
+    start = "<!-- %s:start -->" % name
+    end = "<!-- %s:end -->" % name
+    body = RENDERERS[name](url)
+    if not body:
+        return indent + start + end
+    lines = "\n".join(indent + ln if ln else ln for ln in body.split("\n"))
+    return "%s%s\n%s\n%s%s" % (indent, start, lines, indent, end)
+
+
 def apply_regions(text, url):
-    for name, render in RENDERERS.items():
+    for name in RENDERERS:
         pattern = region_re(name)
         if not pattern.search(text):
             continue
-        body = render(url)
 
-        def splice(m, body=body):
-            indent = m.group(1)
-            if not body:
-                return indent + m.group(2) + m.group(5)
-            lines = "\n".join(indent + ln if ln else ln for ln in body.split("\n"))
-            return "%s%s\n%s\n%s%s" % (indent, m.group(2), lines, indent, m.group(5))
+        def splice(m, name=name):
+            return region(name, url, m.group(1))
 
         text = pattern.sub(splice, text, count=1)
     return text

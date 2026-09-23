@@ -34,6 +34,7 @@ Standard library only, plus Node for the dump. Python 3.8+.
 """
 
 import argparse
+import datetime
 import html
 import json
 import os
@@ -59,7 +60,7 @@ SITE = "https://fontloom.com"
 # new one. These are the values the hand-written pages carry; bump both here
 # and there in the same commit whenever the asset changes.
 ASSET_V = {
-    "css": 31,
+    "css": 32,
     "toolbar": 1,
     "core": 13,
     "site": 2,
@@ -117,6 +118,29 @@ MARK_END = "<!-- END generated style links -->"
 
 def esc(s):
     return html.escape(s, quote=True)
+
+
+def breadcrumb(trail):
+    """BreadcrumbList JSON-LD for a page below the root.
+
+    `trail` is a list of (name, path) pairs, in order, WITHOUT the Home entry —
+    this prepends it, because every trail on this site starts there. A path is
+    site-relative ("/styles/"); the URL written out is absolute, so the last
+    item matches the page's own <link rel="canonical"> exactly.
+
+    A section step is included only where that section really is a page a
+    visitor can open. /styles/, /kaomoji/ and /symbols/ are. /articles/ is not,
+    so an article's trail is Home then the article.
+    """
+    items = [("Home", "/")] + list(trail)
+    return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": i, "name": name, "item": SITE + path}
+            for i, (name, path) in enumerate(items, start=1)
+        ],
+    }
 
 
 def load_catalogue():
@@ -210,10 +234,8 @@ def site_header(url):
   </div>
 </header>
 
-<!-- nav:start -->
 {nav}
-<!-- nav:end -->
-""".format(nav=sync_nav.render_nav(sync_nav.canon(url)))
+""".format(nav=sync_nav.region("nav", sync_nav.canon(url)))
 
 
 # The scripts every page built from this shell loads, in order. Passed rather
@@ -249,6 +271,7 @@ def site_footer(active_platform=None, scripts=None):
 {platforms}
       <a href="/#all-styles">Every style</a>
   </nav>
+{peers}
   <div class="footer-inner">
     <div>© <span id="year"></span> fontloom.com</div>
     <div class="footer-links">
@@ -263,7 +286,8 @@ def site_footer(active_platform=None, scripts=None):
 {scripts}
 </body>
 </html>
-""".format(tools=tools, platforms=platforms, erabbit=ERABBIT, scripts=script_tags)
+""".format(tools=tools, platforms=platforms, erabbit=ERABBIT, scripts=script_tags,
+           peers=sync_nav.region("peers", "/", "  "))
 
 
 def charmap_group(style, key, heading, rows):
@@ -457,7 +481,11 @@ def style_page(style, catalogue, styles_by_id):
     body.append(related_section(style, styles_by_id, catalogue))
     body.append('</main>')
 
-    return (head(title, description, url, [ld_app, ld_faq])
+    h1 = copy.get("h1") or keyword_heading(style["slug"])
+    ld_crumbs = breadcrumb([("Every style", "/styles/"),
+                            (h1, "/%s/" % style["slug"])])
+
+    return (head(title, description, url, [ld_app, ld_faq, ld_crumbs])
             + site_header("/%s/" % style["slug"])
             + "\n".join(body) + site_footer())
 
@@ -518,7 +546,9 @@ def styles_hub(catalogue):
     body.append('  </ul>')
     body.append('</main>')
 
-    return head(title, description, url, [ld]) + site_header("/styles/") + "\n".join(body) + site_footer()
+    crumbs = breadcrumb([("Every style", "/styles/")])
+    return (head(title, description, url, [ld, crumbs])
+            + site_header("/styles/") + "\n".join(body) + site_footer())
 
 
 def mesh_label(loc):
@@ -573,6 +603,35 @@ def homepage_block(catalogue):
     return "\n".join(out)
 
 
+def sitemap_file(loc):
+    """The file on disk that serves a sitemap URL.
+
+    "/x/" is served by x/index.html and "/x.html" by x.html, which is every
+    shape of URL this sitemap carries.
+    """
+    rel = loc.lstrip("/")
+    if loc.endswith("/"):
+        rel += "index.html"
+    return os.path.join(ROOT, rel)
+
+
+def lastmod(loc):
+    """The page's own modification date, as YYYY-MM-DD.
+
+    Read from the file the URL serves, at build time. This builder writes its
+    own pages before it writes the sitemap, so a page rewritten in this run
+    carries today's date and a page left untouched keeps the date it had.
+    Run `build_character_pages.py` first and this one second: the character
+    pages are written by that tool, and this one has to read their dates after
+    they land.
+    """
+    path = sitemap_file(loc)
+    if not os.path.exists(path):
+        raise SystemExit("sitemap lists %s but %s does not exist"
+                         % (loc, os.path.relpath(path, ROOT)))
+    return datetime.date.fromtimestamp(os.path.getmtime(path)).isoformat()
+
+
 def sitemap(catalogue):
     rows = [("/", "weekly", "1.0"), ("/styles/", "weekly", "0.8")]
     for slug in ["combine", "mix", "flip", "glitch", "strikethrough", "small-caps", "vaporwave"]:
@@ -594,6 +653,7 @@ def sitemap(catalogue):
     for loc, freq, prio in rows:
         out += ['  <url>',
                 '    <loc>%s%s</loc>' % (SITE, loc),
+                '    <lastmod>%s</lastmod>' % lastmod(loc),
                 '    <changefreq>%s</changefreq>' % freq,
                 '    <priority>%s</priority>' % prio,
                 '  </url>']

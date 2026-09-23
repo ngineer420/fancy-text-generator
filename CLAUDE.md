@@ -30,7 +30,10 @@ conventions every change must follow.
   and copy in `tools/character_page_copy.py`. It shares the page shell by
   importing `build_style_pages`, and it deliberately does **not** write
   `sitemap.xml` — that file has one writer, `build_style_pages.py`, which
-  imports `CHARACTER_URLS`. Run both, and both `--check`s.
+  imports `CHARACTER_URLS`. Run both, and both `--check`s. Run
+  `build_character_pages.py` **first**: `sitemap()` reads each page's `<lastmod>`
+  from the file's own mtime, so the character pages have to be on disk before the
+  sitemap is written.
 - **Nothing goes in `characters.js` that has not been rendered.** The site
   loads no webfont, so a character the device lacks a glyph for is a tofu box
   and a picker full of those is worse than a smaller picker.
@@ -148,6 +151,13 @@ implementation: photoshrink#7). There is exactly one definition of it:
 - `assets/js/toolbar.js` is the toolbar's enhancement script (fades, Escape,
   click-outside), a separate file because 404, privacy, terms and the articles
   carry the toolbar but load no other JS.
+- The footer's **Related tools** block is a second managed region,
+  `<!-- peers:start -->…<!-- peers:end -->`, rendered by `sync_nav.render_peers`
+  from `nav_data.PEERS` and written into the generated pages by
+  `build_style_pages.site_footer`. It is on all 67 pages that have a footer;
+  `404.html` and `signin.html` have none. Four peer domains, and only four: a
+  footer that lists the whole portfolio is a link farm. The erabb.it mark stays
+  where it is — the block sits beside it, not instead of it.
 - Nothing in the chrome is sticky — a sticky header can overlay an AdSense
   anchor unit. Header + 45px bar is 96px of chrome on every page.
 
