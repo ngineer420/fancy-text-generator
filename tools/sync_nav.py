@@ -204,27 +204,65 @@ def render_footernav(url):
     return "\n".join(out)
 
 
-def render_peers(url):
-    """The footer's "Related tools" block: the sibling sites in the portfolio.
+# The one contact address for the whole portfolio.
+CONTACT_ADDRESS = "hello@goodbotbad.bot"
+CONTACT_PROMPT = "Questions or a problem with a tool?"
 
-    Every page of this site links to the same four peers, so the block carries
-    no per-page state and ignores `url`. It keeps the signature the other
-    renderers have because `apply_regions` calls them all the same way.
+
+def ncr(text):
+    """Every character as a decimal numeric character reference.
+
+    The HTML parser decodes these while it parses, so the `href` becomes a
+    real `mailto:` URL, the anchor keeps its tab order, and a screen reader
+    reads the plain address. Nothing here needs JavaScript, and a link that
+    needs JavaScript to work is worse than an address in plain text.
+
+    Encoding every character, not only the `@`, is what makes the raw bytes
+    carry neither `@` nor `mailto:hello`. A scraper regex over the source
+    finds no address to take.
+    """
+    return "".join("&#%d;" % ord(c) for c in text)
+
+
+def render_contact():
+    """The footer's contact line. One sentence and one real mailto link.
+
+    `nav_data.CONTACT_PROMPT` overrides the sentence, because a site that is
+    not a set of tools needs a different noun. The address never changes, so
+    this file stays copyable to every other site in the portfolio.
+    """
+    prompt = esc(getattr(D, "CONTACT_PROMPT", CONTACT_PROMPT))
+    return ('<p class="footer-contact">%s <a href="%s">%s</a></p>'
+            % (prompt, ncr("mailto:" + CONTACT_ADDRESS), ncr(CONTACT_ADDRESS)))
+
+
+def render_peers(url):
+    """The footer's "Related tools" block and the contact line below it.
+
+    Every page of this site links to the same peers and shows the same
+    address, so the block carries no per-page state and ignores `url`. It
+    keeps the signature the other renderers have because `apply_regions` calls
+    them all the same way.
+
+    The contact line rides in this region rather than in a region of its own.
+    One marked pair means one splice, so the generators and the hand-written
+    pages pick up both halves of the footer from one function.
 
     The erabb.it mark stays where it is. This block sits beside it, not
     instead of it: the mark is the portfolio badge and this is the crawlable
     route between the sites.
     """
+    out = []
     peers = getattr(D, "PEERS", None)
-    if not peers:
-        return ""
-    out = ['<nav class="peer-sites" aria-label="Related tools">',
-           '  <span class="peer-sites-label">Related tools</span>',
-           '  <ul>']
-    for p in peers:
-        out.append('    <li><a href="%s">%s</a> <span class="peer-domain">%s</span></li>'
-                   % (esc(p["href"]), esc(p["text"]), esc(p["domain"])))
-    out += ['  </ul>', '</nav>']
+    if peers:
+        out += ['<nav class="peer-sites" aria-label="Related tools">',
+                '  <span class="peer-sites-label">Related tools</span>',
+                '  <ul>']
+        for p in peers:
+            out.append('    <li><a href="%s">%s</a> <span class="peer-domain">%s</span></li>'
+                       % (esc(p["href"]), esc(p["text"]), esc(p["domain"])))
+        out += ['  </ul>', '</nav>']
+    out.append(render_contact())
     return "\n".join(out)
 
 
