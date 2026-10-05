@@ -239,7 +239,7 @@ def render_contact():
 def render_peers(url):
     """The footer's "Related tools" block and the contact line below it.
 
-    Every page of this site links to the same four peers and shows the same
+    Every page of this site links to the same peers and shows the same
     address, so the block carries no per-page state and ignores `url`. It
     keeps the signature the other renderers have because `apply_regions` calls
     them all the same way.
