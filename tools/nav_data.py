@@ -156,7 +156,7 @@ MIGRATE = [
 ]
 
 # Sibling sites in the same portfolio, for the footer's "Related tools" block.
-# Four peers, not all nineteen: a footer that lists every domain is a link farm
+# Two peers, not all nineteen: a footer that lists every domain is a link farm
 # and reads as one. Each label is the peer site's own meta description, so the
 # anchor text says what the visitor gets before the click.
 #   href -> the peer site, always with the trailing slash
@@ -164,7 +164,5 @@ MIGRATE = [
 #   domain -> the bare domain, shown beside the anchor
 PEERS = [
     {"href": "https://inascii.com/",     "text": "ASCII art and text banners",          "domain": "inascii.com"},
-    {"href": "https://photoshrink.net/", "text": "Resize, compress and convert images", "domain": "photoshrink.net"},
-    {"href": "https://gamutlens.com/",   "text": "Color pickers, palettes and contrast", "domain": "gamutlens.com"},
     {"href": "https://textkitpro.com/",  "text": "Text cleanup, conversion and comparison", "domain": "textkitpro.com"},
 ]
