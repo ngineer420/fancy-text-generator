@@ -134,11 +134,17 @@
 
     // Where each example lands in the gallery: right after a style it's
     // made of, so they read as neighbors rather than a separate block.
+    // The most-copied styles (FancyText.MOST_COPIED) come first, and only
+    // the kaomoji tile goes between them. Two examples followed one of those
+    // styles, so they move to keep their old place among the other tiles.
+    // Smiling Script is the first tile after the ten, before Fraktur. Shrug
+    // in Bold follows Sans-Serif.
     const EXAMPLE_AFTER = {
       // The kaomoji tile sits in the first row or two: it is the
       // advertisement, and an advertisement below the fold is a footnote.
+      // Italic is the third tile, so the kaomoji tile is the fourth.
       "italic": ["char-kaomoji"],
-      "script": ["char-smile-script"],
+      "greek-style": ["char-smile-script"],
       "circled": ["mix-bold-script"],
       "bold-fraktur": ["char-love-fraktur"],
       "small-caps": ["mix-fraktur-double", "char-cat-smallcaps"],
@@ -148,7 +154,7 @@
       "superscript": ["mix-caps-super"],
       "subscript": ["combo-struck-superscript", "combo-underlined-subscript"],
       "slashed": ["combo-crossed-underline", "combo-triple-flip"],
-      "sans-bold": ["char-shrug-bold"],
+      "sans-serif": ["char-shrug-bold"],
       "hearts-between": ["char-symbols"],
     };
 
