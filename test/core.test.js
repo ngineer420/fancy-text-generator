@@ -472,4 +472,15 @@ test("a box holding only a face still has its face used as text", () => {
   }
 });
 
+/* The homepage and the Combiner build their galleries from TILE_ORDER. A
+   style that is missing from it goes to the end of the gallery, and a
+   style that is in it two times gets two tiles. */
+test("the gallery starts with the most-copied styles and lists each style one time", () => {
+  const { MOST_COPIED, TILE_ORDER } = FancyText;
+  for (const id of MOST_COPIED) assert.ok(STYLE_BY_ID[id], "MOST_COPIED names unknown style id: " + id);
+  assert.deepStrictEqual(TILE_ORDER.slice(0, MOST_COPIED.length), MOST_COPIED);
+  assert.strictEqual(new Set(TILE_ORDER).size, TILE_ORDER.length, "TILE_ORDER has a duplicate id");
+  assert.deepStrictEqual(TILE_ORDER.slice().sort(), STYLES.map((s) => s.id).sort());
+});
+
 console.log("\nAll " + count + " tests passed.");

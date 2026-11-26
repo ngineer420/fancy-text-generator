@@ -759,10 +759,27 @@
     return page ? "/" + page.slug + "/" : null;
   }
 
-  // Gallery presentation order, shared by the homepage and the Combiner's
-  // style picker: the styles people actually come looking for (bold, italic,
-  // cursive, gothic, bubble, glitch…) land in the first rows.
-  const TILE_ORDER = [
+  // The ten styles that visitors copy most from the homepage gallery, in
+  // rank order. The source is the sch3ma `copies` tally: 2,598 copies from
+  // Sep 6 to Nov 26 2026. Bold got 242 copies and Greek Style got 72.
+  //
+  // A tile near the top gets more copies only because of its place. The
+  // next four tiles (Bold × Script 65, Fraktur 57, Double-Struck 55, Small
+  // Caps 54) all sat in the first eleven places, so their place can explain
+  // much of their count. Thus the list stops at ten. Zalgo Heavy is the
+  // opposite case: it was the last tile, and it got 155.
+  //
+  // The list is static on purpose. The page does not read the live tally.
+  // To change the order, count the tally again and edit this list.
+  const MOST_COPIED = [
+    "bold", "script", "italic", "zalgo-heavy", "sans-bold",
+    "bold-italic", "bold-script", "monospace", "sans-bold-italic",
+    "greek-style",
+  ];
+
+  // The gallery order before the tally. A style that is not in MOST_COPIED
+  // keeps its place in this list, after the ten.
+  const BASE_TILE_ORDER = [
     "bold", "italic", "script", "fraktur", "circled", "bold-italic",
     "double-struck", "small-caps", "bold-script", "monospace",
     "strikethrough", "underline", "upside-down", "negative-circled",
@@ -775,6 +792,13 @@
     "hearts-between", "ornamental-wrap", "star-wrap",
     "zalgo-light", "zalgo-medium", "zalgo-heavy",
   ];
+
+  // Gallery presentation order, shared by the homepage and the Combiner's
+  // style picker: the most-copied styles first, then the rest in their old
+  // order.
+  const TILE_ORDER = MOST_COPIED.concat(
+    BASE_TILE_ORDER.filter((id) => MOST_COPIED.indexOf(id) === -1)
+  );
 
   // Category filters (pills). Every id in STYLES must appear in exactly one
   // group (the consumers warn at startup) so nothing is silently dropped
@@ -960,6 +984,7 @@
     STYLE_PAGES,
     STYLE_PAGE_BY_ID,
     stylePagePath,
+    MOST_COPIED,
     TILE_ORDER,
     CATEGORIES,
     COMBO_EXAMPLES,

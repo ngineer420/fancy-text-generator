@@ -63,7 +63,7 @@ SITE = "https://fontloom.com"
 ASSET_V = {
     "css": 33,
     "toolbar": 1,
-    "core": 13,
+    "core": 14,
     "site": 2,
     "favorites": 5,
     "styletool": 2,
